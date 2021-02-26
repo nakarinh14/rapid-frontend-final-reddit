@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PropertiesComponent">
+    <property name="javascript.nodejs.core.library.configured.version" value="12.18.1" />
+    <property name="javascript.nodejs.core.library.typings.version" value="12.12.67" />
+    <property name="settings.editor.selected.configurable" value="settings.nodejs" />
+  </component>
+</project>

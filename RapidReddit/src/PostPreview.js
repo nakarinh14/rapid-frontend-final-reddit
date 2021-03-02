@@ -7,7 +7,7 @@ const { width, height } = Dimensions.get('screen');
 
 export default class PostPreview extends React.Component {
     render() {
-        const { title, icon, caption, updoots } = this.props;
+        const { title, iconName, iconFamily, caption, updoots } = this.props;
         console.log(this.props)
         // styles.card.height = heightFixed || height * heightMultiplier || 200
         // cardStyle.height = heightFixed || height * heightMultiplier || 200
@@ -18,7 +18,7 @@ export default class PostPreview extends React.Component {
                         <TouchableOpacity>
                             <Block row>
                                 <Block left center flex={1} style={styles.cardIcon}>
-                                    <Icon name={icon} family="AntDesign" size={theme.SIZES.BASE * 3}/>
+                                    <Icon name={iconName} family={iconFamil} size={theme.SIZES.BASE * 3}/>
                                 </Block>
                                 <Block styles={styles.contentArea} flex={3}>
                                     <Block>

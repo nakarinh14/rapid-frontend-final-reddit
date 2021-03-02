@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Firebase from "../firebase";
 import {Block, Text} from "galio-framework";
 import {Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {firebase} from "../firebase";
 
 const { width } = Dimensions.get('screen');
 
@@ -63,7 +63,7 @@ export const UserComments = ({ uid }) => {
             setUserComments(comments)
             return
         }
-        const ref = Firebase.database("user_profile").ref(`${uid}/comments`)
+        const ref = firebase.database().ref(`user_profile/${uid}/comments`)
         ref.on('value', (snapshot) => {
             if(snapshot.exists()){
                 setUserComments(snapshot.val())

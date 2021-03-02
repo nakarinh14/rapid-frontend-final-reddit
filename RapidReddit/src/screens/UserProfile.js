@@ -6,7 +6,7 @@ import theme from '../theme';
 import {NavigationContainer} from "@react-navigation/native";
 import {UserComments} from "../components/UserComments";
 import {UserPosts} from "../components/UserPosts"
-import Firebase from "../firebase";
+import {firebase} from "../firebase";
 
 const { width } = Dimensions.get('screen');
 
@@ -30,7 +30,7 @@ export const UserProfile = ({ navigation, uid }) => {
             setUserStats(profile)
             return
         }
-        const ref = Firebase.database("user_profile").ref(`${uid}/stats`)
+        const ref = firebase.database().ref(`user_profile/${uid}/stats`)
         ref.on('value', (snapshot) => {
             if(snapshot.exists()){
                 setUserStats(snapshot.val())

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 import {UserProfile} from './screens/UserProfile'
 import {Login} from './screens/Login'
-import Firebase from "./firebase";
+
 export default function App() {
   return (
     <View style={styles.container}>

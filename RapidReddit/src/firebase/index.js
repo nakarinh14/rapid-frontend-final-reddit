@@ -1,11 +1,14 @@
-import firebase from 'firebase'
+import firebase from 'firebase';
+import 'firebase/auth'
+import 'firebase/database'
+
 import {
     FIREBASE_API_KEY,
     FIREBASE_AUTH_DOMAIN,
     FIREBASE_DATABASE_URL,
     FIREBASE_PROJECT_ID,
     FIREBASE_STORAGE_BUCKET,
-    FIREBASE_MESSAGE_SENDER_ID,
+    FIREBASE_MESSAGING_SENDER_ID,
     FIREBASE_APP_ID
 } from '@env'
 
@@ -15,11 +18,11 @@ const firebaseConfig = {
     databaseURL: FIREBASE_DATABASE_URL,
     projectId: FIREBASE_PROJECT_ID,
     storageBucket: FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: FIREBASE_MESSAGE_SENDER_ID,
+    messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
     appId: FIREBASE_APP_ID,
 };
 
+console.log(firebaseConfig)
 // Initialize Firebase
-const Firebase = firebase.initializeApp(firebaseConfig)
-
-export default Firebase;
+firebase.initializeApp(firebaseConfig)
+export { firebase };

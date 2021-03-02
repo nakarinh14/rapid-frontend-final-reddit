@@ -2,19 +2,21 @@ import React, {useState} from 'react';
 import firebase from "firebase/app";
 import "firebase/auth";
 import {Block, Button, Input, Text} from "galio-framework";
-import {StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import {StyleSheet, TextInput, TouchableOpacity, Alert} from "react-native";
 
 export const Login = ({navigation}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [errorMessage, setErrorMessage] = useState('')
 
-    const _loginUser = async () => {
+    const loginUser = async () => {
         try {
             const response = await firebase.auth().signInWithEmailAndPassword(email,password)
+            if (response) {
+                navigation.navigate('RegisterScreen')
+            }
         }
         catch (error) {
-            setErrorMessage(error.message)
+            Alert.alert(error.message)
         }
     }
 
@@ -28,11 +30,11 @@ export const Login = ({navigation}) => {
                 placeholder="password"
                 onChangeText={text => setPassword(text)}
             />
-            <Button>Login</Button>
+            <Button title="Login" onPress={() => loginUser()}/>
             <Block>
                 <Text>Don't have an account?</Text>
-                <TouchableOpacity>
-                    <Text>Sign up</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+                    <Text bold>SIGN UP</Text>
                 </TouchableOpacity>
             </Block>
         </Block>

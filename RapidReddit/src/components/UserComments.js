@@ -8,50 +8,50 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 const { width } = Dimensions.get('screen');
 
 export const UserComments = () => {
-    const comments = [
-        {
+    const comments = {
+        "1":{
             title: "[PURCHASE guide] 2020, ASK ANYTHING!",
             group: "DIY",
             upvotes: 10,
             timestamp: "2hr",
             comment: "Try to go to other grocery stores and sees their prices by yourself."
         },
-        {
+        "2":{
             title: "YOLO",
             group: "Investment",
             upvotes: 10,
             timestamp: "5d",
             comment: "YOLOed some crazy stonks."
         },
-        {
+        "3":{
             title: "[PURCHASE guide] 2020, ASK ANYTHING!",
             group: "DIY",
             upvotes: 10,
             timestamp: "5min",
             comment: "Try to go to other grocery stores and sees their prices by yourself."
         },
-        {
+        "4":{
             title: "[PURCHASE guide] 2020, ASK ANYTHING!",
             group: "DIY",
             upvotes: 10,
             timestamp: "5yr",
             comment: "Try to go to other grocery stores and sees their prices by yourself."
         },
-        {
+        "5":{
             title: "[PURCHASE guide] 2020, ASK ANYTHING!",
             group: "DIY",
             upvotes: 10,
             timestamp: "2hr",
             comment: "Try to go to other grocery stores and sees their prices by yourself."
         },
-        {
+        "6":{
             title: "[PURCHASE guide] 2020, ASK ANYTHING!",
             group: "DIY",
             upvotes: 10,
             timestamp: "2hr",
             comment: "Try to go to other grocery stores and sees their prices by yourself."
-        },
-    ];
+        }
+    };
 
     return (
         <Block flex space="between" style={styles.cards}>

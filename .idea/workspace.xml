@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e84513b8-d8f5-4068-b230-8446f16e6d76" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/RapidReddit/Screens/RegisterScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/RapidReddit/Screens/RegisterScreen.js" afterDir="false" />
-    </list>
+    <list default="true" id="e84513b8-d8f5-4068-b230-8446f16e6d76" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

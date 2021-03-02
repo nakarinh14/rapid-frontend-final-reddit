@@ -18,7 +18,7 @@ export default class PostPreview extends React.Component {
                         <TouchableOpacity>
                             <Block row>
                                 <Block left center flex={1} style={styles.cardIcon}>
-                                    <Icon name={iconName} family={iconFamil} size={theme.SIZES.BASE * 3}/>
+                                    <Icon name={iconName} family={iconFamily} size={theme.SIZES.BASE * 3}/>
                                 </Block>
                                 <Block styles={styles.contentArea} flex={3}>
                                     <Block>

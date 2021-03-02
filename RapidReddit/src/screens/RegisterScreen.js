@@ -1,52 +1,41 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
-// import firebase from '../database/firebase'; Firebase is not set up yet
+import { firebase } from "../firebase";
+import 'firebase/auth'
 
+export const RegisterScreen = ({ navigation }) => {
 
-//Testing with this script
-export const Signup = ({ navigation }) => {
+    const [displayName, setDisplayName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
 
-    const [state, useState] = useState({
-        displayName: '',
-        email: '',
-        password: '',
-        isLoading: false
-    })
-
-    const updateInputVal = (val, prop) => {
-        const state = {...state};
-        state[prop] = val;
-        setState(state);
-    }
-
-    const registerUser = () => {
-        if(state.email === '' && state.password === '') {
+    const registerUser = async () => {
+        if(email === '' && password === '') {
             Alert.alert('Enter details to signup!')
         } else {
-            setState({
-                isLoading: true,
-            })
-            firebase
-                .auth()
-                .createUserWithEmailAndPassword(state.email, state.password)
-                .then((res) => {
-                    res.user.updateProfile({
-                        displayName: state.displayName
-                    })
-                    console.log('User registered successfully!')
-                    setState({
-                        isLoading: false,
-                        displayName: '',
-                        email: '',
-                        password: ''
-                    })
-                    navigation.navigate('Login')
+            try{
+                setIsLoading(true)
+                const user = await firebase
+                    .auth()
+                    .createUserWithEmailAndPassword(email, password)
+
+                await user.user.updateProfile({
+                    displayName: displayName
                 })
-                .catch(error => setState({ errorMessage: error.message }))
+
+                console.log('User registered successfully!')
+                // navigation.navigate('Login')
+            } catch (error) {
+                setErrorMessage(error.message)
+            } finally {
+                setIsLoading(false)
+            }
         }
     }
 
-    if(state.isLoading){
+    if(isLoading){
         return(
             <View style={styles.preloader}>
                 <ActivityIndicator size="large" color="#9E9E9E"/>
@@ -59,29 +48,31 @@ export const Signup = ({ navigation }) => {
             <TextInput
                 style={styles.inputStyle}
                 placeholder="Name"
-                value={state.displayName}
-                onChangeText={(val) => updateInputVal(val, 'displayName')}
+                value={displayName}
+                onChangeText={(val) => setDisplayName(val)}
             />
             <TextInput
                 style={styles.inputStyle}
                 placeholder="Email"
-                value={state.email}
-                onChangeText={(val) => updateInputVal(val, 'email')}
+                value={email}
+                onChangeText={(val) => setEmail(val)}
             />
             <TextInput
                 style={styles.inputStyle}
                 placeholder="Password"
-                value={state.password}
-                onChangeText={(val) => updateInputVal(val, 'password')}
+                value={password}
+                onChangeText={(val) => setPassword(val)}
                 maxLength={15}
                 secureTextEntry={true}
             />
             <Button
                 color="#3740FE"
                 title="Signup"
-                onPress={() => registerUser()}
+                onPress={registerUser}
             />
-
+            <Text>
+                {errorMessage}
+            </Text>
             <Text
                 style={styles.loginText}
                 onPress={() => navigation.navigate('Login')}>

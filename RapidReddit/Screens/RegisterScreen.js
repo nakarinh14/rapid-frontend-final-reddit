@@ -1,98 +1,95 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
 // import firebase from '../database/firebase'; Firebase is not set up yet
 
 
 //Testing with this script
-export default class Signup extends Component {
+export const Signup = ({ navigation }) => {
 
-    constructor() {
-        super();
-        this.state = {
-            displayName: '',
-            email: '',
-            password: '',
-            isLoading: false
-        }
-    }
+    const [state, useState] = useState({
+        displayName: '',
+        email: '',
+        password: '',
+        isLoading: false
+    })
 
-    updateInputVal = (val, prop) => {
-        const state = this.state;
+    const updateInputVal = (val, prop) => {
+        const state = {...state};
         state[prop] = val;
-        this.setState(state);
+        setState(state);
     }
 
-    registerUser = () => {
-        if(this.state.email === '' && this.state.password === '') {
+    const registerUser = () => {
+        if(state.email === '' && state.password === '') {
             Alert.alert('Enter details to signup!')
         } else {
-            this.setState({
+            setState({
                 isLoading: true,
             })
             firebase
                 .auth()
-                .createUserWithEmailAndPassword(this.state.email, this.state.password)
+                .createUserWithEmailAndPassword(state.email, state.password)
                 .then((res) => {
                     res.user.updateProfile({
-                        displayName: this.state.displayName
+                        displayName: state.displayName
                     })
                     console.log('User registered successfully!')
-                    this.setState({
+                    setState({
                         isLoading: false,
                         displayName: '',
                         email: '',
                         password: ''
                     })
-                    this.props.navigation.navigate('Login')
+                    navigation.navigate('Login')
                 })
-                .catch(error => this.setState({ errorMessage: error.message }))
+                .catch(error => setState({ errorMessage: error.message }))
         }
     }
 
-    render() {
-        if(this.state.isLoading){
-            return(
-                <View style={styles.preloader}>
-                    <ActivityIndicator size="large" color="#9E9E9E"/>
-                </View>
-            )
-        }
-        return (
-            <View style={styles.container}>
-                <TextInput
-                    style={styles.inputStyle}
-                    placeholder="Name"
-                    value={this.state.displayName}
-                    onChangeText={(val) => this.updateInputVal(val, 'displayName')}
-                />
-                <TextInput
-                    style={styles.inputStyle}
-                    placeholder="Email"
-                    value={this.state.email}
-                    onChangeText={(val) => this.updateInputVal(val, 'email')}
-                />
-                <TextInput
-                    style={styles.inputStyle}
-                    placeholder="Password"
-                    value={this.state.password}
-                    onChangeText={(val) => this.updateInputVal(val, 'password')}
-                    maxLength={15}
-                    secureTextEntry={true}
-                />
-                <Button
-                    color="#3740FE"
-                    title="Signup"
-                    onPress={() => this.registerUser()}
-                />
-
-                <Text
-                    style={styles.loginText}
-                    onPress={() => this.props.navigation.navigate('Login')}>
-                    Already Registered? Click here to login
-                </Text>
+    if(state.isLoading){
+        return(
+            <View style={styles.preloader}>
+                <ActivityIndicator size="large" color="#9E9E9E"/>
             </View>
-        );
+        )
     }
+
+    return (
+        <View style={styles.container}>
+            <TextInput
+                style={styles.inputStyle}
+                placeholder="Name"
+                value={state.displayName}
+                onChangeText={(val) => updateInputVal(val, 'displayName')}
+            />
+            <TextInput
+                style={styles.inputStyle}
+                placeholder="Email"
+                value={state.email}
+                onChangeText={(val) => updateInputVal(val, 'email')}
+            />
+            <TextInput
+                style={styles.inputStyle}
+                placeholder="Password"
+                value={state.password}
+                onChangeText={(val) => updateInputVal(val, 'password')}
+                maxLength={15}
+                secureTextEntry={true}
+            />
+            <Button
+                color="#3740FE"
+                title="Signup"
+                onPress={() => registerUser()}
+            />
+
+            <Text
+                style={styles.loginText}
+                onPress={() => navigation.navigate('Login')}>
+                Already Registered? Click here to login
+            </Text>
+        </View>
+    );
+
 }
 
 const styles = StyleSheet.create({

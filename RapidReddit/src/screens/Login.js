@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import firebase from "firebase/app";
-import "firebase/auth";
 import {Block, Button, Input, Text} from "galio-framework";
 import {StyleSheet, TextInput, TouchableOpacity, Alert} from "react-native";
+import {firebase} from "../firebase";
+import "firebase/auth";
 
 export const Login = ({navigation}) => {
     const [email, setEmail] = useState('')
@@ -10,7 +10,7 @@ export const Login = ({navigation}) => {
 
     const loginUser = async () => {
         try {
-            const response = await firebase.auth().signInWithEmailAndPassword(email,password)
+            const response = await firebase.auth().signInWithEmailAndPassword(email, password)
             if (response) {
                 navigation.navigate('RegisterScreen')
             }

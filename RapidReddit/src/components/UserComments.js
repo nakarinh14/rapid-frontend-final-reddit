@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import Firebase from "../firebase";
 import {Block, Text} from "galio-framework";
 import {Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
@@ -7,91 +7,113 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('screen');
 
-export const UserComments = () => {
-    const comments = [
-        {
-            title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-            group: "DIY",
-            upvotes: 10,
-            timestamp: "2hr",
-            comment: "Try to go to other grocery stores and sees their prices by yourself."
-        },
-        {
-            title: "YOLO",
-            group: "Investment",
-            upvotes: 10,
-            timestamp: "5d",
-            comment: "YOLOed some crazy stonks."
-        },
-        {
-            title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-            group: "DIY",
-            upvotes: 10,
-            timestamp: "5min",
-            comment: "Try to go to other grocery stores and sees their prices by yourself."
-        },
-        {
-            title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-            group: "DIY",
-            upvotes: 10,
-            timestamp: "5yr",
-            comment: "Try to go to other grocery stores and sees their prices by yourself."
-        },
-        {
-            title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-            group: "DIY",
-            upvotes: 10,
-            timestamp: "2hr",
-            comment: "Try to go to other grocery stores and sees their prices by yourself."
-        },
-        {
-            title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-            group: "DIY",
-            upvotes: 10,
-            timestamp: "2hr",
-            comment: "Try to go to other grocery stores and sees their prices by yourself."
-        },
-    ];
+const comments = {
+    "1":{
+        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
+        group: "DIY",
+        upvotes: 10,
+        timestamp: "2hr",
+        comment: "Try to go to other grocery stores and sees their prices by yourself."
+    },
+    "2":{
+        title: "YOLO",
+        group: "Investment",
+        upvotes: 10,
+        timestamp: "5d",
+        comment: "YOLOed some crazy stonks."
+    },
+    "3":{
+        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
+        group: "DIY",
+        upvotes: 10,
+        timestamp: "5min",
+        comment: "Try to go to other grocery stores and sees their prices by yourself."
+    },
+    "4":{
+        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
+        group: "DIY",
+        upvotes: 10,
+        timestamp: "5yr",
+        comment: "Try to go to other grocery stores and sees their prices by yourself."
+    },
+    "5":{
+        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
+        group: "DIY",
+        upvotes: 10,
+        timestamp: "2hr",
+        comment: "Try to go to other grocery stores and sees their prices by yourself."
+    },
+    "6":{
+        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
+        group: "DIY",
+        upvotes: 10,
+        timestamp: "2hr",
+        comment: "Try to go to other grocery stores and sees their prices by yourself."
+    }
+};
+
+const useMockData = true
+
+export const UserComments = ({ uid }) => {
+
+    const [userComments, setUserComments] = useState(null)
+
+    useEffect(() => {
+        if(useMockData){
+            setUserComments(comments)
+            return
+        }
+        const ref = Firebase.database("user_profile").ref(`${uid}/comments`)
+        ref.on('value', (snapshot) => {
+            if(snapshot.exists()){
+                setUserComments(snapshot.val())
+            }
+        })
+    })
 
     return (
         <Block flex space="between" style={styles.cards}>
-            {comments && comments.map((card, id) => (
-                <Block
-                    key={`card-${id}`}
-                    flex
-                    style={styles.card}
-                >
+            {userComments && Object.keys(userComments).map((post_id) => {
+                const card = userComments[post_id]
+                return (
                     <Block
-                        shadow
-                        style={styles.box}
+                        key={`card-${post_id}`}
+                        flex
+                        style={styles.card}
                     >
-                        <Text style={styles.titleText}>
-                            {card.title}
-                        </Text>
-                        <Text card style={styles.caption}>
-                            <Text style={styles.captionText}>
-                                {card.group}
+                        <Block
+                            shadow
+                            style={styles.box}
+                        >
+                            <Text style={styles.titleText}>
+                                {card.title}
                             </Text>
-                            <MaterialCommunityIcons name="circle-medium" color="grey" />
-                            <Text style={styles.timestampText}>
-                                {card.timestamp}
-                            </Text>
-                            <MaterialCommunityIcons name="circle-medium" color="grey" />
-                            <Text style={styles.timestampText}>
-                                {card.upvotes}
-                            </Text>
-                            <MaterialCommunityIcons name="arrow-up-bold-outline"  color="grey" />
+                            <Text card style={styles.caption}>
+                                <Text style={styles.captionText}>
+                                    {card.group}
+                                </Text>
+                                <MaterialCommunityIcons name="circle-medium" color="grey"/>
+                                <Text style={styles.timestampText}>
+                                    {card.timestamp}
+                                </Text>
+                                <MaterialCommunityIcons name="circle-medium" color="grey"/>
+                                <Text style={styles.timestampText}>
+                                    {card.upvotes}
+                                </Text>
+                                <MaterialCommunityIcons name="arrow-up-bold-outline" color="grey"/>
 
-                        </Text>
-                        <Text style={styles.commentText}>
-                            {card.comment}
-                        </Text>
+                            </Text>
+                            <Text style={styles.commentText}>
+                                {card.comment}
+                            </Text>
+                        </Block>
                     </Block>
-                </Block>
-            ))}
+                )}
+            )}
         </Block>
     )
 }
+
 const styles = StyleSheet.create({
     titleText: {
         fontWeight: '600',

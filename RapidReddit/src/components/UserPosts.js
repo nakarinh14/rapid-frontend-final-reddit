@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from "react-native";
 
-export const UserPosts = () => {
+export const UserPosts = ({ uid }) => {
     return (
         <View style={[styles.scene, { backgroundColor: '#ff4081' }]} />
     )

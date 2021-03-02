@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Dimensions, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
@@ -6,8 +6,10 @@ import theme from '../theme';
 import {NavigationContainer} from "@react-navigation/native";
 import {UserComments} from "../components/UserComments";
 import {UserPosts} from "../components/UserPosts"
+import Firebase from "../firebase";
 
 const { width } = Dimensions.get('screen');
+
 const profile = {
     username: "xXXStonksToTheMoonXxx",
     comment_upvotes: 505,
@@ -17,7 +19,24 @@ const profile = {
 
 const Tab = createMaterialTopTabNavigator();
 
-export const UserProfile = ({ navigation }) => {
+const useMockData = true
+
+export const UserProfile = ({ navigation, uid }) => {
+
+    const [userStats, setUserStats] = useState(null)
+
+    useEffect(() => {
+        if(useMockData){
+            setUserStats(profile)
+            return
+        }
+        const ref = Firebase.database("user_profile").ref(`${uid}/stats`)
+        ref.on('value', (snapshot) => {
+            if(snapshot.exists()){
+                setUserStats(snapshot.val())
+            }
+        })
+    })
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -40,25 +59,31 @@ export const UserProfile = ({ navigation }) => {
                     style={styles.achievements}
                 >
                     <Block style={styles.displayScores} >
-                        <Text style={styles.subStatTitle}>{profile.comment_upvotes}</Text>
+                        <Text style={styles.subStatTitle}>{userStats.comment_upvotes}</Text>
                         <Text color={theme.COLORS.GREY}>Comment</Text>
                         <Text color={theme.COLORS.GREY}>Upvotes</Text>
                     </Block>
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{profile.post_upvotes}</Text>
+                        <Text style={styles.subStatTitle}>{userStats.post_upvotes}</Text>
                         <Text color={theme.COLORS.GREY}>Post</Text>
                         <Text color={theme.COLORS.GREY}>Upvotes</Text>
 
                     </Block>
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{profile.account_age}</Text>
+                        <Text style={styles.subStatTitle}>{userStats.account_age}</Text>
                         <Text color={theme.COLORS.GREY}>Age</Text>
                     </Block>
                 </Block>
                 <NavigationContainer>
                     <Tab.Navigator>
-                        <Tab.Screen name="Posts" component={UserPosts} />
-                        <Tab.Screen name="Comments" component={UserComments} />
+                        <Tab.Screen
+                            name="Posts"
+                            children={() => <UserPosts uid={uid} />}
+                        />
+                        <Tab.Screen
+                            name="Comments"
+                            children={() => <UserComments uid={uid} />}
+                        />
                     </Tab.Navigator>
                 </NavigationContainer>
             </ScrollView>

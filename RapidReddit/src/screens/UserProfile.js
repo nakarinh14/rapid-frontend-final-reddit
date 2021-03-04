@@ -23,7 +23,7 @@ const useMockData = true
 
 export const UserProfile = ({ navigation, uid }) => {
 
-    const [userStats, setUserStats] = useState(null)
+    const [userStats, setUserStats] = useState(profile)
 
     useEffect(() => {
         if(useMockData){

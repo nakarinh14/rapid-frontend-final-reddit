@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {UserProfile} from './screens/UserProfile'
 import {Home} from './screens/Home'
+import {CommentSection} from './components/CommentSection'
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
@@ -42,7 +43,7 @@ export default function App() {
                 inactiveTintColor: 'gray',
             }}
         >
-            <Tab.Screen name="Home" component={Home} />
+            <Tab.Screen name="Home" component={CommentSection} />
             <Tab.Screen name="User" component={UserProfile} />
             <Tab.Screen name="Setting" component={Home} />
         </Tab.Navigator>

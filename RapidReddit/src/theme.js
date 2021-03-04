@@ -14,6 +14,7 @@ const COLORS = {
     NAVBAR: '#F9F9F9',
     BLOCK: '#808080',
     MUTED: '#9FA5AA',
+    LINE: '#c4c4cc',
     NEUTRAL: 'rgba(255,255,255, 0.65)',
     PAPER: '#F7F7F7',
     FACEBOOK: '#3B5998',

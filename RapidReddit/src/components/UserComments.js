@@ -117,7 +117,7 @@ export const UserComments = ({ uid }) => {
 const styles = StyleSheet.create({
     titleText: {
         fontWeight: '600',
-        fontSize: 14.3,
+        fontSize: 14.6,
         marginTop: theme.SIZES.BASE * 0.905,
         color: theme.COLORS.BLACK
     },
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         marginBottom: theme.SIZES.BASE * 0.905,
         color: theme.COLORS.BLACK,
         lineHeight: 20,
-        fontSize: 15.3
+        fontSize: 14.6
     },
     timestampText: {
         color: theme.COLORS.GREY

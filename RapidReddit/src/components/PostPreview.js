@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import {Block, Card, Icon, Text} from 'galio-framework';
-import theme from './theme';
+import theme from '../theme';
 
 const { width, height } = Dimensions.get('screen');
 

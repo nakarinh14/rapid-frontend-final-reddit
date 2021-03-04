@@ -19,8 +19,6 @@ const paddedFlex = (depth) => {
     return indents[idx]
 }
 
-
-
 export const Comment = ({ comment, depth }) => {
 
     const emptyPadded = paddedFlex(depth)

@@ -11,9 +11,9 @@ export const Login = ({navigation}) => {
     const loginUser = async () => {
         try {
             const response = await firebase.auth().signInWithEmailAndPassword(email, password)
-            if (response) {
-                navigation.navigate('RegisterScreen')
-            }
+            // if (response) {
+            //     navigation.navigate('Home')
+            // }
         }
         catch (error) {
             Alert.alert(error.message)

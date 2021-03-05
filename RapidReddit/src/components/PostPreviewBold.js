@@ -9,16 +9,16 @@ const { width } = Dimensions.get('screen');
 
 const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna";
 
-export const PostPreview = () => {
+export const PostPreviewBold = () => {
 
     return (
         <Block style={styles.card}>
             <Block row style={styles.cardContent}>
                 <Block flex={1}>
                     <Block row>
-                        <Block flex={3}>
+                        <Block styles={styles.contentArea} flex={3}>
                             <Block style={styles.title}>
-                                <Text style={styles.titleText}>
+                                <Text bold style={styles.titleText}>
                                     {lorem}
                                 </Text>
                             </Block>
@@ -46,14 +46,11 @@ export const PostPreview = () => {
                         <Text size={14} color={theme.COLORS.BLOCK}>{'2h'}</Text>
                     </Block>
                 </Block>
+
                 <Block row style={styles.bottomActions}>
                     <Block center row>
                         <TouchableOpacity>
-                            <MaterialCommunityIcons
-                                size={24}
-                                name="arrow-up-bold-outline"
-                                color={theme.COLORS.BLOCK}
-                            />
+                            <MaterialCommunityIcons size={24} name="arrow-up-bold-outline" color={theme.COLORS.BLOCK}/>
                         </TouchableOpacity>
                         <Block>
                             <Text
@@ -65,20 +62,12 @@ export const PostPreview = () => {
                             </Text>
                         </Block>
                         <TouchableOpacity>
-                            <MaterialCommunityIcons
-                                size={24}
-                                name="arrow-down-bold-outline"
-                                color={theme.COLORS.BLOCK}
-                            />
+                            <MaterialCommunityIcons size={24} name="arrow-down-bold-outline" color={theme.COLORS.BLOCK}/>
                         </TouchableOpacity>
                     </Block>
                     <Block row center>
                         <Block style={{marginRight: 5}} center>
-                            <MaterialCommunityIcons
-                                name="comment-outline"
-                                size={20}
-                                color={theme.COLORS.BLOCK}
-                            />
+                            <MaterialCommunityIcons name="comment-outline" size={20} color={theme.COLORS.BLOCK} />
                         </Block>
                         <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
                             {25}
@@ -118,19 +107,24 @@ const styles = StyleSheet.create({
         flexDirection: "column"
     },
     cardIcon: {
+        // marginRight: theme.SIZES.BASE
         padding: theme.SIZES.BASE * 0.5 ,
+        // backgroundColor: theme.COLORS.PRIMARY
+    },
+    contentArea: {
+        // backgroundColor: theme.COLORS.PAPER
     },
     bottomActions: {
         justifyContent: "space-between",
     },
     title:{
-      marginBottom: 15
+        marginBottom: 15
     },
     titleText:{
-      fontSize: 17
+        fontSize: 18
     },
     contentText: {
-        color: theme.COLORS.BLOCK
+
     },
     groupText: {
         fontWeight: '500',

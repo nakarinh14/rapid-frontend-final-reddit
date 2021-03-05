@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Block, Icon} from "galio-framework";
-import PostPreview from "../components/PostPreview";
+import {PostPreview} from "../components/PostPreview";
+import {PostPreviewBold} from "../components/PostPreviewBold";
 import {CommentSection} from "../components/CommentSection"
-import {Platform, ScrollView, TouchableOpacity} from "react-native";
+import {Platform, ScrollView, TextInput, TouchableOpacity, View} from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
 
@@ -100,6 +101,8 @@ const post = {
 }
 
 export const Post = ({navigation}) => {
+
+    const [replyPost, setReplyPost] = useState("")
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>

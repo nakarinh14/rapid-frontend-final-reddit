@@ -117,6 +117,7 @@ export const UserComments = ({ uid }) => {
 const styles = StyleSheet.create({
     titleText: {
         fontWeight: '600',
+        fontSize: 14.6,
         marginTop: theme.SIZES.BASE * 0.905,
         color: theme.COLORS.BLACK
     },
@@ -125,7 +126,9 @@ const styles = StyleSheet.create({
     },
     commentText: {
         marginBottom: theme.SIZES.BASE * 0.905,
-        color: theme.COLORS.BLACK
+        color: theme.COLORS.BLACK,
+        lineHeight: 20,
+        fontSize: 14.6
     },
     timestampText: {
         color: theme.COLORS.GREY
@@ -146,7 +149,7 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: theme.COLORS.WHITE,
         width,
-        marginVertical: theme.SIZES.BASE * 0.29,
+        marginVertical: theme.SIZES.BASE * 0.19,
         elevation: theme.SIZES.BASE / 2,
         alignItems: 'center',
         justifyContent: 'center',

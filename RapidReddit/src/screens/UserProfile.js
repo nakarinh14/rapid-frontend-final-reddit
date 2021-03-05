@@ -12,10 +12,10 @@ const { width } = Dimensions.get('screen');
 
 const profile = {
     username: "xXXStonksToTheMoonXxx",
-    comment_upvotes: 505,
+    comment_upvotes: 515,
     post_upvotes: 4012,
     account_age: "1y"
-}
+};
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -23,7 +23,7 @@ const useMockData = true
 
 export const UserProfile = ({ navigation, uid }) => {
 
-    const [userStats, setUserStats] = useState(null)
+    const [userStats, setUserStats] = useState(profile)
 
     useEffect(() => {
         if(useMockData){
@@ -74,18 +74,16 @@ export const UserProfile = ({ navigation, uid }) => {
                         <Text color={theme.COLORS.GREY}>Age</Text>
                     </Block>
                 </Block>
-                <NavigationContainer>
-                    <Tab.Navigator>
-                        <Tab.Screen
-                            name="Posts"
-                            children={() => <UserPosts uid={uid} />}
-                        />
-                        <Tab.Screen
-                            name="Comments"
-                            children={() => <UserComments uid={uid} />}
-                        />
-                    </Tab.Navigator>
-                </NavigationContainer>
+                <Tab.Navigator>
+                    <Tab.Screen
+                        name="Posts"
+                        children={() => <UserPosts uid={uid} />}
+                    />
+                    <Tab.Screen
+                        name="Comments"
+                        children={() => <UserComments uid={uid} />}
+                    />
+                </Tab.Navigator>
             </ScrollView>
 
         </Block>

@@ -1,0 +1,77 @@
+posts:
+    $post_id_1:
+        meta:
+            $author_id: "uid"
+            timestamp: "2018-20-blabla"
+            upvotes: 10
+            downvotes: 10
+            comments_freq: 152
+            content:
+                title: "string"
+                image: "optional"
+                body: "string"
+
+            subreddit: "$subreddit_id_1"
+        # Contain everything recursive cos make query easier
+        # Optimization can made in the future with pagination limit, or denormalization.
+        comments:
+            $comment_id_1:
+                $uid_1: "some user id"
+                $body: "blabla"
+                comments:
+                    $comment_id_2:
+                        $uid_1: "some user id"
+                        $body: "blabla"
+                        comments:
+                            # ...
+                            # recursive comment limit at depth of 2-3
+                    # ...
+            # ...
+    # ...
+
+# Denomarlize comment for direct access
+comments:
+    $comment_id_1:
+        parent: "thread_id_1" # parent can be a post or a comment.
+        timestamp: "2018-20-blabla"
+        $uid_1: "some user id"
+        $body: "blabla"
+    # ...
+
+subreddits:
+    $subreddit_id_1:
+        meta:
+            name: "blabla"
+            date_created: "asdasd"
+            subscribers: 156 # number of subscriber, or list of uid boolean
+        posts:
+            $post_id_1: true
+            $post_id_2: true
+            # ...
+    # ...
+
+user_profile:
+    $uid_1:
+        # User stats
+        stats:
+            post_karma: 15 # for simplcity, karma just sum of upvotes and downvotes for now
+            comment_karma: 10
+            date_created: "Date object"
+        # Post of the user
+        posts:
+            $post_id_1: true
+            $post_id_2: true
+            # ...
+        # Comment of the users
+        comments:
+            $comment_id_1: true
+            $comment_id_2: true
+            # ...
+        # Subreddits that a user subscribe to
+        groups:
+          $subreddit_id_1: true
+          $subreddit_id_2: true
+          # ...
+
+
+# Optional chatroom by group [wip]

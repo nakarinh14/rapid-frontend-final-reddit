@@ -12,14 +12,17 @@ const COLORS = {
     INPUT: '#808080',
     PLACEHOLDER: '#9FA5AA',
     NAVBAR: '#F9F9F9',
+    COMMENTPREVIEW: '#e3e3e3',
     BLOCK: '#808080',
     MUTED: '#9FA5AA',
+    LINE: '#c4c4cc',
     NEUTRAL: 'rgba(255,255,255, 0.65)',
     PAPER: '#F7F7F7',
     FACEBOOK: '#3B5998',
     TWITTER: '#5BC0DE',
     DRIBBBLE: '#EA4C89',
     ICON: '#000000',
+    IOS: 'rgb(0, 122, 255)'
 };
 
 const SIZES = {

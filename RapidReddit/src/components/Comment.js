@@ -1,9 +1,10 @@
-import React  from 'react';
+import React, {useContext} from 'react';
 import {Block, Text} from "galio-framework";
 import { StyleSheet, TouchableOpacity, View} from "react-native";
 import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import CommentModalContext from "./CommentModalContext";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -19,14 +20,17 @@ const paddedFlex = (depth) => {
     return indents[idx]
 }
 
-export const Comment = ({ comment, depth }) => {
+export const Comment = ({ comment, depth, preview }) => {
 
+    const toggleModal = useContext(CommentModalContext);
+    const bg  = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
     const padded = 100 - emptyPadded
+
     return (
         <Block style={{flexDirection: "row", alignItems: 'center', justifyContent: 'flex-end'}}>
             <Block style={{flex: emptyPadded}} />
-            <Block style={[styles.commentBlock, {flex: padded}]}>
+            <Block style={[styles.commentBlock, {flex: padded}, bg]}>
                 {depth ? <View style={[styles.line]}  /> : null }
                 <Block style={[styles.box, indentColor(depth)]} >
                     <Block style={styles.topInfo} >
@@ -37,21 +41,29 @@ export const Comment = ({ comment, depth }) => {
                                 </Text>
                             </View>
                             <View style={styles.upvotes}>
-                                <MaterialCommunityIcons name="arrow-up-bold-outline" color={theme.COLORS.MUTED}/>
+                                <MaterialCommunityIcons
+                                    name="arrow-up-bold-outline"
+                                    color={theme.COLORS.MUTED}
+                                />
                                 <Text style={styles.timestampText}>
                                     {comment.upvotes}
                                 </Text>
                             </View>
                         </Block>
                         <Block style={styles.topRightFlex}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                }}
-                            >
-                            <View style={{marginRight: 7}}>
-                                <Ionicons name="ios-ellipsis-horizontal" size={22} color={theme.COLORS.MUTED} />
-                            </View>
-                            </TouchableOpacity>
+                            {preview ? null :
+                                <TouchableOpacity
+                                    onPress={toggleModal}
+                                >
+                                    <View style={{marginRight: 7}}>
+                                        <Ionicons
+                                            name="ios-ellipsis-horizontal"
+                                            size={22}
+                                            color={theme.COLORS.MUTED}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+                            }
                             <View>
                                 <Text style={styles.timestampText}>
                                     {comment.timestamp}

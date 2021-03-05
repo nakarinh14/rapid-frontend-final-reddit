@@ -1,28 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import {Dimensions, ScrollView, StyleSheet} from "react-native";
+import React, { useState } from 'react';
+import {Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import {Block} from "galio-framework";
 import {CommentTree} from "./CommentTree";
+import CommentEllipsisModal from "./CommentEllipsisModal";
+import CommentModalContext from "./CommentModalContext"
 
 const { width } = Dimensions.get('screen');
 
 export const CommentSection = ({ comments })=> {
 
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
+    const closeModal = () => {
+        setModalVisible(false)
+    }
     return (
-        <Block flex style={styles.cards}>
-            {comments && Object.keys(comments).map((comment_id) => {
-                const comment = comments[comment_id]
-                return (
-                    <Block
-                        key={`card-${comment_id}`}
-                        flex
-                        style={styles.card}
-                    >
-                       <CommentTree comment={comment} depth={0} />
-                    </Block>
+        <CommentModalContext.Provider value={toggleModal}>
+            <Block flex style={styles.cards}>
+                {comments && Object.keys(comments).map((comment_id) => {
+                    const comment = comments[comment_id]
+                    return (
+                        <Block
+                            key={`card-${comment_id}`}
+                            flex
+                            style={styles.card}
+                        >
+                           <CommentTree comment={comment} depth={0} />
+                        </Block>
+                    )}
                 )}
-            )}
-        </Block>
+            </Block>
+            <CommentEllipsisModal
+                isModalVisible={isModalVisible}
+                closeModal={closeModal}
+            />
+        </CommentModalContext.Provider>
     )
 }
 

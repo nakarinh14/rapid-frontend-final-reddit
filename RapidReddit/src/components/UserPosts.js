@@ -9,14 +9,13 @@ const tmp = [1,1,1,1,1,1,1];
 
 const UserPosts = ({ navigation }) => {
 
-    // For some reason, navigation is acting weird here
     return (
         <Block flex column>
             {tmp.map((val, idx) =>
                 <Block style={{marginBottom: 5}} key={idx}>
                     <TouchableOpacity
                         key={idx}
-                        onPress={() => {}}>
+                        onPress={() => navigation.push("Post")}>
                         <PostPreview />
                     </TouchableOpacity>
                 </Block>

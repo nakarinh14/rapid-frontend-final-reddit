@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import {Dimensions, StyleSheet} from "react-native";
+import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import {Block} from "galio-framework";
 import {CommentTree} from "./CommentTree";
 import CommentEllipsisModal from "./CommentEllipsisModal";
 import CommentModalContext from "./CommentModalContext"
+import {withInteractionsManaged} from "./withInteractionsManaged";
 
 const { width } = Dimensions.get('screen');
 
-export const CommentSection = ({ comments })=> {
+const CommentSection = ({ comments })=> {
 
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -57,3 +58,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 });
+
+export default withInteractionsManaged(CommentSection, ActivityIndicator)

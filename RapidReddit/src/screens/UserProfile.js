@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Dimensions, Platform, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
-import {NavigationContainer} from "@react-navigation/native";
-import {UserComments} from "../components/UserComments";
-import {UserPosts} from "../components/UserPosts"
+import UserComments from "../components/UserComments";
+import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
-
-const { width } = Dimensions.get('screen');
 
 const profile = {
     username: "xXXStonksToTheMoonXxx",
@@ -21,8 +18,9 @@ const Tab = createMaterialTopTabNavigator();
 
 const useMockData = true
 
-export const UserProfile = ({ navigation, uid }) => {
+export const UserProfile = ({ route, navigation, uid }) => {
 
+    const { owner } = route.params
     const [userStats, setUserStats] = useState(profile)
 
     useEffect(() => {
@@ -42,16 +40,16 @@ export const UserProfile = ({ navigation, uid }) => {
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
                 title={profile.username}
-                left={(
-                    <TouchableOpacity onPress={() => null}>
+                left={!owner ?
+                    (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
                             name="arrow-left"
                             family="feather"
-                            size={theme.SIZES.BASE}
+                            size={24}
                             color={theme.COLORS.ICON}
                         />
-                    </TouchableOpacity>
-                )}
+                    </TouchableOpacity>): null
+                }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
             <ScrollView>
@@ -77,11 +75,11 @@ export const UserProfile = ({ navigation, uid }) => {
                 <Tab.Navigator>
                     <Tab.Screen
                         name="Posts"
-                        children={() => <UserPosts uid={uid} />}
+                        component={UserPosts}
                     />
                     <Tab.Screen
                         name="Comments"
-                        children={() => <UserComments uid={uid} />}
+                        component={UserComments}
                     />
                 </Tab.Navigator>
             </ScrollView>

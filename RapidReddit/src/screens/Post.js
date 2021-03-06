@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Block, Icon} from "galio-framework";
-import PostPreview from "../components/PostPreview";
-import {CommentSection} from "../components/CommentSection"
-import {Platform, ScrollView, TouchableOpacity} from "react-native";
+import {PostPreview} from "../components/PostPreview";
+// import {PostPreviewBold} from "../components/PostPreviewBold";
+import CommentSection from "../components/CommentSection"
+import {Platform, ScrollView, TouchableOpacity } from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
+
 
 const comments = {
     "1": {
@@ -99,7 +101,9 @@ const post = {
     }
 }
 
-export const Post = ({navigation}) => {
+const Post = ({navigation}) => {
+
+    const [replyPost, setReplyPost] = useState("")
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -107,7 +111,7 @@ export const Post = ({navigation}) => {
                 titleStyle={{fontSize: 19, fontWeight: 'bold'}}
                 title={`${post.comments_freq} Comments`}
                 left={(
-                    <TouchableOpacity onPress={() => null}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
                             name="arrow-left"
                             family="feather"
@@ -133,3 +137,5 @@ export const Post = ({navigation}) => {
         </Block>
     )
 }
+
+export default Post;

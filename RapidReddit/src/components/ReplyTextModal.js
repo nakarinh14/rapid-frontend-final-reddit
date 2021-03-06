@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
     KeyboardAvoidingView,
     StyleSheet,
@@ -9,19 +9,11 @@ import {
     TouchableOpacity
 } from "react-native";
 import Modal from "react-native-modal";
-import {Comment} from "./Comment";
 import {Icon, NavBar} from "galio-framework";
 import theme from "../theme";
 
-const comment = {
-    user: "a",
-    timestamp: "1mo",
-    body: "[PURCHASE guide] 2020, ASK ANYTHING!",
-    upvotes: 50
-}
 
-export const ReplyTextArea = ({isModalVisible, closeModal}) => {
-    const [currentText, setCurrentText] = useState("")
+export const ReplyTextModal = ({isModalVisible, closeModal, currentText, setCurrentText, children}) => {
 
     const resetText = () => {
         setCurrentText("")
@@ -64,7 +56,7 @@ export const ReplyTextArea = ({isModalVisible, closeModal}) => {
                         placeholder='Add a Comment'
                         style={{marginBottom: 50}}
                     />
-                    <Comment preview={true} comment={comment}/>
+                    {children}
                 </View>
             </KeyboardAvoidingView>
         </Modal>

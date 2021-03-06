@@ -6,6 +6,9 @@ import {UserProfile} from './screens/UserProfile'
 import {Home} from './screens/Home'
 import {Post} from './screens/Post'
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { enableScreens } from 'react-native-screens';
+import {HomeNavigator} from "./components/HomeNavigator";
+enableScreens();
 
 const Tab = createBottomTabNavigator();
 
@@ -43,8 +46,12 @@ export default function App() {
                 inactiveTintColor: 'gray',
             }}
         >
-            <Tab.Screen name="Home" component={Post} />
-            <Tab.Screen name="User" component={UserProfile} />
+            <Tab.Screen name="Home" component={HomeNavigator} />
+            <Tab.Screen
+                name="User"
+                component={UserProfile}
+                initialParams={{ owner: true }}
+            />
             <Tab.Screen name="Setting" component={Home} />
         </Tab.Navigator>
     </NavigationContainer>

@@ -71,6 +71,7 @@ export const UserComments = ({ uid }) => {
         })
     })
 
+    // Render looks weird with spaces on height
     return (
         <Block flex space="between" style={styles.cards}>
             {userComments && Object.keys(userComments).map((post_id) => {

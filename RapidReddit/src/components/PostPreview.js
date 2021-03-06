@@ -4,12 +4,15 @@ import {Block, Text} from 'galio-framework';
 import theme from '../theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import {useNavigation} from "@react-navigation/native";
 
 const { width } = Dimensions.get('screen');
 
 const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna";
 
 export const PostPreview = () => {
+
+    const navigation = useNavigation();
 
     return (
         <Block style={styles.card}>
@@ -37,9 +40,13 @@ export const PostPreview = () => {
                             {'Investment'}
                         </Text>
                         <Text color={theme.COLORS.MUTED}> by </Text>
-                        <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
-                            {'IAmNotAUser'}
-                        </Text>
+                        <TouchableOpacity
+                            onPress={() => navigation.push("User")}
+                        >
+                            <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
+                                {'IAmNotAUser'}
+                            </Text>
+                        </TouchableOpacity>
                     </Block>
                     <Block center row>
                         <Ionicons name="ios-time-outline" size={15} color={theme.COLORS.BLOCK} />
@@ -108,7 +115,6 @@ export const PostPreview = () => {
 
 const styles = StyleSheet.create({
     card: {
-        width: width * 0.98,
         padding: 10,
         backgroundColor: theme.COLORS.WHITE
 

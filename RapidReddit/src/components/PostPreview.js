@@ -10,7 +10,7 @@ const { width } = Dimensions.get('screen');
 
 const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna";
 
-export const PostPreview = () => {
+export const PostPreview = ({commentAction}) => {
 
     const navigation = useNavigation();
 
@@ -79,7 +79,7 @@ export const PostPreview = () => {
                             />
                         </TouchableOpacity>
                     </Block>
-                    <Block row center>
+                    <TouchableOpacity style={{flexDirection:"row", alignItems:"center"}} onPress={commentAction} >
                         <Block style={{marginRight: 5}} center>
                             <MaterialCommunityIcons
                                 name="comment-outline"
@@ -90,7 +90,7 @@ export const PostPreview = () => {
                         <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
                             {25}
                         </Text>
-                    </Block>
+                    </TouchableOpacity>
                     <Block row center>
                         <Block style={{marginRight: 5}} center>
                             <Ionicons name="share-outline" size={22} color={theme.COLORS.BLOCK}/>

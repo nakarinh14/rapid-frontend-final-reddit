@@ -12,6 +12,7 @@ const { width } = Dimensions.get('screen');
 const CommentSection = ({ comments })=> {
 
     const [isModalVisible, setModalVisible] = useState(false);
+    const [previewCommentModal, setPreviewCommentModal] = useState(() => {})
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -19,8 +20,13 @@ const CommentSection = ({ comments })=> {
     const closeModal = () => {
         setModalVisible(false)
     }
+    const setPreviewComment = (message) => {
+        setPreviewCommentModal(message)
+        toggleModal()
+    }
+
     return (
-        <CommentModalContext.Provider value={toggleModal}>
+        <CommentModalContext.Provider value={setPreviewComment}>
             <Block flex style={styles.cards}>
                 {comments && Object.keys(comments).map((comment_id) => {
                     const comment = comments[comment_id]
@@ -36,6 +42,7 @@ const CommentSection = ({ comments })=> {
                 )}
             </Block>
             <CommentEllipsisModal
+                previewCommentModal={previewCommentModal}
                 isModalVisible={isModalVisible}
                 closeModal={closeModal}
             />

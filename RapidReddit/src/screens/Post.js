@@ -6,6 +6,7 @@ import CommentSection from "../components/CommentSection"
 import {Platform, ScrollView, TouchableOpacity } from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
+import {ReplyPostModal} from "../components/ReplyPostModal";
 
 
 const comments = {
@@ -104,6 +105,7 @@ const post = {
 const Post = ({navigation}) => {
 
     const [replyPost, setReplyPost] = useState("")
+    const [isReplyPostVisible, setReplyPostVisible] = useState(false)
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -125,15 +127,17 @@ const Post = ({navigation}) => {
             <ScrollView>
                 <Block>
                     <PostPreview
-                        title={post.content.title}
-                        iconName={''}
-                        iconFamily={''}
-                        caption={post.content.body}
-                        updoots={10}
+                        commentAction={() => setReplyPostVisible(true)}
                     />
                     <CommentSection comments={comments}/>
                 </Block>
             </ScrollView>
+            <ReplyPostModal
+                isModalVisible={isReplyPostVisible}
+                closeModal={() => setReplyPostVisible(false)}
+                currentText={replyPost}
+                setCurrentText={setReplyPost}
+            />
         </Block>
     )
 }

@@ -4,8 +4,9 @@ import {Home} from "../screens/Home";
 import {UserProfile} from "../screens/UserProfile";
 import Post from "../screens/Post";
 
+const Stack = createStackNavigator();
+
 export const HomeNavigator = () => {
-    const Stack = createStackNavigator();
     return (
         <Stack.Navigator
             initialRouteName="Home"

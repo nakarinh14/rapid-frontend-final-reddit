@@ -3,8 +3,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {UserProfile} from "../screens/UserProfile";
 import Post from "../screens/Post";
 
+const Stack = createStackNavigator();
+
 export const UserProfileNavigator = () => {
-    const Stack = createStackNavigator();
     return (
         <Stack.Navigator
             initialRouteName="User"

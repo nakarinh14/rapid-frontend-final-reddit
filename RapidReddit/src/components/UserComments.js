@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {Block, Text} from "galio-framework";
-import {Dimensions, StyleSheet} from "react-native";
+import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {firebase} from "../firebase";
+import {withInteractionsManaged} from "./withInteractionsManaged";
 
 const { width } = Dimensions.get('screen');
 
@@ -54,7 +55,7 @@ const comments = {
 
 const useMockData = true
 
-export const UserComments = ({ uid }) => {
+const UserComments = ({ uid }) => {
 
     const [userComments, setUserComments] = useState(null)
 
@@ -159,3 +160,5 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 });
+
+export default withInteractionsManaged(UserComments, ActivityIndicator)

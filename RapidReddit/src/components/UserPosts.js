@@ -1,13 +1,13 @@
 import React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Block} from "galio-framework";
 import {PostPreview} from "./PostPreview";
-import {useNavigation} from "@react-navigation/native";
 import theme from "../theme";
+import {withInteractionsManaged} from "./withInteractionsManaged";
 
 const tmp = [1,1,1,1,1,1,1];
 
-export const UserPosts = ({ navigation, uid }) => {
+const UserPosts = ({ navigation }) => {
 
     // For some reason, navigation is acting weird here
     return (
@@ -34,3 +34,5 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
 });
+
+export default withInteractionsManaged(UserPosts, ActivityIndicator)

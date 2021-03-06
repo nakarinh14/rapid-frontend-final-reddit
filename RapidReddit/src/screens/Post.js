@@ -3,7 +3,7 @@ import {Block, Icon} from "galio-framework";
 import {PostPreview} from "../components/PostPreview";
 import {PostPreviewBold} from "../components/PostPreviewBold";
 import {CommentSection} from "../components/CommentSection"
-import {Platform, ScrollView, TextInput, TouchableOpacity, View} from "react-native";
+import {Platform, ScrollView, TouchableOpacity } from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
 
@@ -110,7 +110,7 @@ export const Post = ({navigation}) => {
                 titleStyle={{fontSize: 19, fontWeight: 'bold'}}
                 title={`${post.comments_freq} Comments`}
                 left={(
-                    <TouchableOpacity onPress={() => null}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
                             name="arrow-left"
                             family="feather"

@@ -5,6 +5,7 @@ import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import CommentModalContext from "./CommentModalContext";
+import {useNavigation} from "@react-navigation/native";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -22,7 +23,9 @@ const paddedFlex = (depth) => {
 
 export const Comment = ({ comment, depth, preview }) => {
 
+    const navigation = useNavigation();
     const toggleModal = useContext(CommentModalContext);
+
     const bg  = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
     const padded = 100 - emptyPadded
@@ -34,22 +37,25 @@ export const Comment = ({ comment, depth, preview }) => {
                 {depth ? <View style={[styles.line]}  /> : null }
                 <Block style={[styles.box, indentColor(depth)]} >
                     <Block style={styles.topInfo} >
-                        <Block style={styles.topLeftFlex} >
-                            <View>
-                                <Text style={styles.titleText}>
-                                    {comment.user}
-                                </Text>
-                            </View>
-                            <View style={styles.upvotes}>
-                                <MaterialCommunityIcons
-                                    name="arrow-up-bold-outline"
-                                    color={theme.COLORS.MUTED}
-                                />
-                                <Text style={styles.timestampText}>
-                                    {comment.upvotes}
-                                </Text>
-                            </View>
-                        </Block>
+                        <TouchableOpacity onPress={() => navigation.push("User")}>
+                            <Block style={styles.topLeftFlex} >
+                                    <View>
+                                        <Text style={styles.titleText}>
+                                            {comment.user}
+                                        </Text>
+                                    </View>
+
+                                <View style={styles.upvotes}>
+                                    <MaterialCommunityIcons
+                                        name="arrow-up-bold-outline"
+                                        color={theme.COLORS.MUTED}
+                                    />
+                                    <Text style={styles.timestampText}>
+                                        {comment.upvotes}
+                                    </Text>
+                                </View>
+                            </Block>
+                        </TouchableOpacity>
                         <Block style={styles.topRightFlex}>
                             {preview ? null :
                                 <TouchableOpacity

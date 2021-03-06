@@ -3,8 +3,8 @@ import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
-import {UserComments} from "../components/UserComments";
-import {UserPosts} from "../components/UserPosts"
+import UserComments from "../components/UserComments";
+import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
 
 const profile = {
@@ -75,11 +75,11 @@ export const UserProfile = ({ route, navigation, uid }) => {
                 <Tab.Navigator>
                     <Tab.Screen
                         name="Posts"
-                        children={() => <UserPosts uid={uid} />}
+                        component={UserPosts}
                     />
                     <Tab.Screen
                         name="Comments"
-                        children={() => <UserComments uid={uid} />}
+                        component={UserComments}
                     />
                 </Tab.Navigator>
             </ScrollView>

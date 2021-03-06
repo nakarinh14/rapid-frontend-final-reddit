@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
 import { ListItem, Icon } from 'react-native-elements'
-import {ReplyModal} from "./ReplyModal";
+import {ReplyCommentModal} from "./ReplyCommentModal";
 
 
 const list = [
@@ -25,7 +25,7 @@ const list = [
 ]
 
 
-export const CommentEllipsisModal = ({isModalVisible, closeModal, replyType}) => {
+export const CommentEllipsisModal = ({isModalVisible, closeModal, previewCommentModal}) => {
     const [isReplyModalVisible, setReplyModalVisible] = useState(false)
     const [listenToReply, setListenerReply] = useState(false)
 
@@ -45,8 +45,8 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, replyType}) =>
 
     return (
         <>
-            <ReplyModal
-                replyType={replyType}
+            <ReplyCommentModal
+                comment={previewCommentModal}
                 isModalVisible={isReplyModalVisible}
                 closeModal={() => setReplyModalVisible(false)}
             />

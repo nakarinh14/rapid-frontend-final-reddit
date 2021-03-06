@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    KeyboardAvoidingView,
     StyleSheet,
     TextInput,
     View,
@@ -22,43 +21,39 @@ export const ReplyTextModal = ({isModalVisible, closeModal, currentText, setCurr
     return (
         <Modal
             isVisible={isModalVisible}
-            swipeDirection={['up', 'left', 'right', 'down']}
+            swipeDirection={['up', 'down']}
             onSwipeComplete={closeModal}
             animationInTiming={200}
             animationOutTiming={200}
             onModalHide={resetText}
+            avoidKeyboard={true}
         >
-            <KeyboardAvoidingView
-                behavior="position"
-                enabled
-            >
-                <NavBar
-                    title={"New Comment"}
-                    left={(
-                        <TouchableOpacity onPress={closeModal}>
-                            <Icon
-                                name="close"
-                                family="Ionicons"
-                                size={20}
-                                color={theme.COLORS.IOS}
-                            />
-                        </TouchableOpacity>
-                    )}
-                    right={(<Button title={"Post"} onPress={closeModal}/>)}
-                    style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
+            <NavBar
+                title={"New Comment"}
+                left={(
+                    <TouchableOpacity onPress={closeModal}>
+                        <Icon
+                            name="close"
+                            family="Ionicons"
+                            size={20}
+                            color={theme.COLORS.IOS}
+                        />
+                    </TouchableOpacity>
+                )}
+                right={(<Button title={"Post"} onPress={closeModal}/>)}
+                style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
+            />
+            <View style={styles.content}>
+                <TextInput
+                    multiline={true}
+                    numberOfLines={10}
+                    onChangeText={(text) => setCurrentText(text)}
+                    value={currentText}
+                    placeholder='Add a Comment'
+                    style={{marginBottom: 50}}
                 />
-                <View style={styles.content}>
-                    <TextInput
-                        multiline={true}
-                        numberOfLines={10}
-                        onChangeText={(text) => setCurrentText(text)}
-                        value={currentText}
-                        placeholder='Add a Comment'
-                        style={{marginBottom: 50}}
-                    />
-                    {children}
-                </View>
-            </KeyboardAvoidingView>
+                {children}
+            </View>
         </Modal>
     )
 }

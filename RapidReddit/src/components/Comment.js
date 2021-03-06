@@ -24,7 +24,7 @@ const paddedFlex = (depth) => {
 export const Comment = ({ comment, depth, preview }) => {
 
     const navigation = useNavigation();
-    const contextSetReply = useContext(CommentModalContext);
+    const setPreviewComment = useContext(CommentModalContext);
 
     const bg  = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
@@ -59,7 +59,7 @@ export const Comment = ({ comment, depth, preview }) => {
                         <Block style={styles.topRightFlex}>
                             {preview ? null :
                                 <TouchableOpacity
-                                    onPress={() => contextSetReply("comment")}
+                                    onPress={() => setPreviewComment(comment)}
                                 >
                                     <View style={{marginRight: 7}}>
                                         <Ionicons

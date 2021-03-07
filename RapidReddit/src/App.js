@@ -9,6 +9,7 @@ import {Home} from './screens/Home'
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {HomeNavigator} from "./navigation/HomeNavigator";
 import {UserProfileNavigator} from "./navigation/UserProfileNavigator";
+import {ExploreNavigator} from "./navigation/ExploreNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,6 +35,8 @@ export default function App() {
                                 iconName = focused ? 'ios-man-sharp' : 'ios-man-outline';
                             } else if (route.name === 'Setting') {
                                 iconName = focused ? 'ios-settings-sharp' : 'ios-settings-outline';
+                            } else if (route.name === 'Explore') {
+                                iconName = focused ? 'ios-rocket-sharp' : 'ios-rocket-outline';
                             }
 
                             // You can return any component that you like here!
@@ -46,10 +49,8 @@ export default function App() {
                     }}
                 >
                     <Tab.Screen name="Home" component={HomeNavigator}/>
-                    <Tab.Screen
-                        name="User"
-                        component={UserProfileNavigator}
-                    />
+                    <Tab.Screen name="Explore" component={ExploreNavigator}/>
+                    <Tab.Screen name="User" component={UserProfileNavigator}/>
                     <Tab.Screen name="Setting" component={Home}/>
                 </Tab.Navigator>
             </NavigationContainer>

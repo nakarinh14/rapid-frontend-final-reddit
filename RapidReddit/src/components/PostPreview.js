@@ -10,28 +10,47 @@ const { width } = Dimensions.get('screen');
 
 const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna";
 
-export const PostPreview = ({commentAction}) => {
+function PostInfo(props) {
+    return(
+        <Block row>
+            <Block flex={3}>
+                <Block style={styles.title}>
+                    <Text style={styles.titleText}>
+                        {lorem}
+                    </Text>
+                </Block>
+                <Block style={styles.content}>
+                    <Text style={styles.contentText}>
+                        {lorem}
+                    </Text>
+                </Block>
+            </Block>
+        </Block>
+    )
+}
+
+function PostTitleContent(props) {
+    const { touchable, onPress } = props
+    if(touchable) return (
+            <TouchableOpacity onPress={onPress}>
+                <PostInfo/>
+            </TouchableOpacity>
+        )
+    else return (
+            <PostInfo/>
+        )
+}
+
+export const PostPreview = (props) => {
 
     const navigation = useNavigation();
+    const { commentAction, onPress, touchable } = props
 
     return (
         <Block style={styles.card}>
             <Block row style={styles.cardContent}>
                 <Block flex={1}>
-                    <Block row>
-                        <Block flex={3}>
-                            <Block style={styles.title}>
-                                <Text style={styles.titleText}>
-                                    {lorem}
-                                </Text>
-                            </Block>
-                            <Block style={styles.content}>
-                                <Text style={styles.contentText}>
-                                    {lorem}
-                                </Text>
-                            </Block>
-                        </Block>
-                    </Block>
+                    <PostTitleContent onPress={onPress} touchable={touchable}/>
                 </Block>
                 <Block style={{marginVertical: 10}} row>
 

@@ -13,11 +13,7 @@ const UserPosts = ({ navigation }) => {
         <Block flex column>
             {tmp.map((val, idx) =>
                 <Block style={{marginBottom: 5}} key={idx}>
-                    <TouchableOpacity
-                        key={idx}
-                        onPress={() => navigation.push("Post")}>
-                        <PostPreview />
-                    </TouchableOpacity>
+                    <PostPreview touchable onPress={() => navigation.push("Post")} />
                 </Block>
             )}
         </Block>

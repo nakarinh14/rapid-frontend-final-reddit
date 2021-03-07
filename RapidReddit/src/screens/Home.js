@@ -19,11 +19,7 @@ export const Home = ({navigation}) => {
                 <Block flex column>
                     {tmp.map((val, idx) =>
                         <Block key={idx}>
-                            <TouchableOpacity
-                                key={idx}
-                                onPress={() => navigation.push("Post")}>
-                                <PostPreview />
-                            </TouchableOpacity>
+                            <PostPreview touchable onPress={() => navigation.push("Post")}/>
                             <View style={styles.line}  />
                         </Block>
                     )}

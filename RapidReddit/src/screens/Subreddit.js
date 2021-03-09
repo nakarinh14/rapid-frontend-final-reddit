@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
+// Not really reuseable. Might need to create new one here.
 import SubredditAbout from "../components/UserComments";
 import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
@@ -19,9 +20,6 @@ const Tab = createMaterialTopTabNavigator();
 const useMockData = true
 
 export const Subreddit = ({ route, navigation, uid }) => {
-
-    const { owner } = route.params
-    const [userStats, setUserStats] = useState(subreddit)
 
     useEffect(() => {
 

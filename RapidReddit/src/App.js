@@ -10,7 +10,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import {HomeNavigator} from "./navigation/HomeNavigator";
 import {UserProfileNavigator} from "./navigation/UserProfileNavigator";
 import {ExploreNavigator} from "./navigation/ExploreNavigator";
-import {SubredditNavigator} from "./navigation/SubredditNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -53,7 +52,6 @@ export default function App() {
                     <Tab.Screen name="Explore" component={ExploreNavigator}/>
                     <Tab.Screen name="User" component={UserProfileNavigator}/>
                     <Tab.Screen name="Setting" component={Home}/>
-                    <Tab.Screen name="Subreddit" component={SubredditNavigator}/>
                 </Tab.Navigator>
             </NavigationContainer>
         </View>

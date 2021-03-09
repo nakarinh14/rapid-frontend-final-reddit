@@ -9,8 +9,8 @@ import {firebase} from "../firebase";
 
 const subreddit = {
     namePage: "testPage",
-    members: 515,
-    online: 400,
+    members: 1200,
+    online: 980,
     Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu lacus et nulla aliquet ullamcorper. Integer eget nulla arcu. Pellentesque sodales sit amet orci sed vehicula. "
 };
 

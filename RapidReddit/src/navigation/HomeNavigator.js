@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {Home} from "../screens/Home";
 import {UserProfile} from "../screens/UserProfile";
 import Post from "../screens/Post";
+import {Subreddit} from "../screens/Subreddit"
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,13 @@ export const HomeNavigator = () => {
                 component={UserProfile}
                 initialParams={{ owner: false }}
             />
+
+            <Stack.Screen
+                name="Subreddit"
+                component={Subreddit}
+                initialParams={{ owner: false }}
+            />
+
         </Stack.Navigator>
     )
 }

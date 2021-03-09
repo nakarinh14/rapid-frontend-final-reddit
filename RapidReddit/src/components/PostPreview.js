@@ -55,10 +55,13 @@ export const PostPreview = (props) => {
                 <Block style={{marginVertical: 10}} row>
 
                     <Block style={{marginRight: 5}} center row>
+                        <TouchableOpacity onPress={() => navigation.push("Subreddit")} >
                         <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
                             {'Investment'}
                         </Text>
-                        <Text color={theme.COLORS.MUTED}> by </Text>
+                    </TouchableOpacity>
+
+                    <Text color={theme.COLORS.MUTED}> by </Text>
                         <TouchableOpacity
                             onPress={() => navigation.push("User")}
                         >

@@ -1,31 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from "react-native";
-import {Block} from "galio-framework";
-import {PostPreview} from "./PostPreview";
+import React from 'react';
+import {ActivityIndicator, ScrollView, StyleSheet} from "react-native";
 import theme from "../theme";
 import {withInteractionsManaged} from "./withInteractionsManaged";
-import {firebase} from '../firebase'
-import { getRefForUserPosts } from "../services/PostService";
+import PostListComponent from "./PostListComponent";
 
 const UserPosts = ({ navigation }) => {
 
-    const [ userPosts, setUserPosts ] = useState([])
-
-    useEffect(() => {
-        const userRef = getRefForUserPosts("username")
-        userRef.on('value', snapshot => {
-            setUserPosts(Object.values(snapshot.val() | {}))
-        })
-    }, [])
-
     return (
-        <Block flex column>
-            {userPosts.map((val, idx) =>
-                <Block style={{marginBottom: 5}} key={idx}>
-                    <PostPreview touchable post={val}/>
-                </Block>
-            )}
-        </Block>
+        <PostListComponent user={"username"}/>
     )
 }
 const styles = StyleSheet.create({

@@ -4,20 +4,10 @@ import {PostPreview} from "../components/PostPreview";
 import {Platform, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import CreatePostModal from '../components/CreatePostModal'
 import theme from "../theme";
-import {getRefForSubreaditPosts} from "../services/PostService";
+import PostListComponent from "../components/PostListComponent";
 
 
 export const Home = ({navigation}) => {
-
-    const [ userPosts, setUserPosts ] = useState([])
-
-
-    useEffect(() => {
-        const homeRef = getRefForSubreaditPosts("home")
-        homeRef.on('value', snapshot => {
-            setUserPosts(Object.values(snapshot.val() | {}))
-        })
-    },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -36,14 +26,7 @@ export const Home = ({navigation}) => {
                 )}
             />
             <ScrollView>
-                <Block flex column>
-                    {userPosts.map((val, idx) =>
-                        <Block key={idx}>
-                            <PostPreview touchable post={val}/>
-                            <View style={styles.line}  />
-                        </Block>
-                    )}
-                </Block>
+                <PostListComponent subreadit={"home"}/>
             </ScrollView>
         </Block>
     )

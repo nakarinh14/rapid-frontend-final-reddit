@@ -25,3 +25,7 @@ export function getRefForUserPosts(user) {
 export function getRefForSubreaditPosts(subreadit) {
     return firebase.database().ref(`posts`).orderByChild("subreadit").equalTo(subreadit)
 }
+
+export function getRefForPosts() {
+    return firebase.database().ref(`posts`)
+}

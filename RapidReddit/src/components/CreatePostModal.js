@@ -39,8 +39,9 @@ export default function (props) {
     function addPost() {
         try {
             const key = addNewPost(subreadit,authentication.user, postTitle, postContent)
+            console.log(key)
             setCreatePostModalVisible(false)
-            navigation.push("Post")
+            // navigation.push("Post")
         }catch (e) {
             if (e.code === 3) {
                 // TODO User not logged in. Redirect to login

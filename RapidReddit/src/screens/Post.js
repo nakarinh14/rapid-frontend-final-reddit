@@ -102,10 +102,12 @@ const post = {
     }
 }
 
-const Post = ({navigation}) => {
+const Post = ({route, navigation}) => {
 
     const [replyPost, setReplyPost] = useState("")
     const [isReplyPostVisible, setReplyPostVisible] = useState(false)
+
+    const {post} = route.params
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -128,6 +130,7 @@ const Post = ({navigation}) => {
                 <Block>
                     <PostPreview
                         commentAction={() => setReplyPostVisible(true)}
+                        post={post}
                     />
                     <CommentSection comments={comments}/>
                 </Block>

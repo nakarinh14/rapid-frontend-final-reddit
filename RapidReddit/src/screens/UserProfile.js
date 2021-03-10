@@ -72,16 +72,18 @@ export const UserProfile = ({ route, navigation, uid }) => {
                         <Text color={theme.COLORS.GREY}>Age</Text>
                     </Block>
                 </Block>
-                <Tab.Navigator>
-                    <Tab.Screen
-                        name="Posts"
-                        component={UserPosts}
-                    />
-                    <Tab.Screen
-                        name="Comments"
-                        component={UserComments}
-                    />
-                </Tab.Navigator>
+                <Block flex>
+                    <Tab.Navigator>
+                        <Tab.Screen
+                            name="Posts"
+                            component={UserPosts}
+                        />
+                        <Tab.Screen
+                            name="Comments"
+                            component={UserComments}
+                        />
+                    </Tab.Navigator>
+                </Block>
             </ScrollView>
 
         </Block>

@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Block, Button, Icon, NavBar} from "galio-framework";
 import {PostPreview} from "../components/PostPreview";
 import {Platform, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import CreatePostModal from '../components/CreatePostModal'
 import theme from "../theme";
+import PostListComponent from "../components/PostListComponent";
 
-const tmp = [1,1,1,1,1,1,1,1,1]
 
 export const Home = ({navigation}) => {
 
@@ -26,14 +26,7 @@ export const Home = ({navigation}) => {
                 )}
             />
             <ScrollView>
-                <Block flex column>
-                    {tmp.map((val, idx) =>
-                        <Block key={idx}>
-                            <PostPreview touchable onPress={() => navigation.push("Post")}/>
-                            <View style={styles.line}  />
-                        </Block>
-                    )}
-                </Block>
+                <PostListComponent subreadit={"home"}/>
             </ScrollView>
         </Block>
     )

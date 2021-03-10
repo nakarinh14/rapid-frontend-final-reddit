@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
 import { firebase } from "../firebase";
+import AuthenticationContext from "../contexts/AuthenticationContext";
 import 'firebase/auth'
 
 export const RegisterScreen = ({ navigation }) => {
@@ -10,6 +11,8 @@ export const RegisterScreen = ({ navigation }) => {
     const [password, setPassword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+
+    const authentication = useContext(AuthenticationContext)
 
     const registerUser = async () => {
         if(email === '' && password === '') {
@@ -25,7 +28,9 @@ export const RegisterScreen = ({ navigation }) => {
                     displayName: displayName
                 })
 
+
                 console.log('User registered successfully!')
+                authentication.loginUser(user)
                 // navigation.navigate('Login')
             } catch (error) {
                 setErrorMessage(error.message)

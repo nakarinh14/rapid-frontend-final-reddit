@@ -11,17 +11,20 @@ const { width } = Dimensions.get('screen');
 const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna";
 
 function PostInfo(props) {
+
+    const {post} = props
+
     return(
         <Block row>
             <Block flex={3}>
                 <Block style={styles.title}>
                     <Text style={styles.titleText}>
-                        {lorem}
+                        {post.title}
                     </Text>
                 </Block>
                 <Block style={styles.content}>
                     <Text style={styles.contentText}>
-                        {lorem}
+                        {post.caption}
                     </Text>
                 </Block>
             </Block>
@@ -30,40 +33,41 @@ function PostInfo(props) {
 }
 
 function PostTitleContent(props) {
-    const { touchable, onPress } = props
+    const { touchable, onPress, post } = props
     if(touchable) return (
             <TouchableOpacity onPress={onPress}>
-                <PostInfo/>
+                <PostInfo post={post}/>
             </TouchableOpacity>
         )
     else return (
-            <PostInfo/>
+            <PostInfo post={post}/>
         )
 }
 
 export const PostPreview = (props) => {
 
     const navigation = useNavigation();
-    const { commentAction, onPress, touchable } = props
+    const { commentAction, touchable, post } = props
+    const onPress = () => {navigation.push("Post",{post: post})}
 
     return (
         <Block style={styles.card}>
             <Block row style={styles.cardContent}>
                 <Block flex={1}>
-                    <PostTitleContent onPress={onPress} touchable={touchable}/>
+                    <PostTitleContent post={post} onPress={onPress} touchable={touchable}/>
                 </Block>
                 <Block style={{marginVertical: 10}} row>
 
                     <Block style={{marginRight: 5}} center row>
                         <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
-                            {'Investment'}
+                            {post.subreadit}
                         </Text>
                         <Text color={theme.COLORS.MUTED}> by </Text>
                         <TouchableOpacity
                             onPress={() => navigation.push("User")}
                         >
                             <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
-                                {'IAmNotAUser'}
+                                {post.user}
                             </Text>
                         </TouchableOpacity>
                     </Block>

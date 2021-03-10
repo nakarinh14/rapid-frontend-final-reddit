@@ -1,13 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Block, Button, Icon, NavBar} from "galio-framework";
 import {PostPreview} from "../components/PostPreview";
 import {Platform, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import CreatePostModal from '../components/CreatePostModal'
 import theme from "../theme";
+import {getRefForSubreaditPosts} from "../services/PostService";
 
-const tmp = [1,1,1,1,1,1,1,1,1]
 
 export const Home = ({navigation}) => {
+
+    const [ userPosts, setUserPosts ] = useState([])
+
+
+    useEffect(() => {
+        const homeRef = getRefForSubreaditPosts("home")
+        homeRef.on('value', snapshot => {
+            setUserPosts(Object.values(snapshot.val() | {}))
+        })
+    },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -27,9 +37,9 @@ export const Home = ({navigation}) => {
             />
             <ScrollView>
                 <Block flex column>
-                    {tmp.map((val, idx) =>
+                    {userPosts.map((val, idx) =>
                         <Block key={idx}>
-                            <PostPreview touchable onPress={() => navigation.push("Post")}/>
+                            <PostPreview touchable post={val}/>
                             <View style={styles.line}  />
                         </Block>
                     )}

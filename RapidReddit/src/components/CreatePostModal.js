@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import {Block, Button, Icon, Input, NavBar} from "galio-framework";
 import {Modal, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions} from "react-native";
 import theme from "../theme";
 import {firebase} from '../firebase'
 import {useNavigation} from "@react-navigation/native";
+import { addNewPost } from '../services/PostService'
+import AuthenticationContext from "../contexts/AuthenticationContext";
 
 const { height } = Dimensions.get("window")
 
@@ -29,23 +31,24 @@ export default function (props) {
     const [errorMessage, setErrorMessage] = useState('')
     const { subreadit, addButton } = props
     const navigation = useNavigation()
+    const authentication = useContext(AuthenticationContext)
 
     //AddButton - Custom button to open the create modal. Default will use + icon
     //Subreadit - The subreadit to add the post to
 
     function addPost() {
-        if (!subreadit) {
-            setErrorMessage("Subreadit cannot be empty")
-            return
+        try {
+            const key = addNewPost(subreadit,authentication.user, postTitle, postContent)
+            setCreatePostModalVisible(false)
+            navigation.push("Post")
+        }catch (e) {
+            if (e.code === 3) {
+                // TODO User not logged in. Redirect to login
+                console.log("User not logged in. Should redirect to login")
+                // navigation.push("Login")
+            }
+            else setErrorMessage(e.message)
         }
-        if (!postTitle) {
-            setErrorMessage("Title cannot be empty")
-            return
-        }
-        const ref = firebase.database().ref(`subreadits/${subreadit}`).push({title: postTitle, caption: postContent, subreadit: subreadit})
-        setCreatePostModalVisible(false)
-        navigation.push("Post")
-
     }
 
     return(

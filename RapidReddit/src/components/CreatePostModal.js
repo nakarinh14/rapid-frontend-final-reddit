@@ -38,7 +38,7 @@ export default function (props) {
 
     function addPost() {
         try {
-            const key = addNewPost(subreadit,authentication.user, postTitle, postContent)
+            const key = addNewPost(subreadit,authentication.user || "username", postTitle, postContent)
             console.log(key)
             setCreatePostModalVisible(false)
             // navigation.push("Post")
@@ -73,9 +73,9 @@ export default function (props) {
                     )}
                 />
                 <Block safe flex style={styles.modalContainer}>
-                    <Input value={postTitle} onChangeText={text => setPostTitle(text)} label={"Post Title"} placeholder="Post Title"/>
+                    <Input style={styles.input} value={postTitle} onChangeText={text => setPostTitle(text)} label={"Post Title"} placeholder="Post Title"/>
                     <Block flex={4}>
-                        <Input value={postContent} onChangeText={text => setPostContent(text)} multiline numberOfLines={7} label={"Content"} placeholder="Content"/>
+                        <Input style={styles.input} value={postContent} onChangeText={text => setPostContent(text)} multiline numberOfLines={7} label={"Content"} placeholder="Content"/>
                     </Block>
                     <Text>This will be posted on r/{subreadit}</Text>
                     <Text style={{color: 'red'}}>{errorMessage}</Text>
@@ -91,5 +91,8 @@ export default function (props) {
 const styles = StyleSheet.create({
     modalContainer: {
         padding: 20
+    },
+    input: {
+        borderRadius: 0
     }
 })

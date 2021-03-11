@@ -27,6 +27,7 @@ export const ReplyTextModal = ({isModalVisible, closeModal, currentText, setCurr
             animationOutTiming={200}
             onModalHide={resetText}
             avoidKeyboard={true}
+            onRequestClose={closeModal}
         >
             <NavBar
                 title={"New Comment"}

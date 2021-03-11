@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import {Block, Icon} from "galio-framework";
+import React, {useEffect, useState} from 'react';
+import {Block, Icon, Text} from "galio-framework";
 import {PostPreview} from "../components/PostPreview";
-// import {PostPreviewBold} from "../components/PostPreviewBold";
 import CommentSection from "../components/CommentSection"
 import {Platform, ScrollView, TouchableOpacity } from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
 import {ReplyPostModal} from "../components/ReplyPostModal";
+import { getPostById } from "../services/PostService";
 
 
 const comments = {
@@ -90,58 +90,68 @@ const comments = {
         },
     }
 };
-const post = {
-    author: "uid",
-    timestamp: "2018-20-blabla",
-    upvotes: 10,
-    downvotes: 10,
-    comments_freq: 152,
-    content: {
-        title: "This is awesome",
-        body: "Skrrrrr"
+
+function RenderPost ({navigation, post}) {
+
+    if(post) {
+        return(
+            <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
+                <NavBar
+                    titleStyle={{fontSize: 19, fontWeight: 'bold'}}
+                    title={`${post.comments_freq || 0} Comments`}
+                    left={(
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <Icon
+                                name="arrow-left"
+                                family="feather"
+                                size={24}
+                                color={theme.COLORS.ICON}
+                            />
+                        </TouchableOpacity>
+                    )}
+                    style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
+                />
+                <ScrollView>
+                    <Block>
+                        <PostPreview
+                            post={post}
+                        />
+                        <CommentSection comments={comments}/>
+                    </Block>
+                </ScrollView>
+            </Block>
+        )
+    }
+    else {
+        return(
+            <Block flex center>
+                <Text>Post not found</Text>
+            </Block>
+        )
     }
 }
 
 const Post = ({route, navigation}) => {
 
-    const [replyPost, setReplyPost] = useState("")
-    const [isReplyPostVisible, setReplyPostVisible] = useState(false)
+    const [ post, setPost ] = useState(null)
 
-    const {post} = route.params
+    const {postId} = route.params
 
-    return (
-        <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
-            <NavBar
-                titleStyle={{fontSize: 19, fontWeight: 'bold'}}
-                title={`${post.comments_freq} Comments`}
-                left={(
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon
-                            name="arrow-left"
-                            family="feather"
-                            size={24}
-                            color={theme.COLORS.ICON}
-                        />
-                    </TouchableOpacity>
-                )}
-                style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
-            />
-            <ScrollView>
-                <Block>
-                    <PostPreview
-                        commentAction={() => setReplyPostVisible(true)}
-                        post={post}
-                    />
-                    <CommentSection comments={comments}/>
-                </Block>
-            </ScrollView>
-            <ReplyPostModal
-                isModalVisible={isReplyPostVisible}
-                closeModal={() => setReplyPostVisible(false)}
-                currentText={replyPost}
-                setCurrentText={setReplyPost}
-            />
+    useEffect(() => {
+        if(postId) {
+            getPostById(postId).get().then(result => {
+                setPost(result.val())
+            })
+        }
+
+    }, [])
+    if(!postId) return (
+        <Block flex center>
+            <Text>Error. No id found</Text>
         </Block>
+    )
+    else return (
+        <RenderPost post={post} navigation={navigation}/>
     )
 }
 

@@ -31,18 +31,23 @@ export const Subreddit = ({ route, navigation, uid }) => {
         }
     });
 
-    
-
-
-
     useEffect(() => {
 
-        setSubreddits(SubredditService.getRefForSubreddit(subredditId))
+        const subredditRef = SubredditService.getRefForSubreddit(subredditId)
 
-        window.console.log("subreddits: ")
-        window.console.log(subreddits)
+        subredditRef.on('value', snapshot => {
+            data = snapshot.val();
+            setSubreddits(data)
+            window.console.log("data: ")
+            window.console.log(data)
+        })
 
-    })
+        return function cleanup() {
+            ref.off('value')
+        }
+
+
+    },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>

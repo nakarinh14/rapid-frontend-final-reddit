@@ -7,6 +7,8 @@ import theme from '../theme';
 import SubredditAbout from "../components/UserComments";
 import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
+import PostListComponent from "../components/PostListComponent";
+
 
 const subreddit = {
     namePage: "testPage",
@@ -15,11 +17,20 @@ const subreddit = {
     Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu lacus et nulla aliquet ullamcorper. Integer eget nulla arcu. Pellentesque sodales sit amet orci sed vehicula. "
 };
 
+
+const owner = true;
+
 const Tab = createMaterialTopTabNavigator();
 
-const useMockData = true
+const useMockData = true;
+
+const setUserStats = () => true;
 
 export const Subreddit = ({ route, navigation, uid }) => {
+
+    const {subredditName} = route.params
+
+    window.console.log(subredditName)
 
     useEffect(() => {
 
@@ -29,6 +40,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
         }
 
         const ref = firebase.database().ref(`user_profile/${uid}/stats`)
+
         ref.on('value', (snapshot) => {
             if(snapshot.exists()){
                 setUserStats(snapshot.val())
@@ -40,7 +52,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
 
-                title={subreddit.namePage}
+                title={subredditName}
 
                 left={!owner ?
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
@@ -69,13 +81,13 @@ export const Subreddit = ({ route, navigation, uid }) => {
                     </Block>
 
                 </Block>
-                <Text>
+                <Text style={styles.description}>
                     {subreddit.Description}
                 </Text>
                 <Tab.Navigator>
                     <Tab.Screen
                         name="Posts"
-                        component={UserPosts}
+                        component={PostListComponent} subreadit={subredditName}
                     />
                     <Tab.Screen
                         name="About"
@@ -114,5 +126,8 @@ const styles = StyleSheet.create({
     attachTop:{
         top: 0,
         position: 'absolute'
+    },
+    description:{
+        textAlign: 'center'
     }
 });

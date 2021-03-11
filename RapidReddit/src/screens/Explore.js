@@ -13,7 +13,7 @@ export const Explore = ({navigation}) => {
             />
             <ScrollView>
                 <Block>
-                    <TouchableOpacity onPress={() => navigation.navigate('Subreddit', {subredditName: 'home'})}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Subreddit', {subredditId: 'kdbajdbhj'})}>
                         <CommunityPreview/>
                     </TouchableOpacity>
                     <TouchableOpacity>

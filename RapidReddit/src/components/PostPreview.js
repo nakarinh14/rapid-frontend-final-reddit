@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import {useNavigation} from "@react-navigation/native";
 import AuthenticationContext from "../contexts/AuthenticationContext";
-import {ReplyPostModal} from "./ReplyPostModal";
+import CommentReplyModal from "./CommentReplyModal";
 
 const { width } = Dimensions.get('screen');
 
@@ -52,7 +52,6 @@ export const PostPreview = (props) => {
     const { touchable, post } = props
 
     const [ replyModal, setReplyModal ] = useState(false)
-    const [replyPost, setReplyPost] = useState("")
 
     const authentication = useContext(AuthenticationContext)
 
@@ -119,6 +118,7 @@ export const PostPreview = (props) => {
                                 size={20}
                                 color={theme.COLORS.BLOCK}
                             />
+                            <CommentReplyModal visible={replyModal} visibilitySetter={setReplyModal}/>
                         </Block>
                         <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
                             {post.comments_freq}
@@ -141,12 +141,6 @@ export const PostPreview = (props) => {
                     </Block>
                 </Block>
             </Block>
-            <ReplyPostModal
-                isModalVisible={replyModal}
-                closeModal={() => setReplyModal(false)}
-                currentText={replyPost}
-                setCurrentText={setReplyPost}
-            />
         </Block>
     )
 

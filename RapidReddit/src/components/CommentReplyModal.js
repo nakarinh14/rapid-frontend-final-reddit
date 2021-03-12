@@ -1,38 +1,38 @@
-import React from 'react';
-import {
-    StyleSheet,
-    TextInput,
-    View,
-    Platform,
-    Button,
-    TouchableOpacity
-} from "react-native";
-import Modal from "react-native-modal";
+import React, {useState} from 'react'
+import {Button, Platform, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {Icon, NavBar} from "galio-framework";
 import theme from "../theme";
+import {Comment} from "./Comment";
+import Modal from "react-native-modal";
 
+function RenderComment({replyComment}) {
+    if(replyComment) return (
+        <View>
+            {replyComment && (<Comment preview={true} comment={replyComment}/>)}
+        </View>
+    )
+    else return null
+}
 
-export const ReplyTextModal = ({isModalVisible, closeModal, currentText, setCurrentText, children}) => {
+export default function({ replyComment, visible, visibilitySetter }) {
 
-    const resetText = () => {
-        setCurrentText("")
-    }
+    const [ commentText, setCommentText ] = useState('')
 
     return (
         <Modal
-            isVisible={isModalVisible}
-            swipeDirection={['up', 'down']}
-            onSwipeComplete={closeModal}
+            isVisible={visible}
+            swipeDirection={['up','down']}
+            onSwipeComplete={() => visibilitySetter(false)}
             animationInTiming={200}
             animationOutTiming={200}
-            onModalHide={resetText}
+            onModalHide={() => setCommentText('')}
             avoidKeyboard={true}
-            onRequestClose={closeModal}
+            onRequestClose={() => visibilitySetter(false)}
         >
             <NavBar
                 title={"New Comment"}
                 left={(
-                    <TouchableOpacity onPress={closeModal}>
+                    <TouchableOpacity onPress={() => visibilitySetter(false)}>
                         <Icon
                             name="close"
                             family="Ionicons"
@@ -41,23 +41,24 @@ export const ReplyTextModal = ({isModalVisible, closeModal, currentText, setCurr
                         />
                     </TouchableOpacity>
                 )}
-                right={(<Button title={"Post"} onPress={closeModal}/>)}
+                right={(<Button title={"Post"} onPress={console.log}/>)}
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
             <View style={styles.content}>
                 <TextInput
                     multiline={true}
                     numberOfLines={10}
-                    onChangeText={(text) => setCurrentText(text)}
-                    value={currentText}
+                    onChangeText={(text) => setCommentText(text)}
+                    value={commentText}
                     placeholder='Add a Comment'
                     style={{marginBottom: 50}}
                 />
-                {children}
+                <RenderComment replyComment={replyComment}/>
             </View>
         </Modal>
     )
 }
+
 
 const styles = StyleSheet.create({
     container: {

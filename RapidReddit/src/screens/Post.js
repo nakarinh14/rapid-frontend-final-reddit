@@ -5,7 +5,6 @@ import CommentSection from "../components/CommentSection"
 import {Platform, ScrollView, TouchableOpacity } from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
-import {ReplyPostModal} from "../components/ReplyPostModal";
 import { getPostById } from "../services/PostService";
 
 

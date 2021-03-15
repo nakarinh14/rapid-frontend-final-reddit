@@ -1,56 +1,32 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
-        </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
-<!--      <router-view />-->
-<!--      Didn't add the auth function yet/ Add v-if later-->
-      <q-btn style="top: 100px; left: 300px" @click="loginRegisterClicked('login')" stretch label="Log in"></q-btn>
-      <q-btn style="top: 100px; left: 350px" @click="loginRegisterClicked('register')" stretch label="Register"></q-btn>
+      <q-page class="bg-orange-1 window-height window-width row justify-center items-center">
+        <div class="column">
+          <div class="row ">
+            <h5 class="text-h5 text-orange-4 q-my-md">Login</h5>
+          </div>
+          <div class="row">
+            <q-card square bordered class="q-pa-lg shadow-1">
+              <q-card-section>
+                <q-form class="q-gutter-md">
+                  <q-input square filled clearable v-model="email" type="email" label="Email"/>
+                  <q-input square filed clearable v-model="password" type="password" label="Password"/>
+                </q-form>
+              </q-card-section>
+              <q-card-actions class="q-px-md">
+                <q-btn unelevated color="orange-6" size="lg" class="full-width" label="Login" />              </q-card-actions>
+            </q-card>
+          </div>
+        </div>
+      </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+// import EssentialLink from 'components/EssentialLink.vue'
 
 const linksData = [
   {
@@ -99,7 +75,7 @@ const linksData = [
 
 export default {
   name: 'MainLayout',
-  components: { EssentialLink },
+  // components: { EssentialLink },
   data () {
     return {
       leftDrawerOpen: false,

@@ -1,13 +1,13 @@
-<template>
+<!--<template>-->
 
-</template>
+<!--</template>-->
 
-<script>
-export default {
-  name: "Register.vue"
-}
-</script>
+<!--<script>-->
+<!--export default {-->
+<!--  name: "Register.vue"-->
+<!--}-->
+<!--</script>-->
 
-<style scoped>
+<!--<style scoped>-->
 
-</style>
+<!--</style>-->

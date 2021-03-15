@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Quasar
+          Quasar App
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -41,7 +41,10 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+<!--      <router-view />-->
+<!--      Didn't add the auth function yet/ Add v-if later-->
+      <q-btn style="top: 100px; left: 300px" @click="loginRegisterClicked('login')" stretch label="Log in"></q-btn>
+      <q-btn style="top: 100px; left: 350px" @click="loginRegisterClicked('register')" stretch label="Register"></q-btn>
     </q-page-container>
   </q-layout>
 </template>

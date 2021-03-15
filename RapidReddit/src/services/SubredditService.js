@@ -9,6 +9,12 @@ export function getRefForSubreddits() {
 
 export function getRefForSubreddit(subredditId) {
      return firebase.database().ref('subreddits/' + subredditId)
+
    
 }
 
+export function addNewSubreddit(subredditName, user, description){
+    const timestamp = new Date().getTime()
+    const ref = firebase.database().ref(`subreddits`).push({name: subredditName, user: user, date_created: timestamp})
+    return ref.key
+}

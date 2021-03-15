@@ -22,13 +22,11 @@ export const Subreddit = ({ route, navigation, uid }) => {
 
     const {subredditId} = route.params
 
-    const [subreddits, setSubreddits] = useState({
-        meta: {
+    const [subreddit, setSubreddit] = useState({
             name: "",
             description: "",
             subscribers: 0,
             date_created: 0
-        }
     });
 
     useEffect(() => {
@@ -37,7 +35,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
 
         subredditRef.on('value', snapshot => {
             data = snapshot.val();
-            setSubreddits(data)
+            setSubreddit(data)
             window.console.log("data: ")
             window.console.log(data)
         })
@@ -53,7 +51,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
 
-                title={subreddits.meta.name}
+                title={subreddit.name}
 
                 left={!owner ?
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
@@ -73,7 +71,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
                     style={styles.achievements}
                 >
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{subreddits.meta.subscribers}</Text>
+                        <Text style={styles.subStatTitle}>{subreddit.subscribers}</Text>
                         <Text color={theme.COLORS.GREY}>Members</Text>
                     </Block>
                     <Block style={styles.displayScores}>
@@ -83,7 +81,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
 
                 </Block>
                 <Text style={styles.description}>
-                    {subreddits.meta.description}
+                    {subreddit.description}
                 </Text>
                 <Tab.Navigator>
                     <Tab.Screen

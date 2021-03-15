@@ -18,9 +18,8 @@ export const Explore = ({navigation}) => {
         const subredditsRef = SubredditService.getRefForSubreddits()
 
         subredditsRef.on('value', snapshot => {
-            window.console.log(snapshot.val())
-            window.console.log(Object.values(snapshot.val() || []))
-            setSubreddits(Object.values(snapshot.val() || []))
+            window.console.log(Object.keys(snapshot.val() || []))
+            setSubreddits(snapshot.val())
         })
 
         return function cleanup() {
@@ -39,9 +38,9 @@ export const Explore = ({navigation}) => {
             />
             <ScrollView>
                 <Block>
-                    {subreddits.map((val, idx) =>
-                        <TouchableOpacity component={SubredditPreview} key={idx} onPress={() => navigation.navigate('Subreddit', {subredditId: val})}>
-                            <SubredditPreview props={val}/>
+                    {Object.keys(subreddits || []).map((key, idx) =>
+                        <TouchableOpacity component={SubredditPreview} key={idx} onPress={() => navigation.navigate('Subreddit', {subredditId: key})}>
+                            <SubredditPreview props={subreddits[key]}/>
                         </TouchableOpacity>
                     )}
                     

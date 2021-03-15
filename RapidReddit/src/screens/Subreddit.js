@@ -41,7 +41,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
         })
 
         return function cleanup() {
-            ref.off('value')
+            subredditRef.off('value')
         }
 
 

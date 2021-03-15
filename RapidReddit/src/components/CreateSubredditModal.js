@@ -24,12 +24,13 @@ function RenderedAddButton(props) {
     )
 }
 
-export default function () {
+export default function (props) {
 
     const [createPostModalVisible, setCreatePostModalVisible] = useState(false);
     const [subredditName, setSubredditName] = useState('')
-    const [subredditDescription, setsubredditDescription] = useState('')
+    const [subredditDescription, setSubredditDescription] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const { subreadit, addButton } = props
     const navigation = useNavigation()
     const authentication = useContext(AuthenticationContext)
 
@@ -54,7 +55,7 @@ export default function () {
 
     return(
         <Block>
-            <RenderedAddButton AddButton={() => subredditName} setter={setCreatePostModalVisible}/>
+            <RenderedAddButton AddButton={() => addButton} setter={setCreatePostModalVisible}/>
             <Modal
                 visible={createPostModalVisible}
                 onRequestClose={() => setCreatePostModalVisible(false)}
@@ -75,7 +76,7 @@ export default function () {
                 <Block safe flex style={styles.modalContainer}>
                     <Input value={subredditName} onChangeText={text => setSubredditName(text)} label={"Subreddit Name"} placeholder="Subreddit Name"/>
                     <Block flex={4}>
-                        <Input value={subredditDescription} onChangeText={text => setsubredditDescription(text)} multiline numberOfLines={7} label={"Description"} placeholder="Description"/>
+                        <Input value={subredditDescription} onChangeText={text => setSubredditDescription(text)} multiline numberOfLines={7} label={"Description"} placeholder="Description"/>
                     </Block>
                     <Text>r/{subredditName}</Text>
                     <Text style={{color: 'red'}}>{errorMessage}</Text>

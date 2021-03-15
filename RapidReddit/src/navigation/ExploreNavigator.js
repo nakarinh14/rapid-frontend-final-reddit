@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Explore } from "../screens/Explore"
-import {Subreddit} from "../screens/Subreddit"
+import { Subreddit } from "../screens/Subreddit"
 
 export const ExploreNavigator = () => {
     const Stack = createStackNavigator();

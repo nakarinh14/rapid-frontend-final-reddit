@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
         position: 'absolute'
     },
     description:{
-        textAlign: 'center'
+        textAlign: 'center',
+        marginHorizontal: 30
     }
 });

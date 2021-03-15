@@ -5,6 +5,12 @@ import {CommunityPreview} from "../components/CommunityPreview";
 import theme from "../theme";
 import * as SubredditService from '../services/SubredditService'
 import SubredditPreview from "../components/SubredditPreview";
+import { Ionicons } from '@expo/vector-icons';
+import CreateSubredditModal from '../components/CreateSubredditModal'
+import CreatePostModal from '../components/CreatePostModal'
+
+
+
 
 
 
@@ -35,6 +41,16 @@ export const Explore = ({navigation}) => {
             <NavBar
                 titleStyle={{fontSize: 19, fontWeight: 'bold'}}
                 title="Explore"
+                style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
+                right={(
+                    <CreateSubredditModal navigation={navigation}
+                        //If you wanna use a custom add button to start the modal
+                        //                  addButton={(
+                        //     <Button>Test</Button>
+                        // )}
+
+                    />
+                )}
             />
             <ScrollView>
                 <Block>
@@ -44,6 +60,14 @@ export const Explore = ({navigation}) => {
                         </TouchableOpacity>
                     )}
                     
+                </Block>
+                <Block row center style={{marginTop: 30}} onpress={(<CreateSubredditModal navigation={navigation}/>)}>
+                    <Block style={{marginRight: 5}} center>
+                        <Ionicons name="create-outline" size={22} color={theme.COLORS.BLOCK}/>
+                    </Block>
+                    <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
+                        {'Create your own subreddit'}
+                    </Text>
                 </Block>
             </ScrollView>
         </Block>

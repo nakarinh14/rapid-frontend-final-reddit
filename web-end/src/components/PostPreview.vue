@@ -1,17 +1,31 @@
 <template>
-  <q-card className="my-card bg-secondary text-white">
+  <q-card class="my-card">
     <q-card-section>
-      <div><p>r/movies  Posted by u/crazy</p></div>
-      <div classname="title"><h6>Zack Snyder's Justice League | Official Trailer 2 | HBO Max</h6></div>
-      <p classname="content">{{ lorem }}</p>
+      <div>
+        <b class="inline group">{{ group }}</b>
+        <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
+        <p class="text-grey-7 inline-block author">Posted by {{ author }}</p>
+      </div>
+      <div class="title"><h6>{{ title }}</h6></div>
+      <p class="content">{{ content }}</p>
     </q-card-section>
-
-    <q-separator dark/>
-
-    <q-card-actions align="around">
-      <q-btn flat round color="red" icon="favorite" />
-      <q-btn flat round color="teal" icon="bookmark" />
-      <q-btn flat round color="primary" icon="share" />
+    <q-card-actions align="flex-start">
+      <div class="row items-center action">
+        <q-btn flat round color="grey" class="no-margin" icon="arrow_upward" />
+        <h6 class="text-subtitle2 text-grey-7">{{ karma }}</h6>
+        <q-btn flat round color="grey" class="no-margin" icon="arrow_downward" />
+      </div>
+      <div class="row items-center action">
+        <q-btn flat round color="grey" icon="comment" />
+        <p class="text-subtitle2 text-grey-7">{{ comment_freq }}</p>
+      </div>
+      <div class="row items-center action">
+        <q-btn flat round color="grey" icon="ios_share" />
+        <p class="text-subtitle2 text-grey-7">Share</p>
+      </div>
+      <div class="row items-center action">
+        <q-btn flat round color="grey" icon="bookmark" />
+      </div>
     </q-card-actions>
   </q-card>
 </template>
@@ -20,23 +34,38 @@
 export default {
   name: 'PostPreview',
   data () {
-    return {
-      lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-    }
+    return {}
+  },
+  props: {
+    group: String,
+    author: String,
+    title: String,
+    content: String,
+    karma: String,
+    comment_freq: String
   }
 }
 </script>
 
-<style lang="sass" scoped>
-.my-card
-  width: 100%
-  max-width: 250px
-.title
-  margin-top: 10px
-  margin-bottom: 10px
-h6
+<style scoped>
+.my-card {
+  width: 100%;
+  max-width: 600px
+}
+.title {
+  margin-top: 7px;
+  margin-bottom: 8px;
+}
+.action {
+  margin-right: 40px;
+}
+.group, .author{
+  font-size: 12px;
+}
+h6, p {
   margin: 0
-p
-  margin: 0
-
+}
+.action p{
+  margin-right: 11px;
+}
 </style>

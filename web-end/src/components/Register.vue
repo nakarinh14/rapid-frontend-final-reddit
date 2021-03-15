@@ -45,7 +45,7 @@
 
 <script>
 export default {
-  name: "Register.vue"
+  name: 'Register.vue'
 }
 </script>
 

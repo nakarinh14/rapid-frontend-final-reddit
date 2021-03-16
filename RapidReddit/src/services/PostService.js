@@ -28,6 +28,12 @@ export function addNewPost(subreadit, user, postTitle, description) {
     return ref.key
 }
 
+export async function increaseCommentCounter(postId) {
+    const ref = firebase.database().ref(`posts/${postId}`)
+    const postInfo = await ref.get()
+    return await ref.update({comments_freq: postInfo.val().comments_freq + 1})
+}
+
 export function getRefForUserPosts(user) {
     return firebase.database().ref('posts').orderByChild("user").equalTo(user)
 }

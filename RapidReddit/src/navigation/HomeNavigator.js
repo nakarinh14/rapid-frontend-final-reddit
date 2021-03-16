@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import {Home} from "../screens/Home";
 import {UserProfile} from "../screens/UserProfile";
+import {Login} from '../screens/Login'
+import {RegisterScreen} from "../screens/RegisterScreen";
 import Post from "../screens/Post";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 
@@ -33,6 +35,8 @@ export const HomeNavigator = () => {
                     component={UserProfile}
                     initialParams={{ owner: false }}
                 />
+                <Stack.Screen name={"Login"} component={Login}/>
+                <Stack.Screen name={"Register"} component={RegisterScreen}/>
             </Stack.Navigator>
         </AuthenticationContext.Provider>
     )

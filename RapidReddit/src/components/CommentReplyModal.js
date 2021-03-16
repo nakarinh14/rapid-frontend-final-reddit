@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
-import {Button, Platform, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
+import React, {useContext, useState} from 'react'
+import {ActivityIndicator, Button, Platform, StyleSheet, TextInput, TouchableOpacity, View, ToastAndroid} from "react-native";
 import {Icon, NavBar} from "galio-framework";
 import theme from "../theme";
 import {Comment} from "./Comment";
 import Modal from "react-native-modal";
+import AuthenticationContext from "../contexts/AuthenticationContext";
+import { addComment } from "../services/CommentsService";
 
 function RenderComment({replyComment}) {
     if(replyComment) return (
@@ -14,9 +16,25 @@ function RenderComment({replyComment}) {
     else return null
 }
 
-export default function({ replyComment, visible, visibilitySetter }) {
+export default function({ replyComment, visible, visibilitySetter, postId, commentPath }) {
 
     const [ commentText, setCommentText ] = useState('')
+    const [ addingComment, setAddingComment ] = useState(false)
+    // console.log('Comment path:',commentPath," post ID: ",postId)
+
+    const authentication = useContext(AuthenticationContext)
+
+    function createComment() {
+        setAddingComment(true)
+        addComment(postId,commentText,'username',commentPath).then(() => {
+            setAddingComment(false)
+            visibilitySetter(false)
+        }).catch((error) => {
+            console.error(error)
+            setAddingComment(false)
+            ToastAndroid.show("Something went wrong. Please try again later", ToastAndroid.SHORT)
+        })
+    }
 
     return (
         <Modal
@@ -41,7 +59,9 @@ export default function({ replyComment, visible, visibilitySetter }) {
                         />
                     </TouchableOpacity>
                 )}
-                right={(<Button title={"Post"} onPress={console.log}/>)}
+                right={
+                    addingComment?(<ActivityIndicator size={"small"}/>):(<Button title={"Post"} onPress={createComment}/>)
+                }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
             <View style={styles.content}>

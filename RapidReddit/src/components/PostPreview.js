@@ -118,7 +118,7 @@ export const PostPreview = (props) => {
                                 size={20}
                                 color={theme.COLORS.BLOCK}
                             />
-                            <CommentReplyModal visible={replyModal} visibilitySetter={setReplyModal}/>
+                            <CommentReplyModal visible={replyModal} visibilitySetter={setReplyModal} postId={post.id}/>
                         </Block>
                         <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
                             {post.comments_freq}

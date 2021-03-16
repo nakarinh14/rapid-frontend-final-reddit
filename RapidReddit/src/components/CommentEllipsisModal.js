@@ -29,6 +29,8 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
     const [isReplyModalVisible, setReplyModalVisible] = useState(false)
     const [listenToReply, setListenerReply] = useState(false)
 
+    // console.log("Comment modal:",previewCommentModal)
+
     const onClickReply = () => {
         setListenerReply(true)
         closeModal(false)
@@ -48,7 +50,10 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
             <CommentReplyModal
                 visible={isReplyModalVisible}
                 visibilitySetter={setReplyModalVisible}
-                replyComment={previewCommentModal}/>
+                replyComment={previewCommentModal.message}
+                commentPath={previewCommentModal.path}
+                postId={previewCommentModal.postId}
+            />
             <Modal
                 isVisible={isModalVisible}
                 swipeDirection={['up', 'left', 'right', 'down']}

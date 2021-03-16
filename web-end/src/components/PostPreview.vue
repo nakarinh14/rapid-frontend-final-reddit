@@ -5,6 +5,8 @@
         <b class="inline group">{{ group }}</b>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
         <p class="text-grey-7 inline-block author">Posted by {{ author }}</p>
+        <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
+        <p class="text-grey-7 inline-block author">{{ time_from_now }}</p>
       </div>
       <div class="title"><h6>{{ title }}</h6></div>
       <p class="content">{{ content }}</p>
@@ -40,7 +42,8 @@ export default {
     content: String,
     karma: String,
     comment_freq: String,
-    bordered: Boolean
+    bordered: Boolean,
+    time_from_now: String
   }
 }
 </script>

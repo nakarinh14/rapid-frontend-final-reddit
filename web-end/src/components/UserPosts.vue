@@ -1,35 +1,28 @@
 <template>
-  <q-page>
-    <div class="container column items-start justify-start content-center">
-      <div class="inner-container">
-        <div class="row content-center items-center title-bar">
-          <q-icon name="bed" style="font-size: 2.5em; color: #FF6F00"></q-icon>
-          <span class="text-grey-7 home-title">Home</span>
-        </div>
-        <post-preview
-          class="post-preview"
-          v-for="(post, idx) in posts"
-          :key="idx"
-          :group="post.group"
-          :author="post.author"
-          :title="post.title"
-          :content="post.content"
-          :karma="post.karma"
-          :comment_freq="post.comment_freq"
-          :time_from_now="post.timestamp.toRelative()"
-          :bordered="true"
-        />
-      </div>
-    </div>
-  </q-page>
+  <div>
+    <post-preview
+      class="post-preview"
+      v-for="(post, idx) in posts"
+      :key="idx"
+      :group="post.group"
+      :author="post.author"
+      :title="post.title"
+      :content="post.content"
+      :karma="post.karma"
+      :comment_freq="post.comment_freq"
+      :time_from_now="post.timestamp.toRelative()"
+      :bordered="true"
+    />
+  </div>
 </template>
 
 <script>
 import PostPreview from 'components/PostPreview'
 import { DateTime } from 'luxon'
 
+// Trigger a fetch API here once mounted, with input of user's uid
 export default {
-  name: 'HomeView',
+  name: 'UserPosts',
   components: { PostPreview },
   data: function () {
     return {
@@ -95,24 +88,7 @@ export default {
 </script>
 
 <style scoped>
-.inner-container {
-  background-color: #fafafa;
-  width: 100%;
-  max-width: 725px;
-  margin-top: 25px;
-}
-.container{
-  background-color: #fafafa;
-}
 .post-preview {
   margin-bottom: 12px;
-}
-.home-title {
-  font-weight: 600;
-  font-size: 32px;
-  margin-left: 10px
-}
-.title-bar {
-  margin-bottom: 10px;
 }
 </style>

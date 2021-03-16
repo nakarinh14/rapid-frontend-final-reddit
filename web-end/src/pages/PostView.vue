@@ -2,13 +2,14 @@
   <q-page>
     <div class="container column items-start justify-start content-center">
       <div class="inner-container">
-        <PostPreview
+        <post-preview
           :group="post.group"
           :author="post.author"
           :title="post.title"
           :content="post.content"
           :karma="post.karma"
           :comment_freq="post.comment_freq"
+          :time_from_now="post.timestamp.toRelative()"
         />
         <q-separator />
         <div class="comment-section">
@@ -28,6 +29,7 @@
 <script>
 import RecursiveNestedCollapse from 'components/RecursiveNestedCollapse'
 import PostPreview from 'components/PostPreview'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'PostView',
@@ -40,7 +42,8 @@ export default {
         title: 'This is awesome post',
         content: 'This is a really awesome post',
         karma: '10',
-        comment_freq: '1000'
+        comment_freq: '1000',
+        timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
       },
       comments: {
         1: {

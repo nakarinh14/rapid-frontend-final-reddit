@@ -1,24 +1,29 @@
 <template>
   <q-page>
     <div class="container column items-start justify-start content-center">
-      <div class="inner-container fit row wrap justify-start items-start content-start" style="overflow: hidden">
-        <div class="row content-center items-center title-bar">
-          <q-icon name="bed" style="font-size: 2.5em; color: #FF6F00"></q-icon>
-          <span class="text-grey-7 home-title">Home</span>
+      <div class="row content-center items-center title-bar">
+        <q-icon name="bed" style="font-size: 2.5em; color: #FF6F00"></q-icon>
+        <span class="text-grey-7 home-title">Home</span>
+      </div>
+      <div class="inner-container fit row wrap justify-start items-start content-start">
+        <div>
+          <post-preview
+            class="post-preview"
+            v-for="(post, idx) in posts"
+            :key="idx"
+            :group="post.group"
+            :author="post.author"
+            :title="post.title"
+            :content="post.content"
+            :karma="post.karma"
+            :comment_freq="post.comment_freq"
+            :time_from_now="post.timestamp.toRelative()"
+            :bordered="true"
+          />
         </div>
-        <post-preview
-          class="post-preview"
-          v-for="(post, idx) in posts"
-          :key="idx"
-          :group="post.group"
-          :author="post.author"
-          :title="post.title"
-          :content="post.content"
-          :karma="post.karma"
-          :comment_freq="post.comment_freq"
-          :time_from_now="post.timestamp.toRelative()"
-          :bordered="true"
-        />
+        <div>
+          <SubredditSuggestions/>
+        </div>
       </div>
     </div>
   </q-page>
@@ -27,10 +32,11 @@
 <script>
 import PostPreview from 'components/PostPreview'
 import { DateTime } from 'luxon'
+import SubredditSuggestions from 'components/SubredditSuggestions'
 
 export default {
   name: 'HomeView',
-  components: { PostPreview },
+  components: { SubredditSuggestions, PostPreview },
   data: function () {
     return {
       posts: {
@@ -98,8 +104,7 @@ export default {
 .inner-container {
   background-color: #fafafa;
   width: 100%;
-  max-width: 725px;
-  margin-top: 25px;
+  max-width: 1000px;
 }
 .container{
   background-color: #fafafa;
@@ -113,6 +118,6 @@ export default {
   margin-left: 10px
 }
 .title-bar {
-  margin-bottom: 10px;
+  margin: 10px;
 }
 </style>

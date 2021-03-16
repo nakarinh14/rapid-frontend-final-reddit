@@ -1,5 +1,5 @@
 <template>
-  <q-card class="my-card">
+  <q-card flat :bordered="bordered" class="my-card">
     <q-card-section>
       <div>
         <b class="inline group">{{ group }}</b>
@@ -33,16 +33,14 @@
 <script>
 export default {
   name: 'PostPreview',
-  data () {
-    return {}
-  },
   props: {
     group: String,
     author: String,
     title: String,
     content: String,
     karma: String,
-    comment_freq: String
+    comment_freq: String,
+    bordered: Boolean
   }
 }
 </script>
@@ -50,11 +48,17 @@ export default {
 <style scoped>
 .my-card {
   width: 100%;
-  max-width: 600px
+  max-width: 725px
 }
 .title {
   margin-top: 7px;
   margin-bottom: 8px;
+}
+.title h6 {
+  font-size: 21px
+}
+.content {
+  font-size: 15px
 }
 .action {
   margin-right: 40px;

@@ -1,26 +1,28 @@
 <template>
-  <div class="container column items-start justify-start content-center">
-    <div class="inner-container">
-      <PostPreview
-        :group="post.group"
-        :author="post.author"
-        :title="post.title"
-        :content="post.content"
-        :karma="post.karma"
-        :comment_freq="post.comment_freq"
-      />
-      <q-separator />
-      <div class="comment-section">
-        <recursive-nested-collapse
-          v-for="comment in comments"
-          :key="comment.id"
-          :author="comment.author"
-          :content="comment.content"
-          :data="comment.comments"
+  <q-page>
+    <div class="container column items-start justify-start content-center">
+      <div class="inner-container">
+        <PostPreview
+          :group="post.group"
+          :author="post.author"
+          :title="post.title"
+          :content="post.content"
+          :karma="post.karma"
+          :comment_freq="post.comment_freq"
         />
+        <q-separator />
+        <div class="comment-section">
+          <recursive-nested-collapse
+            v-for="comment in comments"
+            :key="comment.id"
+            :author="comment.author"
+            :content="comment.content"
+            :data="comment.comments"
+          />
+        </div>
       </div>
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script>

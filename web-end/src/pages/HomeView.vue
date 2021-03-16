@@ -6,7 +6,7 @@
         <span class="text-grey-7 home-title">Home</span>
       </div>
       <div class="inner-container fit row wrap justify-start items-start content-start">
-        <div>
+        <div class="col">
           <post-preview
             class="post-preview"
             v-for="(post, idx) in posts"
@@ -21,7 +21,7 @@
             :bordered="true"
           />
         </div>
-        <div>
+        <div class="col-3 suggestion">
           <SubredditSuggestions/>
         </div>
       </div>
@@ -119,5 +119,8 @@ export default {
 }
 .title-bar {
   margin: 10px;
+}
+.suggestion {
+  margin-left: 30px;
 }
 </style>

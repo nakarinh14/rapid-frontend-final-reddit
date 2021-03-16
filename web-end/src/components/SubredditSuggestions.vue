@@ -51,8 +51,7 @@ export default {
 
 <style scoped>
 .subredditCard {
-  width: 350px;
-  margin-left: 30px;
+  width: 100%;
 }
 .subredditCardHeader {
   background-color: #FF6F00;

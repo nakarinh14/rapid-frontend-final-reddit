@@ -50,7 +50,7 @@ export default {
 
 <style scoped>
 .my-card {
-  width: 600px;
+  width: 100%;
   max-width: 725px
 }
 .title {

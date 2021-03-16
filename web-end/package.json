@@ -16,8 +16,13 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
+<<<<<<< HEAD
     "quasar": "^1.15.5",
     "vue": "^2.6.12"
+=======
+    "luxon": "^1.26.0",
+    "quasar": "^1.0.0"
+>>>>>>> 6c5e29adccbbf40e3f9fb97241f489c35207da10
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",

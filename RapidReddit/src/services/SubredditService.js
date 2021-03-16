@@ -1,5 +1,6 @@
 import {firebase} from '../firebase'
-
+import { Subreddit } from '../screens/Subreddit'
+import * as SubredditUserService from '../services/SubredditUserService'
 
 
 
@@ -23,7 +24,7 @@ export function addNewSubreddit(subredditName, user, description){
         description: description,
     }
 
-    obj[user] = admin
-    const ref = firebase.database().ref(`subreddits`).push(obj)
-    return ref.key
+    var subredditId = firebase.database().ref('subreddits').push(obj).key
+    SubredditUserService.addSubredditUserRole(subredditId, "user", "admin")
+
 }

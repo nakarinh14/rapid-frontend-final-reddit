@@ -21,7 +21,7 @@ const paddedFlex = (depth) => {
     return indents[idx]
 }
 
-export const Comment = ({ comment, depth, preview }) => {
+export const Comment = ({ comment, depth, preview, path }) => {
 
     const navigation = useNavigation();
     const setPreviewComment = useContext(CommentModalContext);
@@ -59,7 +59,7 @@ export const Comment = ({ comment, depth, preview }) => {
                         <Block style={styles.topRightFlex}>
                             {preview ? null :
                                 <TouchableOpacity
-                                    onPress={() => setPreviewComment(comment)}
+                                    onPress={() => setPreviewComment(comment, path)}
                                 >
                                     <View style={{marginRight: 7}}>
                                         <Ionicons

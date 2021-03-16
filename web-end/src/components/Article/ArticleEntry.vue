@@ -1,7 +1,6 @@
 <template>
   <q-item class="column" clickable>
     <div class="row">
-
       <!-- Article Title and info -->
       <q-item-section class="col">
         <q-item-label lines="1">
@@ -18,6 +17,13 @@
           </router-link>
           <span> on {{article.postedTime | formatDate}}</span>
         </q-item-label>
+
+<!--        Comment and Share button-->
+        <q-item-label lines="1" class="text-grey text-weight-bold">
+          <q-btn class="q-ml-sm" dense flat size="xs" icon="chat_bubble" :label="'' + article.comments + ' Comments'" />
+          <q-btn @click.stop="shareClicked" class="q-ml-sm" dense flat size="xs" icon="share" label="Share" />
+        </q-item-label>
+
       </q-item-section>
     </div>
   </q-item>
@@ -25,7 +31,7 @@
 
 <script>
 export default {
-name: "ArticleEntry.vue"
+  name: 'ArticleEntry.vue'
 }
 </script>
 

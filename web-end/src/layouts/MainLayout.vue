@@ -18,8 +18,8 @@
   </div>
 
 <!--    Sort/CreatePost Bar-->
-    <div class="q-pt-md q-pl-md q-pr-md text-white">
-      <q-list dark bordered class="bg-grey-10 rounded-borders">
+    <div class="q-pt-md q-pl-md q-pr-md text-black">
+      <q-list dark bordered class="bg-grey-5 rounded-borders">
         <q-item class="q-mt-sm q-mb-sm">
           <div class="q-gutter-sm">
             <q-radio dark v-model="sortBy" val="hot" label="Hot" />
@@ -40,7 +40,7 @@
     </div>
 
     <!--    List of articles-->
-    <q-list dark bordered separator class="bg-grey-3 rounded-borders">
+    <q-list bordered separator class="bg-grey-3 rounded-borders">
       <q-infinite-scroll @load="loadMoreArticles" :offset="250" ref="infiniteScroll">
         <q-item v-for="article in articles" :key="article.articleID" class="column" clickable>
           <div class="row">
@@ -65,6 +65,8 @@
                 <q-btn class="q-ml-sm" dense flat size="xs" icon="chat_bubble" :label="'' + article.comments + ' Comments'" />
                 <q-btn @click.stop="shareClicked" class="q-ml-sm" dense flat size="xs" icon="share" label="Share" />
               </q-item-label>
+
+              <q-space/>
             </q-item-section>
           </div>
         </q-item>

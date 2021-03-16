@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container column items-start justify-start content-center">
-      <div class="inner-container">
+      <div class="inner-container fit row wrap justify-start items-start content-start" style="overflow: hidden">
         <div class="row content-center items-center title-bar">
           <q-icon name="bed" style="font-size: 2.5em; color: #FF6F00"></q-icon>
           <span class="text-grey-7 home-title">Home</span>

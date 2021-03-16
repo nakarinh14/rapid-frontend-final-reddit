@@ -1,7 +1,7 @@
 <template>
   <div id="q-app">
     <q-layout view="lHh lpr lFf">
-      <q-header reveal style="background-color: #D84315">
+      <q-header reveal elevated style="background-color: #E65100">
         <q-toolbar>
           <q-btn flat round dense icon="menu" class="q-mr-sm" />
           <q-icon style="font-size: 32px;" name="auto_stories"/>

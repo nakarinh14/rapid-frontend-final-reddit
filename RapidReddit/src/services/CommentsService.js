@@ -18,6 +18,7 @@ export async function addComment(postId, comment, user, commentPath) {
         commentPath = `/${commentPath}`
         console.log("Formatted comment path:",commentPath)
     }
+    if(!comment) throw Error("Comment is empty")
     const ref = firebase.database().ref(`comments/${postId}${commentPath || ''}`).push(commentItem)
     await increaseCommentCounter(postId)
     return ref.key

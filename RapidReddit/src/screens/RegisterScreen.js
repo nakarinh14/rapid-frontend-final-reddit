@@ -3,8 +3,9 @@ import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } f
 import { firebase } from "../firebase";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import 'firebase/auth'
+import {useNavigation} from "@react-navigation/native";
 
-export const RegisterScreen = ({ navigation }) => {
+export const RegisterScreen = () => {
 
     const [displayName, setDisplayName] = useState("")
     const [email, setEmail] = useState("")
@@ -13,6 +14,7 @@ export const RegisterScreen = ({ navigation }) => {
     const [errorMessage, setErrorMessage] = useState('')
 
     const authentication = useContext(AuthenticationContext)
+    const navigation = useNavigation()
 
     const registerUser = async () => {
         if(email === '' && password === '') {
@@ -30,8 +32,9 @@ export const RegisterScreen = ({ navigation }) => {
 
 
                 console.log('User registered successfully!')
-                authentication.loginUser(user)
-                // navigation.navigate('Login')
+                authentication.loginUser(user.user)
+                navigation.popToTop()
+                navigation.goBack()
             } catch (error) {
                 setErrorMessage(error.message)
             } finally {
@@ -80,7 +83,7 @@ export const RegisterScreen = ({ navigation }) => {
             </Text>
             <Text
                 style={styles.loginText}
-                onPress={() => navigation.navigate('Login')}>
+                onPress={() => navigation.navigate('LoginScreen')}>
                 Already Registered? Click here to login
             </Text>
         </View>

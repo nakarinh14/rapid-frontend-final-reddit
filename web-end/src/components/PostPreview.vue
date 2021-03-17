@@ -21,9 +21,10 @@
         <q-btn flat round color="grey" icon="comment" />
         <p class="text-subtitle2 text-grey-7">{{ comment_freq }}</p>
       </div>
-      <div class="row items-center action">
-        <q-btn flat round color="grey" icon="ios_share" />
-        <p class="text-subtitle2 text-grey-7">Share</p>
+      <div class="row item-center action">
+        <q-btn flat text-color="grey" icon="ios_share" no-caps>
+          <p class="text-subtitle2 text-grey-7" style="margin-left: 9px">Share</p>
+        </q-btn>
       </div>
       <div class="row items-center action">
         <q-btn flat round color="grey" icon="bookmark" />

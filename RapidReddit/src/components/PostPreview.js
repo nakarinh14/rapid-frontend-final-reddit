@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {useNavigation} from "@react-navigation/native";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import CommentReplyModal from "./CommentReplyModal";
+import { getDisplayDate } from "../utils/PostUtils";
 
 const { width } = Dimensions.get('screen');
 
@@ -82,7 +83,7 @@ export const PostPreview = (props) => {
                     </Block>
                     <Block center row>
                         <Ionicons name="ios-time-outline" size={15} color={theme.COLORS.BLOCK} />
-                        <Text size={14} color={theme.COLORS.BLOCK}>{'2h'}</Text>
+                        <Text size={14} color={theme.COLORS.BLOCK}>{getDisplayDate(post.created)}</Text>
                     </Block>
                 </Block>
                 <Block row style={styles.bottomActions}>

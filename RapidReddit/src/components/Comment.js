@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import CommentModalContext from "./CommentModalContext";
 import {useNavigation} from "@react-navigation/native";
+import { getDisplayDate } from "../utils/PostUtils";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -72,7 +73,7 @@ export const Comment = ({ comment, depth, preview, path }) => {
                             }
                             <View>
                                 <Text style={styles.timestampText}>
-                                    {comment.timestamp}
+                                    {getDisplayDate(comment.timestamp)}
                                 </Text>
                             </View>
                         </Block>

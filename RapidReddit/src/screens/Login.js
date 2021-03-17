@@ -15,7 +15,7 @@ export const Login = ({navigation}) => {
         try {
             const response = await firebase.auth().signInWithEmailAndPassword(email, password)
             if (response) {
-                console.log(response)
+                // console.log(response)
                 authentication.loginUser(response.user)
                 navigation.popToTop()
                 navigation.goBack()
@@ -31,10 +31,14 @@ export const Login = ({navigation}) => {
             <Input
                 placeholder="email"
                 onChangeText={text => setEmail(text)}
+                textContentType={"emailAddress"}
+                keyboardType={"email-address"}
             />
             <Input
                 placeholder="password"
                 onChangeText={text => setPassword(text)}
+                textContentType={"password"}
+                secureTextEntry={true}
             />
             <Button title="Login" onPress={() => loginUser()}/>
             <Block>

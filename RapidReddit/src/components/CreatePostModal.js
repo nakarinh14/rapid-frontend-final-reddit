@@ -37,15 +37,24 @@ export default function (props) {
     //Subreadit - The subreadit to add the post to
 
     function addPost() {
-        try {
-            const key = addNewPost(subreadit,authentication.user || "username", postTitle, postContent)
-            console.log(key)
+        if(!authentication.user){
+            navigation.push("Login")
             setCreatePostModalVisible(false)
-            // navigation.push("Post")
+        }
+        try {
+            const key = addNewPost(subreadit,authentication.user.displayName, postTitle, postContent)
+            // console.log(key)
+            setCreatePostModalVisible(false)
+            setErrorMessage('')
+            setPostContent('')
+            setPostTitle('')
+            navigation.push("Post",{postId: key})
+
         }catch (e) {
+            console.error(e)
             if (e.code === 3) {
                 // TODO User not logged in. Redirect to login
-                console.log("User not logged in. Should redirect to login")
+                console.error("User not logged in. Should redirect to login")
                 // navigation.push("Login")
             }
             else setErrorMessage(e.message)
@@ -57,7 +66,7 @@ export default function (props) {
             <RenderedAddButton AddButton={() => addButton} setter={setCreatePostModalVisible}/>
             <Modal
                 visible={createPostModalVisible}
-                onRequestClose={() => setCreatePostModalVisible(false)}
+                onRequestClose={() => {setCreatePostModalVisible(false)}}
             >
                 <NavBar
                     title="Create new post"

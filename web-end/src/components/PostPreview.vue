@@ -4,11 +4,25 @@
       <div>
         <b class="inline group">{{ group }}</b>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
-        <p class="text-grey-7 inline-block author">Posted by {{ author }}</p>
+        <router-link
+          :to="`/user/${author}`"
+        >
+          <p class="text-grey-7 inline-block author direct">
+            Posted by {{ author }}
+          </p>
+        </router-link>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
         <p class="text-grey-7 inline-block author">{{ time_from_now }}</p>
       </div>
-      <div class="title"><h6>{{ title }}</h6></div>
+      <div class="title">
+        <router-link
+          :to="`/post/${id}`"
+          tag="h6"
+          class="direct"
+        >
+          {{ title }}
+        </router-link>
+      </div>
       <p class="content">{{ content }}</p>
     </q-card-section>
     <q-card-actions align="flex-start">
@@ -36,6 +50,7 @@
 <script>
 export default {
   name: 'PostPreview',
+  // Might change karma type and comment freq type into number
   props: {
     group: String,
     author: String,
@@ -44,7 +59,8 @@ export default {
     karma: String,
     comment_freq: String,
     bordered: Boolean,
-    time_from_now: String
+    time_from_now: String,
+    id: String
   }
 }
 </script>
@@ -59,7 +75,11 @@ export default {
   margin-bottom: 8px;
 }
 .title h6 {
-  font-size: 21px
+  font-size: 21px;
+  cursor: pointer;
+}
+.direct:hover {
+  text-decoration: underline;
 }
 .content {
   font-size: 15px

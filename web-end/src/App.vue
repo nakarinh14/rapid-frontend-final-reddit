@@ -4,8 +4,9 @@
       <q-header reveal elevated style="background-color: #E65100">
         <q-toolbar>
           <q-btn flat round dense icon="menu" class="q-mr-sm" />
-          <q-icon style="font-size: 32px;" name="auto_stories"/>
-          <q-toolbar-title>read-it</q-toolbar-title>
+          <q-btn :ripple="false" flat style="font-size: 18px;" icon="auto_stories" to="/" no-caps>
+            <q-toolbar-title>read-it</q-toolbar-title>
+          </q-btn>
         </q-toolbar>
       </q-header>
       <q-page-container>

@@ -32,8 +32,9 @@
                 <q-btn flat round color="grey" class="no-margin" icon="arrow_downward" />
               </div>
               <div class="row items-center action">
-                <q-btn flat round color="grey" icon="comment" />
-                <span class="text-subtitle2 text-grey-7">Reply</span>
+                <q-btn flat text-color="grey" icon="comment" no-caps>
+                  <span class="text-subtitle2 text-grey-7" style="margin-left: 7px">Reply</span>
+                </q-btn>
               </div>
             </div>
           </div>

@@ -4,8 +4,7 @@ node_modules
 
 # Quasar core related directories
 .quasar
-# To read _redirects directly on build file
-#/dist
+/dist
 
 # Cordova related directories and files
 /src-cordova/node_modules

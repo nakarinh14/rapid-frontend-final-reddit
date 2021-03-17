@@ -5,11 +5,11 @@ const routes = [
     component: () => import('../pages/HomeView.vue')
   },
   {
-    path: '/post',
+    path: '/post/:id',
     component: () => import('../pages/PostView.vue')
   },
   {
-    path: '/user',
+    path: '/user/:id',
     component: () => import('../pages/UserProfile.vue')
   },
   // Always leave this as last one,

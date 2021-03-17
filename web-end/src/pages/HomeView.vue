@@ -19,6 +19,7 @@
             :comment_freq="post.comment_freq"
             :time_from_now="post.timestamp.toRelative()"
             :bordered="true"
+            :id="idx"
           />
         </div>
         <div class="col-3 suggestion">

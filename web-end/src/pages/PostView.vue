@@ -18,6 +18,8 @@
             :key="comment.id"
             :author="comment.author"
             :content="comment.content"
+            :karma="comment.karma"
+            :time_from_now="comment.timestamp.toRelative()"
             :data="comment.comments"
           />
         </div>
@@ -27,6 +29,7 @@
 </template>
 
 <script>
+// Use $route or something to retrieve the id for url param here
 import RecursiveNestedCollapse from 'components/RecursiveNestedCollapse'
 import PostPreview from 'components/PostPreview'
 import { DateTime } from 'luxon'
@@ -49,36 +52,42 @@ export default {
         1: {
           author: 'some guy 1',
           content: 'This is a great way of dealing this',
-          like: 11,
+          karma: 11,
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day'),
           comments: {
             3: {
               author: 'some guy 2',
               content: 'This is a great way of dealing this',
               like: 12,
+              timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day'),
               comments: {
                 3: {
                   author: 'some guy 2',
                   content: 'This is a great way of dealing this',
-                  like: 12
+                  timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day'),
+                  karma: 12
                 }
               }
             },
             4: {
               author: 'some guy 2',
               content: 'This is a great way of dealing this',
-              like: 12
+              timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day'),
+              karma: 12
             }
           }
         },
         2: {
           author: 'some guy 3',
           content: 'This is a great way of dealing this',
-          like: 13,
+          karma: 13,
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day'),
           comments: {
             4: {
               author: 'some guy 4',
               content: 'This is a great way of dealing this',
-              like: 14
+              timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day'),
+              karma: 14
             }
           }
         }
@@ -96,9 +105,10 @@ export default {
 .inner-container {
   background-color: #ffffff;
   width: 100%;
-  max-width: 725px;
+  max-width: 1000px;
 }
 .container{
   background-color: #fafafa;
+  margin-top: 30px
 }
 </style>

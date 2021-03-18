@@ -18,9 +18,7 @@ export default function App() {
 
     const authentication = {
         user: loggedInUser,
-        isLoggedIn: () => loggedInUser !== null,
-        loginUser: (user) => setLoggedInUser(user),
-        logoutUser: () => setLoggedInUser(null)
+        isLoggedIn: () => loggedInUser !== null
     }
 
     useEffect(() => {

@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import {
     StyleSheet,
-    Text,
     View,
-    TextInput,
-    Button,
     Alert,
     ActivityIndicator,
     TouchableOpacity,
-    Platform, ScrollView
+    Platform
+    , KeyboardAvoidingView
 } from 'react-native';
-import { firebase } from "../firebase";
-import 'firebase/auth'
-import {Block, Icon, NavBar} from "galio-framework";
+import { Input } from 'react-native-elements';
+import {Block, Button, Icon, NavBar} from "galio-framework";
 import theme from "../theme";
+import {registerNewUser} from "../services/AuthService";
 
 export const RegisterScreen = ({ navigation }) => {
 
@@ -21,7 +19,6 @@ export const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
 
     const registerUser = async () => {
         if(email === '' && password === '') {
@@ -29,19 +26,12 @@ export const RegisterScreen = ({ navigation }) => {
         } else {
             try{
                 setIsLoading(true)
-                const user = await firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(email, password)
-
-                await user.user.updateProfile({
-                    displayName: displayName
-                })
-
+                await registerNewUser(email, password, displayName)
                 console.log('User registered successfully!')
                 navigation.popToTop()
                 navigation.goBack()
             } catch (error) {
-                setErrorMessage(error.message)
+                Alert.alert(error.message)
             } finally {
                 setIsLoading(false)
             }
@@ -73,39 +63,79 @@ export const RegisterScreen = ({ navigation }) => {
                 )}
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
-            <ScrollView contentContainerStyle={styles.container}>
-                <TextInput
-                    style={styles.inputStyle}
-                    placeholder="Name"
+            <KeyboardAvoidingView
+                style={styles.container}
+                enabled
+                behavior={ Platform.OS === 'ios'? 'padding': 'height'}
+            >
+                <Input
+                    label="Display Name"
+                    placeholder='Enter Display Name'
+                    returnKeyType="next"
+                    inputStyle={styles.inputTextStyle}
                     value={displayName}
+                    leftIcon={
+                        <Icon
+                            name="person"
+                            family="ionicons"
+                            size={16}
+                            color='grey'
+                        />
+                    }
                     onChangeText={(val) => setDisplayName(val)}
+                    autoCapitalize='none'
                 />
-                <TextInput
-                    style={styles.inputStyle}
-                    placeholder="Email"
+                <Input
+                    label="Email"
+                    placeholder='yours@example.com'
+                    textContentType='emailAddress'
+                    keyboardType="email-address"
+                    autoCompleteType="email"
+                    returnKeyType="next"
+                    inputStyle={styles.inputTextStyle}
                     value={email}
+                    leftIcon={
+                        <Icon
+                            name='mail'
+                            family="ionicons"
+                            size={16}
+                            color='grey'
+                        />
+                    }
                     onChangeText={(val) => setEmail(val)}
+                    autoCapitalize='none'
                 />
-                <TextInput
-                    style={styles.inputStyle}
-                    placeholder="Password"
+                <Input
+                    label="Password"
+                    placeholder='Enter password'
+                    textContentType='newPassword'
+                    returnKeyType="done"
                     value={password}
+                    inputStyle={styles.inputTextStyle}
+                    autoCorrect={false}
+                    leftIcon={
+                        <Icon
+                            name='lock'
+                            family="ionicons"
+                            size={16}
+                            color='grey'
+                        />
+                    }
                     onChangeText={(val) => setPassword(val)}
-                    maxLength={15}
                     secureTextEntry={true}
+                    autoCapitalize='none'
                 />
                 <Button
-                    color="#3740FE"
-                    title="Signup"
+                    mode='contained'
+                    color="#1976D2"
+                    shadowless
                     onPress={registerUser}
-                />
-                <Text>
-                    {errorMessage}
-                </Text>
-            </ScrollView>
+                >
+                    Sign Up
+                </Button>
+            </KeyboardAvoidingView>
         </Block>
     );
-
 }
 
 const styles = StyleSheet.create({
@@ -114,21 +144,24 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: 35,
+        alignItems: 'center',
+        padding: 20,
         backgroundColor: '#fff'
     },
-    inputStyle: {
-        width: '100%',
-        marginBottom: 15,
-        paddingBottom: 15,
-        alignSelf: "center",
-        borderColor: "#ccc",
-        borderBottomWidth: 1
+    errorMessageText: {
+        color: 'red',
+        fontSize: 14,
+        marginBottom: 10,
+    },
+    inputTextStyle:{
+        fontSize: 16,
+        marginLeft: 10
     },
     loginText: {
-        color: '#3740FE',
+        color: '#1976D2',
         marginTop: 25,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 13
     },
     preloader: {
         left: 0,

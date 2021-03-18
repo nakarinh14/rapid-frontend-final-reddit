@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
@@ -7,40 +7,51 @@ import theme from '../theme';
 import SubredditAbout from "../components/UserComments";
 import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
+import PostListComponent from "../components/PostListComponent";
+import * as SubredditService from '../services/SubredditService'
 
-const subreddit = {
-    namePage: "testPage",
-    members: 1200,
-    online: 980,
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu lacus et nulla aliquet ullamcorper. Integer eget nulla arcu. Pellentesque sodales sit amet orci sed vehicula. "
-};
+
+const online = 980;
+
+
+const owner = true;
 
 const Tab = createMaterialTopTabNavigator();
 
-const useMockData = true
-
 export const Subreddit = ({ route, navigation, uid }) => {
+
+    const {subredditId} = route.params
+
+    const [subreddit, setSubreddit] = useState({
+            name: "",
+            description: "",
+            subscribers: 0,
+            date_created: 0
+    });
 
     useEffect(() => {
 
-        if(useMockData){
-            setUserStats(subreddit)
-            return
+        const subredditRef = SubredditService.getRefForSubreddit(subredditId)
+
+        subredditRef.on('value', snapshot => {
+            data = snapshot.val();
+            setSubreddit(data)
+            window.console.log("data: ")
+            window.console.log(data)
+        })
+
+        return function cleanup() {
+            subredditRef.off('value')
         }
 
-        const ref = firebase.database().ref(`user_profile/${uid}/stats`)
-        ref.on('value', (snapshot) => {
-            if(snapshot.exists()){
-                setUserStats(snapshot.val())
-            }
-        })
-    })
+
+    },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
 
-                title={subreddit.namePage}
+                title={subreddit.name}
 
                 left={!owner ?
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
@@ -60,22 +71,22 @@ export const Subreddit = ({ route, navigation, uid }) => {
                     style={styles.achievements}
                 >
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{subreddit.members}</Text>
+                        <Text style={styles.subStatTitle}>{subreddit.subscribers}</Text>
                         <Text color={theme.COLORS.GREY}>Members</Text>
                     </Block>
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{subreddit.online}</Text>
+                        <Text style={styles.subStatTitle}>{online}</Text>
                         <Text color={theme.COLORS.GREY}>Online</Text>
                     </Block>
 
                 </Block>
-                <Text>
-                    {subreddit.Description}
+                <Text style={styles.description}>
+                    {subreddit.description}
                 </Text>
                 <Tab.Navigator>
                     <Tab.Screen
                         name="Posts"
-                        component={UserPosts}
+                        component={PostListComponent} subreadit={subredditId}
                     />
                     <Tab.Screen
                         name="About"
@@ -114,5 +125,9 @@ const styles = StyleSheet.create({
     attachTop:{
         top: 0,
         position: 'absolute'
+    },
+    description:{
+        textAlign: 'center',
+        marginHorizontal: 30
     }
 });

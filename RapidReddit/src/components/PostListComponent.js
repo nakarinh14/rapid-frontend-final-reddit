@@ -47,7 +47,11 @@ export default function({subreadit, user}) {
 
     useEffect(() => {
         ref.on('value', snapshot => {
-            setPosts(Object.values(snapshot.val() || []))
+            const data = snapshot.val() || []
+            Object.keys(data).map(v => {
+                data[v].id = v
+            })
+            setPosts(Object.values(data))
             setLoadingState(false)
         })
         return function cleanup() {

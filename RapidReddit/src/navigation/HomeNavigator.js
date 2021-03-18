@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import {Home} from "../screens/Home";
 import {UserProfile} from "../screens/UserProfile";
+import {Login} from '../screens/Login'
 import Post from "../screens/Post";
 import AuthenticationContext from "../contexts/AuthenticationContext";
+import AuthenticationNavigator from "./AuthenticationNavigator";
 
 const Stack = createStackNavigator();
 
@@ -33,6 +35,7 @@ export const HomeNavigator = () => {
                     component={UserProfile}
                     initialParams={{ owner: false }}
                 />
+                <Stack.Screen name={"Login"} component={AuthenticationNavigator}/>
             </Stack.Navigator>
         </AuthenticationContext.Provider>
     )

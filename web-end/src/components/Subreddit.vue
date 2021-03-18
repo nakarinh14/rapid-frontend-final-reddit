@@ -1,18 +1,6 @@
 <template>
-  <div>
+  <q-page>
     <!--    Header-->
-    <q-toolbar class="bg-orange-8 text-white">
-      <q-avatar @click="linkToHome" class="cursor-pointer">
-        <img src="https://www.vectorico.com/download/social_media/Reddit-Icon.png" />
-      </q-avatar>
-
-      <q-toolbar-title @click="linkToHome" class="cursor-pointer">
-        Reddit
-      </q-toolbar-title>
-
-      <q-input @keydown.enter.prevent="submitSearch" class="q-ml-xl" style="width: 400px" dark clearable outlined dense standout v-model="searchText" label="Search" :maxlength="searchTermMaxLen" />
-      <q-space />
-    </q-toolbar>
     <div class="text-h6 text-black q-mt-md q-ml-lg">
       Welcome to <span class="text-blue">r/Test</span>!
     </div>
@@ -40,44 +28,94 @@
     </div>
 
     <!--    List of articles-->
-    <q-list bordered separator class="bg-grey-3 rounded-borders">
-      <q-infinite-scroll @load="loadMoreArticles" :offset="250" ref="infiniteScroll">
-        <q-item v-for="article in articles" :key="article.articleID" class="column" clickable>
-          <div class="row">
-            <!-- Article Title and info -->
-            <q-item-section class="col">
-              <q-item-label lines="1">
-                <span class="text-h6 text-black">{{article.title}}</span>
-              </q-item-label>
-              <q-item-label lines="1" class="text-grey">
-                <router-link @click.native.stop :to="'/r/' + article.subreddit">
-                  r/{{article.subreddit}}
-                </router-link>
-                <span>．Posted by </span>
-                <router-link @click.native.stop :to="'/u/' + article.postedBy">
-                  u/{{article.postedBy}}
-                </router-link>
-                <span> on {{article.postedTime | formatDate}}</span>
-              </q-item-label>
-
-              <!--        Comment and Share button-->
-              <q-item-label lines="1" class="text-grey text-weight-bold">
-                <q-btn class="q-ml-sm" dense flat size="xs" icon="chat_bubble" :label="'' + article.comments + ' Comments'" />
-                <q-btn @click.stop="shareClicked" class="q-ml-sm" dense flat size="xs" icon="share" label="Share" />
-              </q-item-label>
-
-              <q-space/>
-            </q-item-section>
-          </div>
-        </q-item>
-      </q-infinite-scroll>
-    </q-list>
-  </div>
+    <div class="row justify-center items-center items-start justify-start content-center">
+      <div class="col">
+        <post-preview
+          class="post-preview"
+          v-for="(post, idx) in posts"
+          :key="idx"
+          :group="post.group"
+          :author="post.author"
+          :title="post.title"
+          :content="post.content"
+          :karma="post.karma"
+          :comment_freq="post.comment_freq"
+          :time_from_now="post.timestamp.toRelative()"
+          :bordered="true"
+          :id="idx"
+        />
+      </div>
+    </div>
+  </q-page>
 </template>
 
 <script>
+import { DateTime } from 'luxon'
+import PostPreview from 'components/PostPreview'
+
 export default {
-name: "Subreddit.vue"
+  name: 'Subreddit.vue',
+  components: { PostPreview },
+  data: function () {
+    return {
+      posts: {
+        1: {
+          group: 'r/movie',
+          author: 'some_crazy_guy',
+          title: 'This is awesome post',
+          content: 'This is a really awesome post',
+          karma: '10',
+          comment_freq: '1000',
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
+        },
+        2: {
+          group: 'r/movie',
+          author: 'some_crazy_guy',
+          title: 'This is awesome post',
+          content: 'This is a really awesome post',
+          karma: '10',
+          comment_freq: '1000',
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
+        },
+        3: {
+          group: 'r/movie',
+          author: 'some_crazy_guy',
+          title: 'This is awesome post',
+          content: 'This is a really awesome post',
+          karma: '10',
+          comment_freq: '1000',
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
+        },
+        4: {
+          group: 'r/movie',
+          author: 'some_crazy_guy',
+          title: 'This is awesome post',
+          content: 'This is a really awesome post',
+          karma: '10',
+          comment_freq: '1000',
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
+        },
+        5: {
+          group: 'r/movie',
+          author: 'some_crazy_guy',
+          title: 'This is awesome post',
+          content: 'This is a really awesome post',
+          karma: '10',
+          comment_freq: '1000',
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
+        },
+        6: {
+          group: 'r/movie',
+          author: 'some_crazy_guy',
+          title: 'This is awesome post',
+          content: 'This is a really awesome post',
+          karma: '10',
+          comment_freq: '1000',
+          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
+        }
+      }
+    }
+  }
 }
 </script>
 

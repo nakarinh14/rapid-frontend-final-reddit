@@ -6,6 +6,7 @@ import {Comment} from "./Comment";
 import Modal from "react-native-modal";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import { addComment } from "../services/CommentsService";
+import {useNavigation} from "@react-navigation/native";
 
 function RenderComment({replyComment}) {
     if(replyComment) return (
@@ -23,10 +24,19 @@ export default function({ replyComment, visible, visibilitySetter, postId, comme
     // console.log('Comment path:',commentPath," post ID: ",postId)
 
     const authentication = useContext(AuthenticationContext)
+    const navigation = useNavigation()
+
+    // console.log(authentication.user)
 
     function createComment() {
         setAddingComment(true)
-        addComment(postId,commentText,'username',commentPath).then(() => {
+
+        if(!authentication.user){
+            visibilitySetter(false)
+            return navigation.push("Login")
+        }
+
+        addComment(postId,commentText,authentication.user.displayName,commentPath).then(() => {
             setAddingComment(false)
             visibilitySetter(false)
         }).catch((error) => {
@@ -43,7 +53,10 @@ export default function({ replyComment, visible, visibilitySetter, postId, comme
             onSwipeComplete={() => visibilitySetter(false)}
             animationInTiming={200}
             animationOutTiming={200}
-            onModalHide={() => setCommentText('')}
+            onModalHide={() => {
+                setCommentText('')
+                setAddingComment(false)
+            }}
             avoidKeyboard={true}
             onRequestClose={() => visibilitySetter(false)}
         >

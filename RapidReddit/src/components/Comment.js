@@ -42,7 +42,7 @@ export const Comment = ({comment, depth, preview, path}) => {
                 {depth ? <View style={[styles.line]}/> : null}
                 <Block style={[styles.box, indentColor(depth)]}>
                     <Block style={styles.topInfo}>
-                        <TouchableOpacity onPress={() => navigation.push("User")}>
+                        <TouchableOpacity onPress={() => navigation.push("User", {uid: comment.user})}>
                             <Block style={styles.topLeftFlex}>
                                 <View>
                                     <Text style={styles.titleText}>

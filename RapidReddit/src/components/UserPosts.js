@@ -1,15 +1,20 @@
-import React from 'react';
-import {ActivityIndicator, ScrollView, StyleSheet} from "react-native";
+import React, {useContext} from 'react';
+import {ActivityIndicator, StyleSheet} from "react-native";
 import theme from "../theme";
 import {withInteractionsManaged} from "./withInteractionsManaged";
 import PostListComponent from "./PostListComponent";
+import AuthenticationContext from "../contexts/AuthenticationContext";
 
-const UserPosts = ({ navigation }) => {
+const UserPosts = ({ route }) => {
+    const { uid } = route.params
+    const {user} = useContext(AuthenticationContext)
 
+    const displayName = uid ? uid : user?.displayName
     return (
-        <PostListComponent user={"username"}/>
+        <PostListComponent user={displayName} />
     )
 }
+
 const styles = StyleSheet.create({
     scene: {
         flex: 1,

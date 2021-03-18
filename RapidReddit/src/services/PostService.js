@@ -30,8 +30,11 @@ export function addNewPost(subreadit, user, postTitle, description) {
 
 export async function increaseCommentCounter(postId) {
     const ref = firebase.database().ref(`posts/${postId}`)
-    const postInfo = await ref.get()
-    return await ref.update({comments_freq: postInfo.val().comments_freq + 1})
+    // Should use transaction here, to avoid data race (e.g. spam and high freq comment and stuff)
+    await ref.transaction((post) => {
+        post.comments_freq++
+        return post
+    })
 }
 
 export function getRefForUserPosts(user) {

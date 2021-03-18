@@ -1,24 +1,24 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {Block, NavBar, Icon, Text, Button} from 'galio-framework';
+import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
 import UserComments from "../components/UserComments";
 import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
 import "firebase/auth";
 import AuthenticationContext from "../contexts/AuthenticationContext";
+import {UnauthenticatedScreen} from "./UnauthenticatedScreen";
+import {getDisplayDate} from "../utils/PostUtils";
 
 const profile = {
-    username: "xXXStonksToTheMoonXxx",
-    comment_upvotes: 515,
-    post_upvotes: 4012,
-    account_age: "1y"
+    displayName: "undefined (unregistered user)",
+    comment_karma: 0,
+    post_karma: 0,
+    date_created: "infinite"
 };
 
 const Tab = createMaterialTopTabNavigator();
-
-const useMockData = true
 
 export const UserProfile = ({ route, navigation, uid }) => {
 
@@ -27,31 +27,32 @@ export const UserProfile = ({ route, navigation, uid }) => {
     const {user} = useContext(AuthenticationContext)
 
     useEffect(() => {
-        if(useMockData){
-            setUserStats(profile)
-            return
-        }
-        const ref = firebase.database().ref(`user_profile/${uid}/stats`)
-        ref.on('value', (snapshot) => {
+        const displayName = owner ? user?.displayName : uid
+        const ref = firebase.database().ref(`user_profile/${displayName}/stats`)
+        const listener = ref.on('value', (snapshot) => {
             if(snapshot.exists()){
-                setUserStats(snapshot.val())
+                const data = snapshot.val()
+                setUserStats({
+                    displayName,
+                    comment_karma: data.comment_karma,
+                    post_karma: data.post_karma,
+                    date_created: getDisplayDate(data.date_created)
+                })
             }
         })
-    })
+        return () => ref.off('value', listener)
+    }, [user])
 
     if(owner && !user){
         return (
-            <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
-                <Text> You are not logged in.</Text>
-                <Button onPress={() => {navigation.push("Login")}}>Login Here</Button>
-            </Block>
+           <UnauthenticatedScreen navigation={navigation} />
         )
     }
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
-                title={profile.username}
+                title={userStats.displayName}
                 left={!owner ?
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
@@ -79,18 +80,18 @@ export const UserProfile = ({ route, navigation, uid }) => {
                     style={styles.achievements}
                 >
                     <Block style={styles.displayScores} >
-                        <Text style={styles.subStatTitle}>{userStats.comment_upvotes}</Text>
+                        <Text style={styles.subStatTitle}>{userStats.comment_karma}</Text>
                         <Text color={theme.COLORS.GREY}>Comment</Text>
                         <Text color={theme.COLORS.GREY}>Upvotes</Text>
                     </Block>
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{userStats.post_upvotes}</Text>
+                        <Text style={styles.subStatTitle}>{userStats.post_karma}</Text>
                         <Text color={theme.COLORS.GREY}>Post</Text>
                         <Text color={theme.COLORS.GREY}>Upvotes</Text>
 
                     </Block>
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{userStats.account_age}</Text>
+                        <Text style={styles.subStatTitle}>{userStats.date_created}</Text>
                         <Text color={theme.COLORS.GREY}>Age</Text>
                     </Block>
                 </Block>
@@ -99,6 +100,7 @@ export const UserProfile = ({ route, navigation, uid }) => {
                         <Tab.Screen
                             name="Posts"
                             component={UserPosts}
+                            initialParams={{uid}}
                         />
                         <Tab.Screen
                             name="Comments"

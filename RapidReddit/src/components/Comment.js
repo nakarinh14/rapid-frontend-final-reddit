@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import CommentModalContext from "./CommentModalContext";
 import {useNavigation} from "@react-navigation/native";
+import { getDisplayDate } from "../utils/PostUtils";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -21,7 +22,7 @@ const paddedFlex = (depth) => {
     return indents[idx]
 }
 
-export const Comment = ({ comment, depth, preview }) => {
+export const Comment = ({ comment, depth, preview, path }) => {
 
     const navigation = useNavigation();
     const setPreviewComment = useContext(CommentModalContext);
@@ -59,7 +60,7 @@ export const Comment = ({ comment, depth, preview }) => {
                         <Block style={styles.topRightFlex}>
                             {preview ? null :
                                 <TouchableOpacity
-                                    onPress={() => setPreviewComment(comment)}
+                                    onPress={() => setPreviewComment(comment, path)}
                                 >
                                     <View style={{marginRight: 7}}>
                                         <Ionicons
@@ -72,7 +73,7 @@ export const Comment = ({ comment, depth, preview }) => {
                             }
                             <View>
                                 <Text style={styles.timestampText}>
-                                    {comment.timestamp}
+                                    {getDisplayDate(comment.timestamp)}
                                 </Text>
                             </View>
                         </Block>

@@ -19,7 +19,8 @@
                 </q-form>
               </q-card-section>
               <q-card-actions class="q-px-md">
-                <q-btn unelevated color="orange-6" size="lg" class="full-width" label="Login" />              </q-card-actions>
+                <q-btn unelevated color="orange-6" size="lg" class="full-width" label="Login" />
+              </q-card-actions>
             </q-card>
           </div>
         </div>

@@ -1,8 +1,8 @@
 import React, {useState, useContext} from 'react'
-import {Block, Button, Icon, Input, NavBar} from "galio-framework";
-import {Modal, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions} from "react-native";
+import {Block, Icon, NavBar} from "galio-framework";
+import {Modal, Text, TouchableOpacity, StyleSheet, Dimensions, View, Button} from "react-native";
 import theme from "../theme";
-import {firebase} from '../firebase'
+import {Input} from 'react-native-elements'
 import {useNavigation} from "@react-navigation/native";
 import { addNewPost } from '../services/PostService'
 import AuthenticationContext from "../contexts/AuthenticationContext";
@@ -30,6 +30,7 @@ export default function (props) {
     const [subredditName, setSubredditName] = useState('')
     const [subredditDescription, setSubredditDescription] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+
     const { subreadit, addButton } = props
     const navigation = useNavigation()
     const authentication = useContext(AuthenticationContext)
@@ -47,7 +48,7 @@ export default function (props) {
             if (e.code === 3) {
                 // TODO User not logged in. Redirect to login
                 console.log("User not logged in. Should redirect to login")
-                // navigation.push("Login")
+                navigation.push("Login")
             }
             else setErrorMessage(e.message)
         }
@@ -60,29 +61,45 @@ export default function (props) {
                 visible={createPostModalVisible}
                 onRequestClose={() => setCreatePostModalVisible(false)}
             >
-                <NavBar
-                    title="Create new subreddit"
-                    left={(
-                        <TouchableOpacity onPress={() => setCreatePostModalVisible(false)}>
-                            <Icon
-                                name="close"
-                                family="Ionicons"
-                                size={20}
-                                color={theme.COLORS.IOS}
-                            />
-                        </TouchableOpacity>
-                    )}
-                />
                 <Block safe flex style={styles.modalContainer}>
-                    <Input value={subredditName} onChangeText={text => setSubredditName(text)} label={"Subreddit Name"} placeholder="Subreddit Name"/>
-                    <Block flex={4}>
-                        <Input value={subredditDescription} onChangeText={text => setSubredditDescription(text)} multiline numberOfLines={7} label={"Description"} placeholder="Description"/>
-                    </Block>
-                    <Text>r/{subredditName}</Text>
+                    <NavBar
+                        title="Create Subreadit"
+                        titleStyle={{fontSize: 19, fontWeight: 'bold'}}
+                        left={(
+                            <TouchableOpacity onPress={() => setCreatePostModalVisible(false)}>
+                                <Icon
+                                    name="close"
+                                    family="Ionicons"
+                                    size={20}
+                                    color={theme.COLORS.IOS}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        right={(<TouchableOpacity onPress={createSubreddit} >
+                            <Text style={{color: 'blue', fontSize: 16}}>
+                                Create
+                            </Text>
+                        </TouchableOpacity>)}
+                    />
+                    <View style={styles.content}>
+                        <Input
+                            containerStyle={{marginTop: 25}}
+                            onChangeText={(text) => setSubredditName(text)}
+                            value={subredditName}
+                            label='Name'
+                            placeholder='Set Subreadit Name Here'
+                        />
+                        <Input
+                            containerStyle={{marginTop: 20}}
+                            multiline={true}
+                            numberOfLines={10}
+                            onChangeText={(text) => setSubredditDescription(text)}
+                            value={subredditDescription}
+                            label='Description'
+                            placeholder='Set Community Description Here'
+                        />
+                    </View>
                     <Text style={{color: 'red'}}>{errorMessage}</Text>
-                    <Block center>
-                        <Button onPress={createSubreddit}>Create Subreddit</Button>
-                    </Block>
                 </Block>
             </Modal>
         </Block>
@@ -92,5 +109,15 @@ export default function (props) {
 const styles = StyleSheet.create({
     modalContainer: {
         padding: 20
-    }
+    },
+    input: {
+        borderRadius: 0
+    },
+    content: {
+        backgroundColor: 'white',
+        padding: 17,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+    },
 })

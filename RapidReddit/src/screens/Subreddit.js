@@ -50,10 +50,8 @@ export const Subreddit = ({ route, navigation, uid }) => {
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
-
                 title={subreddit.name}
-
-                left={!owner ?
+                left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
                             name="arrow-left"
@@ -61,7 +59,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
                             size={24}
                             color={theme.COLORS.ICON}
                         />
-                    </TouchableOpacity>): null
+                    </TouchableOpacity>)
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 

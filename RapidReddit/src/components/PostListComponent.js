@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Block, Text} from "galio-framework";
-import {ActivityIndicator, StyleSheet} from "react-native";
+import {ActivityIndicator, StyleSheet, View} from "react-native";
 import {PostPreview} from "./PostPreview";
 import * as PostService from '../services/PostService'
 import {Divider} from "react-native-elements";
@@ -23,18 +23,21 @@ function RenderPosts({posts, loadingPosts}) {
     return (
         <Block flex column style={styles.container}>
             {posts.map((val, idx) =>
-                <>
-                    <Block style={{marginBottom: 5}} key={idx}>
+                <View key={idx}>
+                    <Block style={{marginBottom: 5}}>
                     <PostPreview touchable post={val}/>
                     </Block>
                     <Divider style={{ backgroundColor: 'lightgrey' }} />
-                </>
+                </View>
             )}
         </Block>
     )
 }
 
 export default function({subreadit, user}) {
+
+    const [ posts, setPosts ] = useState([])
+    const [ loadingState, setLoadingState ] = useState(true)
 
     let ref = PostService.getRefForPosts()
     if(subreadit) {
@@ -43,9 +46,6 @@ export default function({subreadit, user}) {
     else if(user) {
         ref = PostService.getRefForUserPosts(user)
     }
-
-    const [ posts, setPosts ] = useState([])
-    const [ loadingState, setLoadingState ] = useState(true)
 
     useEffect(() => {
         ref.on('value', snapshot => {

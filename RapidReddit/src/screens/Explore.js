@@ -29,7 +29,7 @@ export const Explore = ({navigation}) => {
 
 
     return (
-        <Block safe flex>
+        <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
                 titleStyle={{fontSize: 19, fontWeight: 'bold'}}
                 title="Explore"
@@ -40,14 +40,17 @@ export const Explore = ({navigation}) => {
                         //                  addButton={(
                         //     <Button>Test</Button>
                         // )}
-
                     />
                 )}
             />
             <ScrollView>
                 <Block>
                     {Object.keys(subreddits || []).map((key, idx) =>
-                        <TouchableOpacity component={SubredditPreview} key={idx} onPress={() => navigation.navigate('Subreddit', {subredditId: key})}>
+                        <TouchableOpacity
+                            component={SubredditPreview}
+                            key={idx}
+                            onPress={() => navigation.navigate('Subreddit', {subredditId: key})}
+                        >
                             <SubredditPreview props={subreddits[key]}/>
                         </TouchableOpacity>
                     )}

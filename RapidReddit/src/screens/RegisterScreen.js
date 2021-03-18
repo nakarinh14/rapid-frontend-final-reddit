@@ -1,20 +1,27 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    Button,
+    Alert,
+    ActivityIndicator,
+    TouchableOpacity,
+    Platform, ScrollView
+} from 'react-native';
 import { firebase } from "../firebase";
-import AuthenticationContext from "../contexts/AuthenticationContext";
 import 'firebase/auth'
-import {useNavigation} from "@react-navigation/native";
+import {Block, Icon, NavBar} from "galio-framework";
+import theme from "../theme";
 
-export const RegisterScreen = () => {
+export const RegisterScreen = ({ navigation }) => {
 
     const [displayName, setDisplayName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-
-    const authentication = useContext(AuthenticationContext)
-    const navigation = useNavigation()
 
     const registerUser = async () => {
         if(email === '' && password === '') {
@@ -30,9 +37,7 @@ export const RegisterScreen = () => {
                     displayName: displayName
                 })
 
-
                 console.log('User registered successfully!')
-                authentication.loginUser(user.user)
                 navigation.popToTop()
                 navigation.goBack()
             } catch (error) {
@@ -52,41 +57,53 @@ export const RegisterScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="Name"
-                value={displayName}
-                onChangeText={(val) => setDisplayName(val)}
+        <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
+            <NavBar
+                titleStyle={{fontSize: 19, fontWeight: 'bold'}}
+                title="Register"
+                left={(
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Icon
+                            name="arrow-left"
+                            family="feather"
+                            size={24}
+                            color={theme.COLORS.ICON}
+                        />
+                    </TouchableOpacity>
+                )}
+                style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="Email"
-                value={email}
-                onChangeText={(val) => setEmail(val)}
-            />
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="Password"
-                value={password}
-                onChangeText={(val) => setPassword(val)}
-                maxLength={15}
-                secureTextEntry={true}
-            />
-            <Button
-                color="#3740FE"
-                title="Signup"
-                onPress={registerUser}
-            />
-            <Text>
-                {errorMessage}
-            </Text>
-            <Text
-                style={styles.loginText}
-                onPress={() => navigation.navigate('LoginScreen')}>
-                Already Registered? Click here to login
-            </Text>
-        </View>
+            <ScrollView contentContainerStyle={styles.container}>
+                <TextInput
+                    style={styles.inputStyle}
+                    placeholder="Name"
+                    value={displayName}
+                    onChangeText={(val) => setDisplayName(val)}
+                />
+                <TextInput
+                    style={styles.inputStyle}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={(val) => setEmail(val)}
+                />
+                <TextInput
+                    style={styles.inputStyle}
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={(val) => setPassword(val)}
+                    maxLength={15}
+                    secureTextEntry={true}
+                />
+                <Button
+                    color="#3740FE"
+                    title="Signup"
+                    onPress={registerUser}
+                />
+                <Text>
+                    {errorMessage}
+                </Text>
+            </ScrollView>
+        </Block>
     );
 
 }

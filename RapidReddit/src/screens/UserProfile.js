@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {Block, NavBar, Icon, Text} from 'galio-framework';
+import {Block, NavBar, Icon, Text, Button} from 'galio-framework';
 import theme from '../theme';
 import UserComments from "../components/UserComments";
 import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
+import "firebase/auth";
+import AuthenticationContext from "../contexts/AuthenticationContext";
 
 const profile = {
     username: "xXXStonksToTheMoonXxx",
@@ -22,6 +24,7 @@ export const UserProfile = ({ route, navigation, uid }) => {
 
     const { owner } = route.params
     const [userStats, setUserStats] = useState(profile)
+    const {user} = useContext(AuthenticationContext)
 
     useEffect(() => {
         if(useMockData){
@@ -36,6 +39,15 @@ export const UserProfile = ({ route, navigation, uid }) => {
         })
     })
 
+    if(owner && !user){
+        return (
+            <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
+                <Text> You are not logged in.</Text>
+                <Button onPress={() => {navigation.push("Login")}}>Login Here</Button>
+            </Block>
+        )
+    }
+
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
@@ -49,6 +61,16 @@ export const UserProfile = ({ route, navigation, uid }) => {
                             color={theme.COLORS.ICON}
                         />
                     </TouchableOpacity>): null
+                }
+                right={ owner ?
+                    <TouchableOpacity onPress={() => firebase.auth().signOut()}>
+                        <Icon
+                            name="log-out"
+                            family="feather"
+                            size={20}
+                            color={theme.COLORS.ICON}
+                        />
+                     </TouchableOpacity> : null
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />

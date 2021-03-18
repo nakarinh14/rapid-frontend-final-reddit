@@ -8,7 +8,6 @@ const Stack = createStackNavigator();
 export const UserProfileNavigator = () => {
     return (
         <Stack.Navigator
-            initialRouteName="User"
             screenOptions={{
                 headerShown: false
             }}

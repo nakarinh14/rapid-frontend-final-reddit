@@ -40,7 +40,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
             window.console.log(data)
         })
 
-        return function cleanup() {
+        return () => {
             subredditRef.off('value')
         }
 

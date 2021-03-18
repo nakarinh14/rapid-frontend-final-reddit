@@ -1,23 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Block, Card, NavBar, Text} from "galio-framework";
+import {Block, NavBar, Text} from "galio-framework";
 import {Platform, ScrollView, TouchableOpacity, View, StyleSheet} from "react-native";
-import {CommunityPreview} from "../components/CommunityPreview";
 import theme from "../theme";
 import * as SubredditService from '../services/SubredditService'
 import SubredditPreview from "../components/SubredditPreview";
 import { Ionicons } from '@expo/vector-icons';
 import CreateSubredditModal from '../components/CreateSubredditModal'
-import CreatePostModal from '../components/CreatePostModal'
-
-
-
-
-
 
 export const Explore = ({navigation}) => {
 
     const [subreddits, setSubreddits] = useState([]);
-
 
     useEffect(() => {
 
@@ -28,7 +20,7 @@ export const Explore = ({navigation}) => {
             setSubreddits(snapshot.val())
         })
 
-        return function cleanup() {
+        return () => {
             subredditsRef.off('value')
         }
 
@@ -59,7 +51,7 @@ export const Explore = ({navigation}) => {
                             <SubredditPreview props={subreddits[key]}/>
                         </TouchableOpacity>
                     )}
-                    
+
                 </Block>
                 <Block row center style={{marginTop: 30}} onpress={(<CreateSubredditModal navigation={navigation}/>)}>
                     <Block style={{marginRight: 5}} center>

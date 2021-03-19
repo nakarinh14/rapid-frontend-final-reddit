@@ -1,14 +1,13 @@
-import React from 'react';
-import { TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, {useContext, useState} from 'react';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import {Block, Text} from 'galio-framework';
 import theme from '../theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import {useNavigation} from "@react-navigation/native";
-
-const { width } = Dimensions.get('screen');
-
-const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna";
+import AuthenticationContext from "../contexts/AuthenticationContext";
+import CommentReplyModal from "./CommentReplyModal";
+import { getDisplayDate } from "../utils/PostUtils";
 
 function PostInfo(props) {
 
@@ -44,11 +43,22 @@ function PostTitleContent(props) {
         )
 }
 
-export const PostPreview = (props) => {
+export const PostPreview = ({touchable, post}) => {
 
-    const navigation = useNavigation();
-    const { commentAction, touchable, post } = props
-    const onPress = () => {navigation.push("Post",{post: post})}
+    const navigation = useNavigation()
+    const [ replyModal, setReplyModal ] = useState(false)
+    const { user } = useContext(AuthenticationContext)
+
+    const commentOnPress = () => {
+        if(!user){
+            return navigation.push("Login")
+        }
+        setReplyModal(true)
+    }
+
+    const onPress = () => {
+        navigation.push("Post",{postId: post.id})
+    }
 
     return (
         <Block style={styles.card}>
@@ -64,16 +74,18 @@ export const PostPreview = (props) => {
                         </Text>
                         <Text color={theme.COLORS.MUTED}> by </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.push("User")}
+                            onPress={() => navigation.push("User", {uid: post.user})}
                         >
                             <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
                                 {post.user}
                             </Text>
                         </TouchableOpacity>
                     </Block>
-                    <Block center row>
+                    <Block center row style={{marginLeft: 2}}>
                         <Ionicons name="ios-time-outline" size={15} color={theme.COLORS.BLOCK} />
-                        <Text size={14} color={theme.COLORS.BLOCK}>{'2h'}</Text>
+                        <Text size={14} color={theme.COLORS.BLOCK} style={{marginLeft: 1}}>
+                            {getDisplayDate(post.created)}
+                        </Text>
                     </Block>
                 </Block>
                 <Block row style={styles.bottomActions}>
@@ -91,7 +103,7 @@ export const PostPreview = (props) => {
                                 color={theme.COLORS.BLOCK}
                                 style={{marginLeft: 3, marginRight: 3, fontWeight: '500'}}
                             >
-                                {15}
+                                {post.karma}
                             </Text>
                         </Block>
                         <TouchableOpacity>
@@ -102,16 +114,24 @@ export const PostPreview = (props) => {
                             />
                         </TouchableOpacity>
                     </Block>
-                    <TouchableOpacity style={{flexDirection:"row", alignItems:"center"}} onPress={commentAction} >
+                    <TouchableOpacity
+                        style={{flexDirection:"row", alignItems:"center"}}
+                        onPress={() => commentOnPress()}
+                    >
                         <Block style={{marginRight: 5}} center>
                             <MaterialCommunityIcons
                                 name="comment-outline"
                                 size={20}
                                 color={theme.COLORS.BLOCK}
                             />
+                            <CommentReplyModal
+                                visible={replyModal}
+                                visibilitySetter={setReplyModal}
+                                postId={post.id}
+                            />
                         </Block>
                         <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
-                            {25}
+                            {post.comments_freq}
                         </Text>
                     </TouchableOpacity>
                     <Block row center>

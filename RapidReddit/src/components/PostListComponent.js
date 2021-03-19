@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import {Block, Text} from "galio-framework";
-import {ActivityIndicator, StyleSheet} from "react-native";
+import {ActivityIndicator, StyleSheet, View} from "react-native";
 import {PostPreview} from "./PostPreview";
 import * as PostService from '../services/PostService'
+import {Divider} from "react-native-elements";
 
 function RenderPosts({posts, loadingPosts}) {
     if(loadingPosts) {
@@ -19,20 +20,24 @@ function RenderPosts({posts, loadingPosts}) {
             </Block>
         )
     }
-    else{
-        return (
-            <Block flex column style={styles.container}>
-                {posts.map((val, idx) =>
-                    <Block style={{marginBottom: 5}} key={idx}>
-                        <PostPreview touchable post={val}/>
+    return (
+        <Block flex column style={styles.container}>
+            {posts.map((val, idx) =>
+                <View key={idx}>
+                    <Block style={{marginBottom: 5}}>
+                    <PostPreview touchable post={val}/>
                     </Block>
-                )}
-            </Block>
-        )
-    }
+                    <Divider style={{ backgroundColor: 'lightgrey' }} />
+                </View>
+            )}
+        </Block>
+    )
 }
 
 export default function({subreadit, user}) {
+
+    const [ posts, setPosts ] = useState([])
+    const [ loadingState, setLoadingState ] = useState(true)
 
     let ref = PostService.getRefForPosts()
     if(subreadit) {
@@ -42,15 +47,16 @@ export default function({subreadit, user}) {
         ref = PostService.getRefForUserPosts(user)
     }
 
-    const [ posts, setPosts ] = useState([])
-    const [ loadingState, setLoadingState ] = useState(true)
-
     useEffect(() => {
         ref.on('value', snapshot => {
-            setPosts(Object.values(snapshot.val() || []))
+            const data = snapshot.val() || []
+            Object.keys(data).map(v => {
+                data[v].id = v
+            })
+            setPosts(Object.values(data))
             setLoadingState(false)
         })
-        return function cleanup() {
+        return () => {
             ref.off('value')
         }
     }, [])

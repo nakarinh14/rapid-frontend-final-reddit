@@ -1,13 +1,11 @@
 import React, {useState, useContext} from 'react'
-import {Block, Button, Icon, Input, NavBar} from "galio-framework";
-import {Modal, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions} from "react-native";
+import {Block, Icon, NavBar} from "galio-framework";
+import {Modal, Text, TextInput, Button, TouchableOpacity, StyleSheet, View} from "react-native";
+import {Input} from 'react-native-elements'
 import theme from "../theme";
-import {firebase} from '../firebase'
 import {useNavigation} from "@react-navigation/native";
 import { addNewPost } from '../services/PostService'
 import AuthenticationContext from "../contexts/AuthenticationContext";
-
-const { height } = Dimensions.get("window")
 
 function RenderedAddButton(props) {
     const { AddButton, setter } = props
@@ -37,16 +35,25 @@ export default function (props) {
     //Subreadit - The subreadit to add the post to
 
     function addPost() {
-        try {
-            const key = addNewPost(subreadit,authentication.user, postTitle, postContent)
-            console.log(key)
+        if(!authentication.user){
+            navigation.push("Login")
             setCreatePostModalVisible(false)
-            // navigation.push("Post")
+        }
+        try {
+            const key = addNewPost(subreadit,authentication.user.displayName, postTitle, postContent)
+            // console.log(key)
+            setCreatePostModalVisible(false)
+            setErrorMessage('')
+            setPostContent('')
+            setPostTitle('')
+            navigation.push("Post",{postId: key})
+
         }catch (e) {
+            console.error(e)
             if (e.code === 3) {
                 // TODO User not logged in. Redirect to login
-                console.log("User not logged in. Should redirect to login")
-                // navigation.push("Login")
+                console.error("User not logged in. Should redirect to login")
+                navigation.push("Login")
             }
             else setErrorMessage(e.message)
         }
@@ -57,31 +64,48 @@ export default function (props) {
             <RenderedAddButton AddButton={() => addButton} setter={setCreatePostModalVisible}/>
             <Modal
                 visible={createPostModalVisible}
-                onRequestClose={() => setCreatePostModalVisible(false)}
+                onRequestClose={() => {setCreatePostModalVisible(false)}}
             >
-                <NavBar
-                    title="Create new post"
-                    left={(
-                        <TouchableOpacity onPress={() => setCreatePostModalVisible(false)}>
-                            <Icon
-                                name="close"
-                                family="Ionicons"
-                                size={20}
-                                color={theme.COLORS.IOS}
-                            />
-                        </TouchableOpacity>
-                    )}
-                />
+
                 <Block safe flex style={styles.modalContainer}>
-                    <Input value={postTitle} onChangeText={text => setPostTitle(text)} label={"Post Title"} placeholder="Post Title"/>
-                    <Block flex={4}>
-                        <Input value={postContent} onChangeText={text => setPostContent(text)} multiline numberOfLines={7} label={"Content"} placeholder="Content"/>
-                    </Block>
-                    <Text>This will be posted on r/{subreadit}</Text>
+                    <NavBar
+                        title="Create Post"
+                        titleStyle={{fontSize: 19, fontWeight: 'bold'}}
+                        left={(
+                            <TouchableOpacity onPress={() => setCreatePostModalVisible(false)}>
+                                <Icon
+                                    name="close"
+                                    family="Ionicons"
+                                    size={20}
+                                    color={theme.COLORS.IOS}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        right={(<Button title={"Post"} onPress={addPost}/>)}
+                    />
+                    <View style={styles.content}>
+                        <Text>
+                            <Text style={{fontSize: 17}}>This will be posted on </Text>
+                            <Text style={{fontWeight: '700', fontSize: 18}}>r/{subreadit}</Text>
+                        </Text>
+                        <Input
+                            containerStyle={{marginTop: 25}}
+                            onChangeText={(text) => setPostTitle(text)}
+                            value={postTitle}
+                            label='Title'
+                            placeholder='Set Post Title Here'
+                        />
+                        <Input
+                            containerStyle={{marginTop: 20}}
+                            multiline={true}
+                            numberOfLines={10}
+                            onChangeText={(text) => setPostContent(text)}
+                            value={postContent}
+                            label='Content'
+                            placeholder='Write Post Content Here'
+                        />
+                    </View>
                     <Text style={{color: 'red'}}>{errorMessage}</Text>
-                    <Block right>
-                        <Button onPress={addPost}>Create Post</Button>
-                    </Block>
                 </Block>
             </Modal>
         </Block>
@@ -91,5 +115,16 @@ export default function (props) {
 const styles = StyleSheet.create({
     modalContainer: {
         padding: 20
-    }
+    },
+    input: {
+        borderRadius: 0
+    },
+    content: {
+        backgroundColor: 'white',
+        padding: 17,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+    },
 })
+

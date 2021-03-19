@@ -1,16 +1,17 @@
 import React, {useContext} from 'react';
 import {Block, Text} from "galio-framework";
-import { StyleSheet, TouchableOpacity, View} from "react-native";
+import {StyleSheet, TouchableOpacity, View} from "react-native";
 import theme from "../theme";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import CommentModalContext from "./CommentModalContext";
+import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {Ionicons} from '@expo/vector-icons';
+import CommentModalContext from "../contexts/CommentModalContext";
 import {useNavigation} from "@react-navigation/native";
+import {getDisplayDate} from "../utils/PostUtils";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
-    if(depth > 0){
-        return {borderLeftColor: colors[depth-1], ...styles.indented}
+    if (depth > 0) {
+        return {borderLeftColor: colors[depth - 1], ...styles.indented}
     }
     return null
 }
@@ -21,29 +22,33 @@ const paddedFlex = (depth) => {
     return indents[idx]
 }
 
-export const Comment = ({ comment, depth, preview }) => {
+export const Comment = ({comment, depth, preview, path}) => {
 
     const navigation = useNavigation();
     const setPreviewComment = useContext(CommentModalContext);
 
-    const bg  = preview ? {backgroundColor: theme.COLORS.PAPER} : null
+    const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
     const padded = 100 - emptyPadded
 
+    const ellipsisOnClick = () => {
+        setPreviewComment(comment, path)
+    }
+
     return (
         <Block style={{flexDirection: "row", alignItems: 'center', justifyContent: 'flex-end'}}>
-            <Block style={{flex: emptyPadded}} />
+            <Block style={{flex: emptyPadded}}/>
             <Block style={[styles.commentBlock, {flex: padded}, bg]}>
-                {depth ? <View style={[styles.line]}  /> : null }
-                <Block style={[styles.box, indentColor(depth)]} >
-                    <Block style={styles.topInfo} >
-                        <TouchableOpacity onPress={() => navigation.push("User")}>
-                            <Block style={styles.topLeftFlex} >
-                                    <View>
-                                        <Text style={styles.titleText}>
-                                            {comment.user}
-                                        </Text>
-                                    </View>
+                {depth ? <View style={[styles.line]}/> : null}
+                <Block style={[styles.box, indentColor(depth)]}>
+                    <Block style={styles.topInfo}>
+                        <TouchableOpacity onPress={() => navigation.push("User", {uid: comment.user})}>
+                            <Block style={styles.topLeftFlex}>
+                                <View>
+                                    <Text style={styles.titleText}>
+                                        {comment.user}
+                                    </Text>
+                                </View>
 
                                 <View style={styles.upvotes}>
                                     <MaterialCommunityIcons
@@ -59,7 +64,7 @@ export const Comment = ({ comment, depth, preview }) => {
                         <Block style={styles.topRightFlex}>
                             {preview ? null :
                                 <TouchableOpacity
-                                    onPress={() => setPreviewComment(comment)}
+                                    onPress={() => ellipsisOnClick()}
                                 >
                                     <View style={{marginRight: 7}}>
                                         <Ionicons
@@ -72,12 +77,11 @@ export const Comment = ({ comment, depth, preview }) => {
                             }
                             <View>
                                 <Text style={styles.timestampText}>
-                                    {comment.timestamp}
+                                    {getDisplayDate(comment.timestamp)}
                                 </Text>
                             </View>
                         </Block>
                     </Block>
-
                     <Text style={styles.commentText}>
                         {comment.body}
                     </Text>
@@ -87,14 +91,13 @@ export const Comment = ({ comment, depth, preview }) => {
     )
 }
 
-
 const styles = StyleSheet.create({
     titleText: {
         fontWeight: '600',
         color: theme.COLORS.BLACK,
         fontSize: 14.6
     },
-    captionText:{
+    captionText: {
         color: theme.COLORS.GREY
     },
     commentText: {
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
     timestampText: {
         color: theme.COLORS.GREY
     },
-    topLeftFlex:{
+    topLeftFlex: {
         justifyContent: 'flex-start',
         alignItems: 'center',
         flexDirection: "row",
@@ -117,7 +120,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: "row",
     },
-    caption:{
+    caption: {
         flexDirection: "row",
     },
     topRightFlex: {
@@ -131,17 +134,17 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginLeft: 5
     },
-    box:{
+    box: {
         paddingLeft: 10,
         justifyContent: 'center',
         paddingBottom: 5,
     },
-    line:{
+    line: {
         borderBottomColor: theme.COLORS.LINE,
         borderBottomWidth: StyleSheet.hairlineWidth,
         marginBottom: 10
     },
-    indented:{
+    indented: {
         borderLeftWidth: 2,
         borderTopLeftRadius: 1,
         borderBottomLeftRadius: 1,

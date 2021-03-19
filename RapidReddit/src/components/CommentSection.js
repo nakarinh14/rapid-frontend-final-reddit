@@ -4,15 +4,15 @@ import theme from "../theme";
 import {Block} from "galio-framework";
 import {CommentTree} from "./CommentTree";
 import CommentEllipsisModal from "./CommentEllipsisModal";
-import CommentModalContext from "./CommentModalContext"
+import CommentModalContext from "../contexts/CommentModalContext"
 import {withInteractionsManaged} from "./withInteractionsManaged";
 
 const { width } = Dimensions.get('screen');
 
-const CommentSection = ({ comments })=> {
+const CommentSection = ({ comments, postId })=> {
 
     const [isModalVisible, setModalVisible] = useState(false);
-    const [previewCommentModal, setPreviewCommentModal] = useState(() => {})
+    const [previewCommentModal, setPreviewCommentModal] = useState({message: '', path: '', postId: postId})
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -20,8 +20,8 @@ const CommentSection = ({ comments })=> {
     const closeModal = () => {
         setModalVisible(false)
     }
-    const setPreviewComment = (message) => {
-        setPreviewCommentModal(message)
+    const setPreviewComment = (message, path) => {
+        setPreviewCommentModal({message: message, path: path, postId: postId})
         toggleModal()
     }
 
@@ -30,13 +30,14 @@ const CommentSection = ({ comments })=> {
             <Block flex style={styles.cards}>
                 {comments && Object.keys(comments).map((comment_id) => {
                     const comment = comments[comment_id]
+                    // console.log(comment)
                     return (
                         <Block
                             key={`card-${comment_id}`}
                             flex
                             style={styles.card}
                         >
-                           <CommentTree comment={comment} depth={0} />
+                           <CommentTree comment={comment} path={comment_id} depth={0}/>
                         </Block>
                     )}
                 )}

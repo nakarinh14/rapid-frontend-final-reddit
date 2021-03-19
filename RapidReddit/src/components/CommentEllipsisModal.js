@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
 import { ListItem, Icon } from 'react-native-elements'
-import {ReplyCommentModal} from "./ReplyCommentModal";
+import CommentReplyModal from "./CommentReplyModal";
+import AuthenticationContext from "../contexts/AuthenticationContext";
+import {useNavigation} from "@react-navigation/native";
 
 
 const list = [
@@ -28,11 +30,20 @@ const list = [
 export const CommentEllipsisModal = ({isModalVisible, closeModal, previewCommentModal}) => {
     const [isReplyModalVisible, setReplyModalVisible] = useState(false)
     const [listenToReply, setListenerReply] = useState(false)
+    const navigation = useNavigation()
+    const {user} = useContext(AuthenticationContext)
 
-    const onClickReply = () => {
-        setListenerReply(true)
+    const actionOnClick = (action) => {
         closeModal(false)
+        if (!user) {
+            return navigation.push("Login")
+        }
+        action()
     }
+
+    const onClickReply = () => actionOnClick(() => setListenerReply(true))
+    const upvote = () => actionOnClick(() => {})
+    const downvote = () => actionOnClick(() => {})
 
     const eventListener = () => {
         if(listenToReply){
@@ -41,14 +52,16 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
         }
     }
 
-    const onClickOrders = [closeModal, closeModal, onClickReply]
+    const onClickOrders = [upvote, downvote, onClickReply]
 
     return (
         <>
-            <ReplyCommentModal
-                comment={previewCommentModal}
-                isModalVisible={isReplyModalVisible}
-                closeModal={() => setReplyModalVisible(false)}
+            <CommentReplyModal
+                visible={isReplyModalVisible}
+                visibilitySetter={setReplyModalVisible}
+                replyComment={previewCommentModal.message}
+                commentPath={previewCommentModal.path}
+                postId={previewCommentModal.postId}
             />
             <Modal
                 isVisible={isModalVisible}

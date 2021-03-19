@@ -1,8 +1,17 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
-import { firebase } from "../firebase";
-import AuthenticationContext from "../contexts/AuthenticationContext";
-import 'firebase/auth'
+import React, { useState } from 'react';
+import {
+    StyleSheet,
+    View,
+    Alert,
+    ActivityIndicator,
+    TouchableOpacity,
+    Platform
+    , KeyboardAvoidingView
+} from 'react-native';
+import { Input } from 'react-native-elements';
+import {Block, Button, Icon, NavBar} from "galio-framework";
+import theme from "../theme";
+import {registerNewUser} from "../services/AuthService";
 
 export const RegisterScreen = ({ navigation }) => {
 
@@ -10,9 +19,6 @@ export const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
-
-    const authentication = useContext(AuthenticationContext)
 
     const registerUser = async () => {
         if(email === '' && password === '') {
@@ -20,20 +26,12 @@ export const RegisterScreen = ({ navigation }) => {
         } else {
             try{
                 setIsLoading(true)
-                const user = await firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(email, password)
-
-                await user.user.updateProfile({
-                    displayName: displayName
-                })
-
-
+                await registerNewUser(email, password, displayName)
                 console.log('User registered successfully!')
-                authentication.loginUser(user)
-                // navigation.navigate('Login')
+                navigation.popToTop()
+                navigation.goBack()
             } catch (error) {
-                setErrorMessage(error.message)
+                Alert.alert(error.message)
             } finally {
                 setIsLoading(false)
             }
@@ -49,43 +47,95 @@ export const RegisterScreen = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.container}>
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="Name"
-                value={displayName}
-                onChangeText={(val) => setDisplayName(val)}
+        <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
+            <NavBar
+                titleStyle={{fontSize: 19, fontWeight: 'bold'}}
+                title="Register"
+                left={(
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Icon
+                            name="arrow-left"
+                            family="feather"
+                            size={24}
+                            color={theme.COLORS.ICON}
+                        />
+                    </TouchableOpacity>
+                )}
+                style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="Email"
-                value={email}
-                onChangeText={(val) => setEmail(val)}
-            />
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="Password"
-                value={password}
-                onChangeText={(val) => setPassword(val)}
-                maxLength={15}
-                secureTextEntry={true}
-            />
-            <Button
-                color="#3740FE"
-                title="Signup"
-                onPress={registerUser}
-            />
-            <Text>
-                {errorMessage}
-            </Text>
-            <Text
-                style={styles.loginText}
-                onPress={() => navigation.navigate('Login')}>
-                Already Registered? Click here to login
-            </Text>
-        </View>
+            <KeyboardAvoidingView
+                style={styles.container}
+                enabled
+                behavior={ Platform.OS === 'ios'? 'padding': 'height'}
+            >
+                <Input
+                    label="Display Name"
+                    placeholder='Enter Display Name'
+                    returnKeyType="next"
+                    inputStyle={styles.inputTextStyle}
+                    value={displayName}
+                    leftIcon={
+                        <Icon
+                            name="person"
+                            family="ionicons"
+                            size={16}
+                            color='grey'
+                        />
+                    }
+                    onChangeText={(val) => setDisplayName(val)}
+                    autoCapitalize='none'
+                />
+                <Input
+                    label="Email"
+                    placeholder='yours@example.com'
+                    textContentType='emailAddress'
+                    keyboardType="email-address"
+                    autoCompleteType="email"
+                    returnKeyType="next"
+                    inputStyle={styles.inputTextStyle}
+                    value={email}
+                    leftIcon={
+                        <Icon
+                            name='mail'
+                            family="ionicons"
+                            size={16}
+                            color='grey'
+                        />
+                    }
+                    onChangeText={(val) => setEmail(val)}
+                    autoCapitalize='none'
+                />
+                <Input
+                    label="Password"
+                    placeholder='Enter password'
+                    textContentType='newPassword'
+                    returnKeyType="done"
+                    value={password}
+                    inputStyle={styles.inputTextStyle}
+                    autoCorrect={false}
+                    leftIcon={
+                        <Icon
+                            name='lock'
+                            family="ionicons"
+                            size={16}
+                            color='grey'
+                        />
+                    }
+                    onChangeText={(val) => setPassword(val)}
+                    secureTextEntry={true}
+                    autoCapitalize='none'
+                />
+                <Button
+                    mode='contained'
+                    color="#1976D2"
+                    shadowless
+                    onPress={registerUser}
+                >
+                    Sign Up
+                </Button>
+            </KeyboardAvoidingView>
+        </Block>
     );
-
 }
 
 const styles = StyleSheet.create({
@@ -94,21 +144,24 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: 35,
+        alignItems: 'center',
+        padding: 20,
         backgroundColor: '#fff'
     },
-    inputStyle: {
-        width: '100%',
-        marginBottom: 15,
-        paddingBottom: 15,
-        alignSelf: "center",
-        borderColor: "#ccc",
-        borderBottomWidth: 1
+    errorMessageText: {
+        color: 'red',
+        fontSize: 14,
+        marginBottom: 10,
+    },
+    inputTextStyle:{
+        fontSize: 16,
+        marginLeft: 10
     },
     loginText: {
-        color: '#3740FE',
+        color: '#1976D2',
         marginTop: 25,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 13
     },
     preloader: {
         left: 0,

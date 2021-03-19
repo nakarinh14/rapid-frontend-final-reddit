@@ -25,6 +25,6 @@ export function addNewSubreddit(subredditName, user, description){
     }
 
     var subredditId = firebase.database().ref('subreddits').push(obj).key
-    SubredditUserService.addSubredditUserRole(subredditId, "user", "admin")
+    SubredditUserService.updateSubredditUserRole(subredditId, "user", "admin")
 
 }

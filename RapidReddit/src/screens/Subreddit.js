@@ -9,6 +9,8 @@ import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
 import PostListComponent from "../components/PostListComponent";
 import * as SubredditService from '../services/SubredditService'
+import { Ionicons } from '@expo/vector-icons';
+
 
 
 const online = 980;
@@ -53,7 +55,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
 
                 title={subreddit.name}
 
-                left={!owner ?
+                left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
                             name="arrow-left"
@@ -61,7 +63,12 @@ export const Subreddit = ({ route, navigation, uid }) => {
                             size={24}
                             color={theme.COLORS.ICON}
                         />
-                    </TouchableOpacity>): null
+                    </TouchableOpacity>)
+                }
+                right = {owner ? 
+                (<TouchableOpacity onPress={() => navigation.navigate("EditSubreddit")}>
+                        <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
+                    </TouchableOpacity>) : null
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 

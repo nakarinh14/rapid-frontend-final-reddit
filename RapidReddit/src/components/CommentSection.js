@@ -4,7 +4,7 @@ import theme from "../theme";
 import {Block} from "galio-framework";
 import {CommentTree} from "./CommentTree";
 import CommentEllipsisModal from "./CommentEllipsisModal";
-import CommentModalContext from "./CommentModalContext"
+import CommentModalContext from "../contexts/CommentModalContext"
 import {withInteractionsManaged} from "./withInteractionsManaged";
 
 const { width } = Dimensions.get('screen');

@@ -6,7 +6,6 @@ import {Comment} from "./Comment";
 import Modal from "react-native-modal";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import { addComment } from "../services/CommentsService";
-import {useNavigation} from "@react-navigation/native";
 
 function RenderComment({replyComment}) {
     if(replyComment) return (
@@ -14,36 +13,28 @@ function RenderComment({replyComment}) {
             {replyComment && (<Comment preview={true} comment={replyComment}/>)}
         </View>
     )
-    else return null
+    return null
 }
 
 export default function({ replyComment, visible, visibilitySetter, postId, commentPath }) {
 
     const [ commentText, setCommentText ] = useState('')
     const [ addingComment, setAddingComment ] = useState(false)
-    // console.log('Comment path:',commentPath," post ID: ",postId)
 
-    const authentication = useContext(AuthenticationContext)
-    const navigation = useNavigation()
+    const { user } = useContext(AuthenticationContext)
 
-    // console.log(authentication.user)
-
-    function createComment() {
+    const createComment = async () => {
         setAddingComment(true)
 
-        if(!authentication.user){
+        try{
+            await addComment(postId,commentText, user.displayName, commentPath)
             visibilitySetter(false)
-            return navigation.push("Login")
-        }
-
-        addComment(postId,commentText,authentication.user.displayName,commentPath).then(() => {
-            setAddingComment(false)
-            visibilitySetter(false)
-        }).catch((error) => {
+        } catch (err){
             console.error(error)
-            setAddingComment(false)
             ToastAndroid.show("Something went wrong. Please try again later", ToastAndroid.SHORT)
-        })
+        } finally {
+            setAddingComment(false)
+        }
     }
 
     return (
@@ -73,7 +64,9 @@ export default function({ replyComment, visible, visibilitySetter, postId, comme
                     </TouchableOpacity>
                 )}
                 right={
-                    addingComment?(<ActivityIndicator size={"small"}/>):(<Button title={"Post"} onPress={createComment}/>)
+                    addingComment ?
+                        (<ActivityIndicator size={"small"}/>) :
+                        (<Button title={"Post"} onPress={createComment}/>)
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />

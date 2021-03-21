@@ -12,6 +12,18 @@ const routes = [
     path: '/user/:id',
     component: () => import('../pages/UserProfile.vue')
   },
+  {
+    path: '/login',
+    component: () => import('../pages/Login')
+  },
+  {
+    path: '/register',
+    component: () => import('../pages/Register')
+  },
+  {
+    path: '/subreadit',
+    component: () => import('../components/Subreddit')
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

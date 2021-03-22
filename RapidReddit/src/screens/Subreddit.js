@@ -53,10 +53,7 @@ export const Subreddit = ({ route, navigation, uid }) => {
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
                 title={subreddit.name}
-<<<<<<< HEAD
 
-=======
->>>>>>> 307f41928f1c057d9afe6b84b9d7712519eed3b6
                 left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
@@ -66,14 +63,11 @@ export const Subreddit = ({ route, navigation, uid }) => {
                             color={theme.COLORS.ICON}
                         />
                     </TouchableOpacity>)
-<<<<<<< HEAD
                 }
                 right = {owner ? 
-                (<TouchableOpacity onPress={() => navigation.navigate("EditSubreddit")}>
+                (<TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subredditId: subredditId})}>
                         <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
                     </TouchableOpacity>) : null
-=======
->>>>>>> 307f41928f1c057d9afe6b84b9d7712519eed3b6
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 

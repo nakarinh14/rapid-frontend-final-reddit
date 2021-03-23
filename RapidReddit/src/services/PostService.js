@@ -52,6 +52,3 @@ export function getPostById(id) {
     return firebase.database().ref('posts').child(id)
 }
 
-export async function getAuthorsForPosts(posts) {
-    const ids = posts.map(v => v.id)
-}

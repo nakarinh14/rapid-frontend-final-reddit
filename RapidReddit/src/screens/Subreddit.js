@@ -8,14 +8,13 @@ import CreatePostModal from "../components/CreatePostModal";
 
 export const Subreddit = ({ route, navigation }) => {
 
-    const { subredditId } = route.params
+    const { subredditId, subreaditName } = route.params
     const [subreadit, setSubreadit] = useState({
             name: "",
             description: "",
             subscribers: 0,
             date_created: 0
     });
-
     useEffect(() => {
         const subredditRef = SubredditService.getRefForSubreddit(subredditId)
         subredditRef.on('value', snapshot => {
@@ -43,7 +42,7 @@ export const Subreddit = ({ route, navigation }) => {
                     </TouchableOpacity>)
                 }
                 right={
-                    (<CreatePostModal navigation={navigation} subreadit={subreadit.name} />)
+                    (<CreatePostModal navigation={navigation} subreadit={subreaditName} />)
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 
@@ -60,7 +59,7 @@ export const Subreddit = ({ route, navigation }) => {
                 <Text style={styles.description}>
                     {subreadit.description}
                 </Text>
-                <PostListComponent subreadit={subreadit.name} />
+                <PostListComponent subreadit={subreaditName} />
             </ScrollView>
         </Block>
     );

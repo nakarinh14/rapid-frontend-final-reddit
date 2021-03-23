@@ -21,7 +21,7 @@ export const Home = ({navigation}) => {
                 )}
             />
             <ScrollView>
-                <PostListComponent subreadit={"home"}/>
+                <PostListComponent />
             </ScrollView>
         </Block>
     )

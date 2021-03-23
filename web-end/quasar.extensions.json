@@ -1,6 +1,9 @@
 {
-  "@quasar/qenv": {
+  "@quasar/dotenv": {
+    "env_development": ".env",
+    "env_production": ".env.prod",
     "common_root_object": "none",
-    "add_qenv_to_gitignore": true
+    "create_env_files": true,
+    "add_env_to_gitignore": true
   }
 }

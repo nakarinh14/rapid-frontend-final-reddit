@@ -1,28 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
-// Not really reuseable. Might need to create new one here.
-import SubredditAbout from "../components/UserComments";
-import UserPosts from "../components/UserPosts"
-import {firebase} from "../firebase";
 import PostListComponent from "../components/PostListComponent";
 import * as SubredditService from '../services/SubredditService'
+import CreatePostModal from "../components/CreatePostModal";
 
+export const Subreddit = ({ route, navigation }) => {
 
-const online = 980;
-
-
-const owner = true;
-
-const Tab = createMaterialTopTabNavigator();
-
-export const Subreddit = ({ route, navigation, uid }) => {
-
-    const {subredditId} = route.params
-
-    const [subreddit, setSubreddit] = useState({
+    const { subredditId } = route.params
+    const [subreadit, setSubreadit] = useState({
             name: "",
             description: "",
             subscribers: 0,
@@ -30,27 +17,21 @@ export const Subreddit = ({ route, navigation, uid }) => {
     });
 
     useEffect(() => {
-
         const subredditRef = SubredditService.getRefForSubreddit(subredditId)
-
         subredditRef.on('value', snapshot => {
-            data = snapshot.val();
-            setSubreddit(data)
-            window.console.log("data: ")
-            window.console.log(data)
+            if(snapshot.exists()){
+                setSubreadit(snapshot.val())
+            }
         })
-
         return () => {
             subredditRef.off('value')
         }
-
-
     },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
-                title={subreddit.name}
+                title={subreadit.name}
                 left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
@@ -61,6 +42,9 @@ export const Subreddit = ({ route, navigation, uid }) => {
                         />
                     </TouchableOpacity>)
                 }
+                right={
+                    (<CreatePostModal navigation={navigation} subreadit={subreadit.name} />)
+                }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 
             />
@@ -69,30 +53,15 @@ export const Subreddit = ({ route, navigation, uid }) => {
                     style={styles.achievements}
                 >
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{subreddit.subscribers}</Text>
+                        <Text style={styles.subStatTitle}>{subreadit.subscribers}</Text>
                         <Text color={theme.COLORS.GREY}>Members</Text>
                     </Block>
-                    <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{online}</Text>
-                        <Text color={theme.COLORS.GREY}>Online</Text>
-                    </Block>
-
                 </Block>
                 <Text style={styles.description}>
-                    {subreddit.description}
+                    {subreadit.description}
                 </Text>
-                <Tab.Navigator>
-                    <Tab.Screen
-                        name="Posts"
-                        component={PostListComponent} subreadit={subredditId}
-                    />
-                    <Tab.Screen
-                        name="About"
-                        component={SubredditAbout}
-                    />
-                </Tab.Navigator>
+                <PostListComponent subreadit={subreadit.name} />
             </ScrollView>
-
         </Block>
     );
 }

@@ -41,6 +41,7 @@ export default function({subreadit, user}) {
 
     let ref = PostService.getRefForPosts()
     if(subreadit) {
+        console.log(subreadit)
         ref = PostService.getRefForSubreaditPosts(subreadit)
     }
     else if(user) {
@@ -50,6 +51,7 @@ export default function({subreadit, user}) {
     useEffect(() => {
         ref.on('value', snapshot => {
             const data = snapshot.val() || []
+            console.log(data)
             Object.keys(data).map(v => {
                 data[v].id = v
             })

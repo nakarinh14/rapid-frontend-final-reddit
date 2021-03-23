@@ -27,10 +27,10 @@ export default function({ replyComment, visible, visibilitySetter, postId, comme
         setAddingComment(true)
 
         try{
-            await addComment(postId,commentText, user.displayName, commentPath)
+            await addComment(postId,commentText, user, commentPath)
             visibilitySetter(false)
         } catch (err){
-            console.error(error)
+            console.error(err)
             ToastAndroid.show("Something went wrong. Please try again later", ToastAndroid.SHORT)
         } finally {
             setAddingComment(false)

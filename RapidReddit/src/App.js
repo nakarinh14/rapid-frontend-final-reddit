@@ -11,19 +11,33 @@ import {Login} from "./screens/Login";
 import {RegisterScreen} from "./screens/RegisterScreen";
 import {createStackNavigator} from "@react-navigation/stack";
 import {BottomTabNavigator} from "./navigation/BottomTabNavigator";
+import { getUpvotedCommentsRef} from "./services/CommentsService";
 
 export default function App() {
 
     const [loggedInUser, setLoggedInUser] = useState(null)
+    const [ upvotedComments, setUpvotedComments ] = useState({})
 
     const authentication = {
         user: loggedInUser,
-        isLoggedIn: () => loggedInUser !== null
+        isLoggedIn: () => loggedInUser !== null,
+        upvotedComments: upvotedComments
     }
 
     useEffect(() => {
         // unsubscribe on unmount
         return firebase.auth().onAuthStateChanged((user) => {
+            if(user) {
+                //User has logged in
+                getUpvotedCommentsRef(user.uid).on('value',snapshot => {
+                    setUpvotedComments(snapshot.val() || {})
+                })
+            }
+
+            else{
+                //User has logged out
+                getUpvotedCommentsRef(loggedInUser.uid).off('value')
+            }
             setLoggedInUser(user);
         })
     }, []);

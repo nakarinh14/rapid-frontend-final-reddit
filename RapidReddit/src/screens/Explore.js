@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Block, NavBar, Text} from "galio-framework";
-import {Platform, ScrollView, TouchableOpacity, View, StyleSheet} from "react-native";
+import {Platform, ScrollView, TouchableOpacity, StyleSheet} from "react-native";
 import theme from "../theme";
 import * as SubredditService from '../services/SubredditService'
 import SubredditPreview from "../components/SubredditPreview";
@@ -8,23 +8,18 @@ import { Ionicons } from '@expo/vector-icons';
 import CreateSubredditModal from '../components/CreateSubredditModal'
 
 export const Explore = ({navigation}) => {
-
     const [subreddits, setSubreddits] = useState([]);
 
     useEffect(() => {
-
         const subredditsRef = SubredditService.getRefForSubreddits()
-
         subredditsRef.on('value', snapshot => {
-            window.console.log(Object.keys(snapshot.val() || []))
-            setSubreddits(snapshot.val())
+            if(snapshot.exists()){
+                setSubreddits(snapshot.val())
+            }
         })
-
         return () => {
             subredditsRef.off('value')
         }
-
-
     },[])
 
 
@@ -35,23 +30,22 @@ export const Explore = ({navigation}) => {
                 title="Explore"
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
                 right={(
-                    <CreateSubredditModal navigation={navigation}
-                        //If you wanna use a custom add button to start the modal
-                        //                  addButton={(
-                        //     <Button>Test</Button>
-                        // )}
-                    />
+                    <CreateSubredditModal navigation={navigation} />
                 )}
             />
             <ScrollView>
                 <Block>
-                    {Object.keys(subreddits || []).map((key, idx) =>
+                    {Object.keys(subreddits).map((key, idx) =>
                         <TouchableOpacity
                             component={SubredditPreview}
                             key={idx}
-                            onPress={() => navigation.navigate('Subreddit', {subredditId: key})}
+                            onPress={() =>
+                                navigation.navigate(
+                                    'Subreddit',
+                                    {subredditId: key, subreaditName: subreddits[key].name})
+                            }
                         >
-                            <SubredditPreview props={subreddits[key]}/>
+                            <SubredditPreview subreadit={subreddits[key]}/>
                         </TouchableOpacity>
                     )}
 
@@ -68,11 +62,3 @@ export const Explore = ({navigation}) => {
         </Block>
     )
 }
-
-
-const styles = StyleSheet.create({
-    subredditPreview: {
-        margin: 10,
-        backgroundColor: 'white',
-    }
-})

@@ -50,7 +50,7 @@ const Post = ({route, navigation}) => {
 
     const [ comments, setComments ] = useState({})
     const {postId} = route.params
-    const [ post, setPost ] = useState({id: postId})
+    const [ post, setPost ] = useState({id: postId, user: {}})
 
     useEffect(() => {
         if(postId) {

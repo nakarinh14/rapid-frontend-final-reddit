@@ -4,7 +4,7 @@ import theme from "../theme";
 import {Block} from "galio-framework";
 import {CommentTree} from "./CommentTree";
 import CommentEllipsisModal from "./CommentEllipsisModal";
-import CommentModalContext from "../contexts/CommentModalContext"
+import CommentTreeContext from "../contexts/CommentTreeContext"
 import {withInteractionsManaged} from "./withInteractionsManaged";
 
 const { width } = Dimensions.get('screen');
@@ -26,7 +26,10 @@ const CommentSection = ({ comments, postId })=> {
     }
 
     return (
-        <CommentModalContext.Provider value={setPreviewComment}>
+        <CommentTreeContext.Provider value={{
+            postId: postId,
+            modalFunction: setPreviewComment
+        }}>
             <Block flex style={styles.cards}>
                 {comments && Object.keys(comments).map((comment_id) => {
                     const comment = comments[comment_id]
@@ -47,7 +50,7 @@ const CommentSection = ({ comments, postId })=> {
                 isModalVisible={isModalVisible}
                 closeModal={closeModal}
             />
-        </CommentModalContext.Provider>
+        </CommentTreeContext.Provider>
     )
 }
 

@@ -40,7 +40,7 @@ export default function (props) {
             setCreatePostModalVisible(false)
         }
         try {
-            const key = addNewPost(subreadit,authentication.user.displayName, postTitle, postContent)
+            const key = addNewPost(subreadit,authentication.user, postTitle, postContent)
             // console.log(key)
             setCreatePostModalVisible(false)
             setErrorMessage('')

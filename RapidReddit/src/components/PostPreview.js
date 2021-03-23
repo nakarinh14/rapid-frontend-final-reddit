@@ -77,7 +77,7 @@ export const PostPreview = ({touchable, post}) => {
                             onPress={() => navigation.push("User", {uid: post.user})}
                         >
                             <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
-                                {post.user}
+                                {post.user?post.user.displayName:''}
                             </Text>
                         </TouchableOpacity>
                     </Block>

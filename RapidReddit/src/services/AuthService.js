@@ -25,5 +25,4 @@ export async function registerNewUser(email, password, displayName) {
             date_created: new Date().getTime()
         }
     })
-
 }

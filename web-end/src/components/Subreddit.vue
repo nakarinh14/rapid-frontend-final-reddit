@@ -6,10 +6,10 @@
     </div>
 
     <!--    Sort/CreatePost Bar-->
-    <div class="q-pt-md q-pl-md q-pr-md text-black">
-      <q-list dark bordered class="bg-grey-5 rounded-borders">
-        <q-item class="q-mt-sm q-mb-sm">
-          <div class="q-gutter-sm">
+    <div style="width: 40%" class="q-pt-md q-pl-md q-pr-md text-black">
+      <q-list dark bordered class="bg-grey-6 rounded-borders" >
+        <q-item class="q-mt-sm q-mb-sm" >
+          <div class="q-gutter-sm ">
             <q-radio dark v-model="sortBy" val="hot" label="Hot" />
             <q-radio dark v-model="sortBy" val="new" label="New" />
             <q-radio dark v-model="sortBy" val="old" label="Old" />
@@ -26,12 +26,11 @@
         </q-item>
       </q-list>
     </div>
-
     <!--    List of articles-->
-    <div class="row justify-center items-center items-start justify-start content-center">
+    <div class="row items-start justify-start" align="center">
       <div class="col">
         <post-preview
-          class="post-preview"
+          class="post-preview text-left"
           v-for="(post, idx) in posts"
           :key="idx"
           :group="post.group"

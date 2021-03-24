@@ -11,14 +11,31 @@ import {Login} from "./screens/Login";
 import {RegisterScreen} from "./screens/RegisterScreen";
 import {createStackNavigator} from "@react-navigation/stack";
 import {BottomTabNavigator} from "./navigation/BottomTabNavigator";
+import { getUpvotedCommentsRef} from "./services/CommentsService";
 
 export default function App() {
 
     const [loggedInUser, setLoggedInUser] = useState(null)
+    const [ upvotedComments, setUpvotedComments ] = useState({})
+    const [ upvotesRef, setUpvoteRef ] = useState(null)
 
     const authentication = {
         user: loggedInUser,
-        isLoggedIn: () => loggedInUser !== null
+        isLoggedIn: () => loggedInUser !== null,
+        upvotedComments: upvotedComments
+    }
+    // Have to move outside, attach/detach listener in onAuthStateChange don't work well.
+    if(loggedInUser && !upvotesRef) {
+        const ref = getUpvotedCommentsRef(loggedInUser.displayName)
+        ref.on('value',(snapshot) => {
+            setUpvotedComments(snapshot.val() || {})
+        })
+        setUpvoteRef(ref)
+    }  else if (!loggedInUser && upvotesRef){
+        // User has logged out and ref is currently attached
+        // Gotta store ref in variable, cos getUpvoted func isn't referencing to same ref.
+        upvotesRef.off()
+        setUpvoteRef(null)
     }
 
     useEffect(() => {

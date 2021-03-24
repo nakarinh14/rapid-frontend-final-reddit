@@ -4,9 +4,11 @@ import {StyleSheet, TouchableOpacity, View} from "react-native";
 import theme from "../theme";
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {Ionicons} from '@expo/vector-icons';
-import CommentModalContext from "../contexts/CommentModalContext";
 import {useNavigation} from "@react-navigation/native";
 import {getDisplayDate} from "../utils/PostUtils";
+import AuthenticationContext from "../contexts/AuthenticationContext";
+import {voteComment} from "../services/CommentsService";
+import CommentTreeContext from "../contexts/CommentTreeContext";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -25,14 +27,32 @@ const paddedFlex = (depth) => {
 export const Comment = ({comment, depth, preview, path}) => {
 
     const navigation = useNavigation();
-    const setPreviewComment = useContext(CommentModalContext);
+    const { postId, modalFunction } = useContext(CommentTreeContext);
 
     const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
     const padded = 100 - emptyPadded
 
+    const { user, upvotedComments } = useContext(AuthenticationContext)
+
+    const commentId = preview ? null : path.slice(path.lastIndexOf('/')+1)
+
     const ellipsisOnClick = () => {
-        setPreviewComment(comment, path)
+        modalFunction(comment, path)
+    }
+
+    const upvote = async () => {
+        try {
+            await voteComment(
+                postId,
+                path,
+                user.displayName,
+                comment.user.displayName,
+                !upvotedComments[commentId]  /* data race, avoid using local upvotedComments here */
+            )
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -42,25 +62,27 @@ export const Comment = ({comment, depth, preview, path}) => {
                 {depth ? <View style={[styles.line]}/> : null}
                 <Block style={[styles.box, indentColor(depth)]}>
                     <Block style={styles.topInfo}>
-                        <TouchableOpacity onPress={() => navigation.push("User", {uid: comment.user})}>
-                            <Block style={styles.topLeftFlex}>
+                        <Block style={styles.topLeftFlex}>
+                            <TouchableOpacity onPress={() => navigation.push("User", {username: comment.user.displayName})}>
                                 <View>
                                     <Text style={styles.titleText}>
-                                        {comment.user}
+                                        {comment.user.displayName}
                                     </Text>
                                 </View>
+                            </TouchableOpacity>
 
+                            <TouchableOpacity onPress={upvote}>
                                 <View style={styles.upvotes}>
                                     <MaterialCommunityIcons
                                         name="arrow-up-bold-outline"
-                                        color={theme.COLORS.MUTED}
+                                        color={upvotedComments[commentId]?'tomato':theme.COLORS.MUTED}
                                     />
                                     <Text style={styles.timestampText}>
                                         {comment.upvotes}
                                     </Text>
                                 </View>
+                            </TouchableOpacity>
                             </Block>
-                        </TouchableOpacity>
                         <Block style={styles.topRightFlex}>
                             {preview ? null :
                                 <TouchableOpacity

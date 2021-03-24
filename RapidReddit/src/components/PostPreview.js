@@ -33,14 +33,18 @@ function PostInfo(props) {
 
 function PostTitleContent(props) {
     const { touchable, onPress, post } = props
-    if(touchable) return (
+    if(touchable) {
+        return (
             <TouchableOpacity onPress={onPress}>
                 <PostInfo post={post}/>
             </TouchableOpacity>
         )
-    else return (
+    }
+    else {
+        return (
             <PostInfo post={post}/>
         )
+    }
 }
 
 export const PostPreview = ({touchable, post}) => {
@@ -57,7 +61,7 @@ export const PostPreview = ({touchable, post}) => {
     }
 
     const onPress = () => {
-        navigation.push("Post",{postId: post.id})
+        navigation.push("Post", {postId: post.id})
     }
 
     return (
@@ -74,10 +78,10 @@ export const PostPreview = ({touchable, post}) => {
                         </Text>
                         <Text color={theme.COLORS.MUTED}> by </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.push("User", {uid: post.user})}
+                            onPress={() => navigation.push("User", {username: post.user.displayName})}
                         >
                             <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
-                                {post.user}
+                                {post.user?post.user.displayName:''}
                             </Text>
                         </TouchableOpacity>
                     </Block>

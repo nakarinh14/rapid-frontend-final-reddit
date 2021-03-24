@@ -1,59 +1,46 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
-// Not really reuseable. Might need to create new one here.
-import SubredditAbout from "../components/UserComments";
-import UserPosts from "../components/UserPosts"
-import {firebase} from "../firebase";
 import PostListComponent from "../components/PostListComponent";
 import * as SubredditService from '../services/SubredditService'
+<<<<<<< HEAD
 import { Ionicons } from '@expo/vector-icons';
 
+=======
+import CreatePostModal from "../components/CreatePostModal";
+>>>>>>> 1d08a5087463936853af681c51af9b2771bfbf52
 
+export const Subreddit = ({ route, navigation }) => {
 
-const online = 980;
-
-
-const owner = true;
-
-const Tab = createMaterialTopTabNavigator();
-
-export const Subreddit = ({ route, navigation, uid }) => {
-
-    const {subredditId} = route.params
-
-    const [subreddit, setSubreddit] = useState({
+    const { subredditId, subreaditName } = route.params
+    const [subreadit, setSubreadit] = useState({
             name: "",
             description: "",
             subscribers: 0,
             date_created: 0
     });
-
     useEffect(() => {
-
         const subredditRef = SubredditService.getRefForSubreddit(subredditId)
-
         subredditRef.on('value', snapshot => {
-            data = snapshot.val();
-            setSubreddit(data)
-            window.console.log("data: ")
-            window.console.log(data)
+            if(snapshot.exists()){
+                setSubreadit(snapshot.val())
+            }
         })
-
         return () => {
             subredditRef.off('value')
         }
-
-
     },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
+<<<<<<< HEAD
                 title={subreddit.name}
 
+=======
+                title={subreadit.name}
+>>>>>>> 1d08a5087463936853af681c51af9b2771bfbf52
                 left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
@@ -64,10 +51,15 @@ export const Subreddit = ({ route, navigation, uid }) => {
                         />
                     </TouchableOpacity>)
                 }
+<<<<<<< HEAD
                 right = {owner ? 
                 (<TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subredditId: subredditId})}>
                         <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
                     </TouchableOpacity>) : null
+=======
+                right={
+                    (<CreatePostModal navigation={navigation} subreadit={subreaditName} />)
+>>>>>>> 1d08a5087463936853af681c51af9b2771bfbf52
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 
@@ -77,30 +69,15 @@ export const Subreddit = ({ route, navigation, uid }) => {
                     style={styles.achievements}
                 >
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{subreddit.subscribers}</Text>
+                        <Text style={styles.subStatTitle}>{subreadit.subscribers}</Text>
                         <Text color={theme.COLORS.GREY}>Members</Text>
                     </Block>
-                    <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{online}</Text>
-                        <Text color={theme.COLORS.GREY}>Online</Text>
-                    </Block>
-
                 </Block>
                 <Text style={styles.description}>
-                    {subreddit.description}
+                    {subreadit.description}
                 </Text>
-                <Tab.Navigator>
-                    <Tab.Screen
-                        name="Posts"
-                        component={PostListComponent} subreadit={subredditId}
-                    />
-                    <Tab.Screen
-                        name="About"
-                        component={SubredditAbout}
-                    />
-                </Tab.Navigator>
+                <PostListComponent subreadit={subreaditName} />
             </ScrollView>
-
         </Block>
     );
 }

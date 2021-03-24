@@ -8,9 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 import CreatePostModal from "../components/CreatePostModal";
 
 
-
-import CreatePostModal from "../components/CreatePostModal";
-
 export const Subreddit = ({ route, navigation }) => {
 
     owner = true

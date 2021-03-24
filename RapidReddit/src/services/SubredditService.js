@@ -1,17 +1,7 @@
 import {firebase} from '../firebase'
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 40c3236c2cefbe3fb94ae3e98f782d6f04efb48f
 import { Subreddit } from '../screens/Subreddit'
 import * as SubredditUserService from '../services/SubredditUserService'
 
-
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 1d08a5087463936853af681c51af9b2771bfbf52
->>>>>>> 40c3236c2cefbe3fb94ae3e98f782d6f04efb48f
 
 export function getRefForSubreddits() {
     return firebase.database().ref('subreddits')

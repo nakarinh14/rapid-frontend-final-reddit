@@ -8,9 +8,10 @@ export const CommentTree = ({ comment, depth, path='' }) => {
 
     if(comment){
         const childrenComment = comment.comments;
+        // console.log(comment)
         return (
             <>
-                <Comment comment={comment} depth={depth} path={path} />
+                <Comment comment={{...comment.comment, id: comment.id}} depth={depth} path={path} />
                 {
                     childrenComment && Object.keys(childrenComment).map((child_id) =>
                         <CommentTree

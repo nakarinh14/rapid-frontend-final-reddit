@@ -11,32 +11,30 @@ posts:
                 body: "string"
 
             subreddit: "$subreddit_id_1"
-        # Contain everything recursive cos make query easier
-        # Optimization can made in the future with pagination limit, or denormalization.
-        # Will denormalise this. Comments could be sortable by post id
-        comments:
-            $comment_id_1:
-                $uid_1: "some user id"
-                $body: "blabla"
-                comments:
-                    $comment_id_2:
-                        $uid_1: "some user id"
-                        $body: "blabla"
-                        comments:
-                            # ...
-                            # recursive comment limit at depth of 2-3
+
+# Contain everything recursive cos make query easier
+# Optimization can made in the future with pagination limit, or denormalization.
+post_comments:
+    $post_id_1:
+        $comment_id_1:
+            $comment_id_1: "Some comment id"
+            comments:
+                $comment_id_2:
+                    $comment_id_2: "Some comment id"
+                    comments:
                     # ...
-            # ...
-    # ...
+                    # recursive comment limit at depth of 2-3
 
 # Denomarlize comment for direct access
 comments:
-    $post_id:
-        $comment_id_1:
-            parent: "thread_id_1" # parent can be a post or a comment.
-            timestamp: "2018-20-blabla"
-            $uid_1: "some user id"
-            $body: "blabla"
+    $comment_id_1:
+        parent: "thread_id_1" # parent can be a post or a comment.
+        timestamp: "2018-20-blabla"
+        $body: "blabla"
+        user:
+            $user_id: "$user_id"
+            displayName: "user display name"
+        $post_id: "Post id" # Might not need this
     # ...
 
 subreddits:

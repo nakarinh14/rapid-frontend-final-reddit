@@ -40,8 +40,8 @@ export const Comment = ({comment, depth, preview, path}) => {
     }
 
     function upvote() {
-        const voteTo = !upvotedComments[commentId]
-        voteComment(postId, path, user.uid, voteTo).then().catch(err => {
+        const voteTo = !upvotedComments[comment.id]
+        voteComment(comment.id, user.uid, voteTo).then().catch(err => {
                 console.error(err)
             })
 

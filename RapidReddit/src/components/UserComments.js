@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Block, Text} from "galio-framework";
 import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {firebase} from "../firebase";
 import {withInteractionsManaged} from "./withInteractionsManaged";
+import { getUserComments, getUserCommentsRef } from "../services/CommentsService";
+import AuthenticationContext from "../contexts/AuthenticationContext";
 
 const { width } = Dimensions.get('screen');
 
@@ -53,22 +55,22 @@ const comments = {
     }
 };
 
-const useMockData = true
+const useMockData = false
 
-const UserComments = ({ uid }) => {
+const UserComments = () => {
 
+    const [ userCommentIds, setUserCommentIds ] = useState(null)
     const [userComments, setUserComments] = useState(null)
+    const {user} = useContext(AuthenticationContext)
+
 
     useEffect(() => {
         if(useMockData){
             setUserComments(comments)
             return
         }
-        const ref = firebase.database().ref(`user_profile/${uid}/comments`)
-        ref.on('value', (snapshot) => {
-            if(snapshot.exists()){
-                setUserComments(snapshot.val())
-            }
+        getUserCommentsRef(user.uid).on('value', snapshot => {
+            getUserComments(user.uid, snapshot)
         })
     })
 

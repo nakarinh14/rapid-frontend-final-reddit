@@ -9,6 +9,7 @@ import CreatePostModal from "../components/CreatePostModal";
 
 
 
+import CreatePostModal from "../components/CreatePostModal";
 
 export const Subreddit = ({ route, navigation }) => {
 
@@ -37,6 +38,8 @@ export const Subreddit = ({ route, navigation }) => {
             <NavBar
                 title={subreadit.name}
 
+
+                title={subreadit.name}
                 left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
@@ -53,7 +56,6 @@ export const Subreddit = ({ route, navigation }) => {
                         <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
                     </TouchableOpacity>
                     <CreatePostModal navigation={navigation} subreadit={subreaditName} />
-                    
                 </Block>) : null
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}

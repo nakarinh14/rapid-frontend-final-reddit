@@ -1,14 +1,11 @@
 import React, {useState, useContext} from 'react'
 import {Block, Icon, NavBar} from "galio-framework";
-import {Modal, Text, TouchableOpacity, StyleSheet, Dimensions, View, Button} from "react-native";
+import {Modal, Text, TouchableOpacity, StyleSheet, View} from "react-native";
 import theme from "../theme";
 import {Input} from 'react-native-elements'
 import {useNavigation} from "@react-navigation/native";
-import { addNewPost } from '../services/PostService'
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import * as SubredditService from '../services/SubredditService'
-
-const { height } = Dimensions.get("window")
 
 function RenderedAddButton(props) {
     const { AddButton, setter } = props
@@ -33,7 +30,7 @@ export default function (props) {
 
     const { subreadit, addButton } = props
     const navigation = useNavigation()
-    const authentication = useContext(AuthenticationContext)
+    const { user } = useContext(AuthenticationContext)
 
     //AddButton - Custom button to open the create modal. Default will use + icon
     //Subreadit - The subreadit to add the post to

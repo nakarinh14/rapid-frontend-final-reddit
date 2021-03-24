@@ -4,43 +4,39 @@ import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
 import PostListComponent from "../components/PostListComponent";
 import * as SubredditService from '../services/SubredditService'
-<<<<<<< HEAD
 import { Ionicons } from '@expo/vector-icons';
-
-=======
 import CreatePostModal from "../components/CreatePostModal";
->>>>>>> 1d08a5087463936853af681c51af9b2771bfbf52
+
+
+
 
 export const Subreddit = ({ route, navigation }) => {
 
-    const { subredditId, subreaditName } = route.params
+    owner = true
+    const { subreaditId, subreaditName } = route.params
     const [subreadit, setSubreadit] = useState({
-            name: "",
-            description: "",
+            name: "loading",
+            description: "loading",
             subscribers: 0,
             date_created: 0
     });
     useEffect(() => {
-        const subredditRef = SubredditService.getRefForSubreddit(subredditId)
-        subredditRef.on('value', snapshot => {
+        const subreaditRef = SubredditService.getRefForSubreddit(subreaditId)
+        subreaditRef.on('value', snapshot => {
             if(snapshot.exists()){
                 setSubreadit(snapshot.val())
             }
         })
         return () => {
-            subredditRef.off('value')
+            subreaditRef.off('value')
         }
     },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
-<<<<<<< HEAD
-                title={subreddit.name}
-
-=======
                 title={subreadit.name}
->>>>>>> 1d08a5087463936853af681c51af9b2771bfbf52
+
                 left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
@@ -51,15 +47,14 @@ export const Subreddit = ({ route, navigation }) => {
                         />
                     </TouchableOpacity>)
                 }
-<<<<<<< HEAD
                 right = {owner ? 
-                (<TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subredditId: subredditId})}>
+                (<Block row>
+                    <TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subreaditId: subreaditId})}>
                         <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
-                    </TouchableOpacity>) : null
-=======
-                right={
-                    (<CreatePostModal navigation={navigation} subreadit={subreaditName} />)
->>>>>>> 1d08a5087463936853af681c51af9b2771bfbf52
+                    </TouchableOpacity>
+                    <CreatePostModal navigation={navigation} subreadit={subreaditName} />
+                    
+                </Block>) : null
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 

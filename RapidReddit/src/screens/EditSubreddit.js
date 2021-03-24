@@ -18,38 +18,41 @@ import { Ionicons } from '@expo/vector-icons';
 
 export const EditSubreddit = ({ route, navigation}) => {
 
-    const {subredditId} = route.params
+    const {subreaditId} = route.params
 
-    const [subreddit, setSubreddit] = useState({
+    const [subreadit, setSubreadit] = useState({
         name: "",
         description: "",
         subscribers: 0,
         date_created: 0
      });
 
-     const [subredditName, setSubredditName] = useState("")
-     const [subredditDescription, setSubredditDescription] = useState("")
-     const [subredditRoles, setSubredditRoles] = useState({})
+     const [subreaditName, setSubreaditName] = useState("")
+     const [subreaditDescription, setSubreaditDescription] = useState("")
+     const [subreaditRoles, setSubreaditRoles] = useState({})
 
     useEffect(() => {
 
 
-        const subredditRef = SubredditService.getRefForSubreddit(subredditId)
-        const subredditRolesRef = SubredditUserService.getRefForSubredditRoles(subredditId)
+        const subreaditRef = SubredditService.getRefForSubreddit(subreaditId)
+        const subreaditRolesRef = SubredditUserService.getRefForSubredditRoles(subreaditId)
 
-        subredditRef.on('value', snapshot => {
-            data = snapshot.val();
-            setSubreddit(data)
-            setSubredditName(subreddit.name)
-            setSubredditDescription(subreddit.description)
-            window.console.log("data: ")
-            window.console.log(data)
+        subreaditRef.on('value', snapshot => {
+            if (snapshot.exists()){
+                var data = snapshot.val();
+                setSubreadit(data)
+                setSubreaditName(data.name)
+                setSubreaditDescription(data.description)
+                window.console.log("data: ")
+                window.console.log(data)
+            }
+            
         })
 
-        subredditRolesRef.get().then(function(snapshot) {
+        subreaditRolesRef.get().then(function(snapshot) {
             if (snapshot.exists()) {
                 var roles = snapshot.val()
-                setSubredditRoles(roles)
+                setSubreaditRoles(roles)
             }
             else {
                 window.console.log("Unable to retrieve user roles for this subreddit")
@@ -59,7 +62,7 @@ export const EditSubreddit = ({ route, navigation}) => {
           });
 
         return function cleanup() {
-            subredditRef.off('value')
+            subreaditRef.off('value')
         }
 
 
@@ -69,7 +72,7 @@ export const EditSubreddit = ({ route, navigation}) => {
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
 
-                title={subreddit.name}
+                title={subreadit.name}
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 
             />
@@ -77,30 +80,30 @@ export const EditSubreddit = ({ route, navigation}) => {
             <Block>
                 <Input
                     containerStyle={{marginTop: 25}}
-                    onChangeText={(text) => setSubredditName(text)}
-                    value={subredditName}
+                    onChangeText={(text) => setSubreaditName(text)}
+                    value={subreaditName}
                     label='Name'
-                    defaultValue={subredditName}
+                    defaultValue={subreaditName}
                     labelStyle={{color: "grey"}}
                     inputContainerStyle={{color: "grey"}}
                 />
                 <Input
                     containerStyle={{marginTop: 20}}
                     multiline={true}
-                    onChangeText={(text) => setSubredditDescription(text)}
-                    value={subredditDescription}
+                    onChangeText={(text) => setSubreaditDescription(text)}
+                    value={subreaditDescription}
                     label='Description'
-                    defaultValue={subredditDescription}
+                    defaultValue={subreaditDescription}
                     labelStyle={{color: "grey"}}
                 />
                 <Block marginHorizontal={10}>
                     <Text bold color="grey" size={18} marginHorizontal={20}>user roles</Text>
                     <View style={styles.hr} marginTop={20}/>
-                    {Object.keys(subredditRoles || []).map((key, idx) =>
+                    {Object.keys(subreaditRoles || []).map((key, idx) =>
                             <Block>
                             <Block style={styles.content} marginVertical={10}>
                                 <Text style={styles.m2}>{key}</Text>
-                                <Text style={styles.m2}>{subredditRoles[key]}</Text>
+                                <Text style={styles.m2}>{subreaditRoles[key]}</Text>
                                 <Block row>
                                     <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
                                     <Ionicons name="trash-outline" size={22} color={theme.COLORS.BLOCK}/>

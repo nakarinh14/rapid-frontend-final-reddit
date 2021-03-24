@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Platform, TouchableOpacity, ScrollView, View} from 'react-native';
+import {StyleSheet, Platform, TouchableOpacity, ScrollView, View, Button} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
@@ -20,22 +20,40 @@ export const EditSubreddit = ({ route, navigation}) => {
 
     const {subreaditId} = route.params
 
-    const [subreadit, setSubreadit] = useState({
+    const[subreadit, setSubreadit] = useState({
         name: "",
         description: "",
         subscribers: 0,
-        date_created: 0
-     });
+        date_created: 0,
+     })
+
+     var [subreaditRoles, setSubreaditRoles] = useState({})
+
 
      const [subreaditName, setSubreaditName] = useState("")
      const [subreaditDescription, setSubreaditDescription] = useState("")
-     const [subreaditRoles, setSubreaditRoles] = useState({})
+     const [newRoles, setNewRoles] = useState({})
+
+     const updateSubreadit = () => {
+         SubredditService.updateSubreadit(subreaditId, subreaditName, subreaditDescription, newRoles)
+     }
+
+     const isModified = () => {
+         window.console.log(subreadit)
+         window.console.log(JSON.stringify(subreaditRoles))
+         window.console.log(subreaditName + " " + subreaditDescription + " " + JSON.stringify(newRoles))
+         return subreadit.name != subreaditName 
+         || subreadit.description != subreaditDescription 
+         || JSON.stringify(subreaditRoles) != JSON.stringify(newRoles)
+     }
+
+
 
     useEffect(() => {
 
 
         const subreaditRef = SubredditService.getRefForSubreddit(subreaditId)
-        const subreaditRolesRef = SubredditUserService.getRefForSubredditRoles(subreaditId)
+        const newRolesRef = SubredditUserService.getRefForSubredditRoles(subreaditId)
 
         subreaditRef.on('value', snapshot => {
             if (snapshot.exists()){
@@ -44,15 +62,17 @@ export const EditSubreddit = ({ route, navigation}) => {
                 setSubreaditName(data.name)
                 setSubreaditDescription(data.description)
                 window.console.log("data: ")
-                window.console.log(data)
+                window.console.log("subreadit is now")
+                window.console.log(subreadit)
             }
             
         })
 
-        subreaditRolesRef.get().then(function(snapshot) {
+        newRolesRef.get().then(function(snapshot) {
             if (snapshot.exists()) {
                 var roles = snapshot.val()
                 setSubreaditRoles(roles)
+                setNewRoles(roles)
             }
             else {
                 window.console.log("Unable to retrieve user roles for this subreddit")
@@ -99,11 +119,11 @@ export const EditSubreddit = ({ route, navigation}) => {
                 <Block marginHorizontal={10}>
                     <Text bold color="grey" size={18} marginHorizontal={20}>user roles</Text>
                     <View style={styles.hr} marginTop={20}/>
-                    {Object.keys(subreaditRoles || []).map((key, idx) =>
+                    {Object.keys(newRoles || []).map((key, idx) =>
                             <Block>
                             <Block style={styles.content} marginVertical={10}>
                                 <Text style={styles.m2}>{key}</Text>
-                                <Text style={styles.m2}>{subreaditRoles[key]}</Text>
+                                <Text style={styles.m2}>{newRoles[key]}</Text>
                                 <Block row>
                                     <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
                                     <Ionicons name="trash-outline" size={22} color={theme.COLORS.BLOCK}/>
@@ -118,9 +138,19 @@ export const EditSubreddit = ({ route, navigation}) => {
                         <Text color="grey">Add new user</Text>
                     </Block>
                 </Block>
+                
             </Block>
             </ScrollView>
-
+            <View row center style={[styles.footer, {justifyContent: "center"}]}>
+            {isModified() ? 
+            (<TouchableOpacity style={{ height: 50, marginTop: 10, backgroundColor: "cyan", justifyContent: "center" }} onPress={() => {updateSubreadit()}}>
+                <Text center color="white">Save</Text>
+            </TouchableOpacity>) : null}
+            {!isModified() ? 
+            (<TouchableOpacity style={{ height: 50, marginTop: 10, backgroundColor: "grey", justifyContent: "center" }}>
+                <Text center color="white">Save</Text>
+            </TouchableOpacity>) : null}
+            </View>
         </Block>
     );
 }
@@ -141,5 +171,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: "row"
+    },
+    footer: {
+        position: "absolute",
+        left: 0,
+        bottom: 0,
+        width: "100%",
     }
+
 });

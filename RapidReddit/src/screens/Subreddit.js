@@ -4,32 +4,38 @@ import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
 import PostListComponent from "../components/PostListComponent";
 import * as SubredditService from '../services/SubredditService'
+import { Ionicons } from '@expo/vector-icons';
 import CreatePostModal from "../components/CreatePostModal";
+
 
 export const Subreddit = ({ route, navigation }) => {
 
-    const { subredditId, subreaditName } = route.params
+    owner = true
+    const { subreaditId, subreaditName } = route.params
     const [subreadit, setSubreadit] = useState({
-            name: "",
-            description: "",
+            name: "loading",
+            description: "loading",
             subscribers: 0,
             date_created: 0
     });
     useEffect(() => {
-        const subredditRef = SubredditService.getRefForSubreddit(subredditId)
-        subredditRef.on('value', snapshot => {
+        const subreaditRef = SubredditService.getRefForSubreddit(subreaditId)
+        subreaditRef.on('value', snapshot => {
             if(snapshot.exists()){
                 setSubreadit(snapshot.val())
             }
         })
         return () => {
-            subredditRef.off('value')
+            subreaditRef.off('value')
         }
     },[])
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
+                title={subreadit.name}
+
+
                 title={subreadit.name}
                 left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
@@ -41,8 +47,13 @@ export const Subreddit = ({ route, navigation }) => {
                         />
                     </TouchableOpacity>)
                 }
-                right={
-                    (<CreatePostModal navigation={navigation} subreadit={subreaditName} />)
+                right = {owner ? 
+                (<Block row>
+                    <TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subreaditId: subreaditId})}>
+                        <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
+                    </TouchableOpacity>
+                    <CreatePostModal navigation={navigation} subreadit={subreaditName} />
+                </Block>) : null
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 

@@ -41,7 +41,7 @@ export function getRefForUserPosts(userId) {
 }
 
 export function getRefForSubreaditPosts(subreadit) {
-    return firebase.database().ref(`posts`).orderByChild("subreadit").equalTo(subreadit)
+    return firebase.database().ref('posts').orderByChild("subreadit").equalTo(subreadit)
 }
 
 export function getRefForPosts() {
@@ -52,6 +52,3 @@ export function getPostById(id) {
     return firebase.database().ref('posts').child(id)
 }
 
-export async function getAuthorsForPosts(posts) {
-    const ids = posts.map(v => v.id)
-}

@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {Block, Button, Icon, NavBar} from "galio-framework";
-import {Platform, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
+import React from 'react';
+import {Block, NavBar} from "galio-framework";
+import {Platform, ScrollView, StyleSheet} from "react-native";
 import CreatePostModal from '../components/CreatePostModal'
 import theme from "../theme";
 import PostListComponent from "../components/PostListComponent";
-
 
 export const Home = ({navigation}) => {
 
@@ -15,17 +14,14 @@ export const Home = ({navigation}) => {
                 title="Home"
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
                 right={(
-                    <CreatePostModal navigation={navigation} subreadit={"home"}
-                        //If you wanna use a custom add button to start the modal
-                        //                  addButton={(
-                        //     <Button>Test</Button>
-                        // )}
-
+                    <CreatePostModal
+                        navigation={navigation}
+                        subreadit={"home"}
                     />
                 )}
             />
             <ScrollView>
-                <PostListComponent subreadit={"home"}/>
+                <PostListComponent />
             </ScrollView>
         </Block>
     )

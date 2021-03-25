@@ -12,36 +12,17 @@ import {UnauthenticatedScreen} from "./UnauthenticatedScreen";
 import {getDisplayDate} from "../utils/PostUtils";
 
 const profile = {
-    displayName: "undefined (unregistered user)",
+    username: "Loading",
     comment_karma: 0,
     post_karma: 0,
-    date_created: "infinite"
+    date_created: "Loading"
 };
 
 const Tab = createMaterialTopTabNavigator();
 
-export const UserProfile = ({ route, navigation, uid }) => {
-
-    const { owner } = route.params
-    const [userStats, setUserStats] = useState(profile)
-    const {user} = useContext(AuthenticationContext)
-
-    useEffect(() => {
-        const displayName = owner ? user?.displayName : uid
-        const ref = firebase.database().ref(`user_profile/${displayName}/stats`)
-        const listener = ref.on('value', (snapshot) => {
-            if(snapshot.exists()){
-                const data = snapshot.val()
-                setUserStats({
-                    displayName,
-                    comment_karma: data.comment_karma,
-                    post_karma: data.post_karma,
-                    date_created: getDisplayDate(data.date_created)
-                })
-            }
-        })
-        return () => ref.off('value', listener)
-    }, [user])
+export const UserProfile = ({ route, navigation }) => {
+    const { user } = useContext(AuthenticationContext)
+    const { owner, username } = route.params
 
     if(owner && !user){
         return (
@@ -49,10 +30,42 @@ export const UserProfile = ({ route, navigation, uid }) => {
         )
     }
 
+    const displayName = owner ? user?.displayName : username
+    return (
+        <RenderProfile
+            owner={owner}
+            username={displayName}
+            navigation={navigation}
+        />
+    );
+}
+
+const RenderProfile = ({navigation, owner, username}) => {
+    // If it is owner, use current displayName, else just use provided username from navigation path
+    const [userStats, setUserStats] = useState(profile)
+
+    useEffect(() => {
+        if(username){
+            const ref = firebase.database().ref(`user_profile/${username}/stats`)
+            const listener = ref.on('value', (snapshot) => {
+                if(snapshot.exists()){
+                    const data = snapshot.val()
+                    setUserStats({
+                        username,
+                        comment_karma: data.comment_karma,
+                        post_karma: data.post_karma,
+                        date_created: getDisplayDate(data.date_created)
+                    })
+                }
+            })
+            return () => ref.off('value', listener)
+        }
+    }, [username])
+
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
-                title={userStats.displayName}
+                title={username}
                 left={!owner ?
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon
@@ -71,7 +84,7 @@ export const UserProfile = ({ route, navigation, uid }) => {
                             size={20}
                             color={theme.COLORS.ICON}
                         />
-                     </TouchableOpacity> : null
+                    </TouchableOpacity> : null
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
@@ -100,7 +113,7 @@ export const UserProfile = ({ route, navigation, uid }) => {
                         <Tab.Screen
                             name="Posts"
                             component={UserPosts}
-                            initialParams={{uid}}
+                            initialParams={{uid: username}}
                         />
                         <Tab.Screen
                             name="Comments"
@@ -109,10 +122,10 @@ export const UserProfile = ({ route, navigation, uid }) => {
                     </Tab.Navigator>
                 </Block>
             </ScrollView>
-
         </Block>
-    );
+    )
 }
+
 
 const styles = StyleSheet.create({
     achievements: {

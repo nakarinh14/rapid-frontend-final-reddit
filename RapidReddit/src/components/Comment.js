@@ -32,19 +32,27 @@ export const Comment = ({comment, depth, preview, path}) => {
     const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
     const padded = 100 - emptyPadded
-    const { user,upvotedComments } = useContext(AuthenticationContext)
-    const commentId = preview?null:path.slice(path.lastIndexOf('/')+1)
+
+    const { user, upvotedComments } = useContext(AuthenticationContext)
+
+    const commentId = preview ? null : path.slice(path.lastIndexOf('/')+1)
 
     const ellipsisOnClick = () => {
         modalFunction(comment, path)
     }
 
-    function upvote() {
-        const voteTo = !upvotedComments[commentId]
-        voteComment(postId, path, user.uid, voteTo).then().catch(err => {
-                console.error(err)
-            })
-
+    const upvote = async () => {
+        try {
+            await voteComment(
+                postId,
+                path,
+                user.displayName,
+                comment.user.displayName,
+                !upvotedComments[commentId]  /* data race, avoid using local upvotedComments here */
+            )
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -55,7 +63,7 @@ export const Comment = ({comment, depth, preview, path}) => {
                 <Block style={[styles.box, indentColor(depth)]}>
                     <Block style={styles.topInfo}>
                         <Block style={styles.topLeftFlex}>
-                            <TouchableOpacity onPress={() => navigation.push("User", {uid: comment.user})}>
+                            <TouchableOpacity onPress={() => navigation.push("User", {username: comment.user.displayName})}>
                                 <View>
                                     <Text style={styles.titleText}>
                                         {comment.user.displayName}

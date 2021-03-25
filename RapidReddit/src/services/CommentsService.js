@@ -69,7 +69,6 @@ function editCommentKarma(commentId,up) {
  * @param commentId ID of the comment
  * @param userId ID of the user doing the vote
  * @param upvote True to upvote, false to downvote/undo upvote
- * @param author
  * @returns {Promise<any[]>} Resulting promises for edit karma promise and user upvote promise
  */
 export function voteComment(commentId, userId, upvote = true) {
@@ -77,10 +76,8 @@ export function voteComment(commentId, userId, upvote = true) {
     //a class where the user checks and stuff is done through polymorphism
     if(!userId) throw Error("UserId not found. Maybe user is not logged in?")
     if(!commentId) throw Error("Comment ID not found")
-    console.log('author is ...')
-    console.log(author)
-    const ref = getUpvotedCommentsRef(username)
 
+    const ref = getUpvotedCommentsRef(userId)
     const updateObj = {}
     updateObj[commentId] = upvote
     //TODO Do this in transaction

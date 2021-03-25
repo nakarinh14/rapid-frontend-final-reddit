@@ -26,7 +26,7 @@ export default function App() {
     }
     // Have to move outside, attach/detach listener in onAuthStateChange don't work well.
     if(loggedInUser && !upvotesRef) {
-        const ref = getUpvotedCommentsRef(loggedInUser.displayName)
+        const ref = getUpvotedCommentsRef(loggedInUser.uid)
         ref.on('value',(snapshot) => {
             setUpvotedComments(snapshot.val() || {})
         })

@@ -1,16 +1,15 @@
 posts:
     $post_id_1:
-        meta:
-            $author_id: "uid"
-            timestamp: "2018-20-blabla"
-            upvotes: 10
-            comments_freq: 152
-            content:
-                title: "string"
-                image: "optional"
-                body: "string"
+        $author_id: "uid"
+        timestamp: "2018-20-blabla"
+        upvotes: 10
+        comments_freq: 152
+        content:
+            title: "string"
+            image: "optional"
+            body: "string"
 
-            subreddit: "$subreddit_id_1"
+        subreadit: "$subreddit_id_1"
 
 # Contain everything recursive cos make query easier
 # Optimization can made in the future with pagination limit, or denormalization.

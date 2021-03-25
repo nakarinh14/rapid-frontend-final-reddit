@@ -11,7 +11,7 @@ const UserPosts = ({ route }) => {
 
     const displayName = uid ? uid : user?.displayName
     return (
-        <PostListComponent user={displayName} />
+        <PostListComponent userId={uid} />
     )
 }
 

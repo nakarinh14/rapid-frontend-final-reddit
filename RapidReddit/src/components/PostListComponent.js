@@ -34,7 +34,7 @@ function RenderPosts({posts, loadingPosts}) {
     )
 }
 
-export default function({subreadit, user}) {
+export default function({subreadit, userId}) {
 
     const [ posts, setPosts ] = useState([])
     const [ loadingState, setLoadingState ] = useState(true)
@@ -43,8 +43,8 @@ export default function({subreadit, user}) {
     if(subreadit) {
         ref = PostService.getRefForSubreaditPosts(subreadit)
     }
-    else if(user) {
-        ref = PostService.getRefForUserPosts(user)
+    else if(userId) {
+        ref = PostService.getRefForUserPosts(userId)
     }
 
     useEffect(() => {

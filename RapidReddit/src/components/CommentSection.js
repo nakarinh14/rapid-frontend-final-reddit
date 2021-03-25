@@ -24,6 +24,7 @@ const CommentSection = ({ comments, postId })=> {
         setPreviewCommentModal({message: message, path: path, postId: postId})
         toggleModal()
     }
+    console.log("Comments:",comments)
 
     return (
         <CommentTreeContext.Provider value={{
@@ -32,8 +33,9 @@ const CommentSection = ({ comments, postId })=> {
         }}>
             <Block flex style={styles.cards}>
                 {comments && Object.keys(comments).map((comment_id) => {
+
                     const comment = comments[comment_id]
-                    // console.log(comment)
+                    console.log('Comment:',comment)
                     return (
                         <Block
                             key={`card-${comment_id}`}

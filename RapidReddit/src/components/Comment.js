@@ -41,18 +41,11 @@ export const Comment = ({comment, depth, preview, path}) => {
         modalFunction(comment, path)
     }
 
-    const upvote = async () => {
-        try {
-            await voteComment(
-                postId,
-                path,
-                user.displayName,
-                comment.user.displayName,
-                !upvotedComments[commentId]  /* data race, avoid using local upvotedComments here */
-            )
-        } catch (err) {
-            console.log(err)
-        }
+    function upvote() {
+        const voteTo = !upvotedComments[comment.id]
+        voteComment(comment.id, user.uid, voteTo).then().catch(err => {
+                console.error(err)
+            })
     }
 
     return (

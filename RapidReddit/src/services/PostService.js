@@ -36,8 +36,8 @@ export async function increaseCommentCounter(postId) {
     return await ref.child('comments_freq').set(firebase.database.ServerValue.increment(1))
 }
 
-export function getRefForUserPosts(user) {
-    return firebase.database().ref('posts').orderByChild("user").equalTo(user)
+export function getRefForUserPosts(userId) {
+    return firebase.database().ref('posts').orderByChild("user/uid").equalTo(userId)
 }
 
 export function getRefForSubreaditPosts(subreadit) {

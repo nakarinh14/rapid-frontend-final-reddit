@@ -6,7 +6,8 @@ import {Platform, ScrollView, TouchableOpacity } from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
 import { getPostById } from "../services/PostService";
-import { getCommentsRef } from '../services/CommentsService'
+import { getCommentsForPost } from '../services/CommentsService'
+import PostCommentsContext from "../contexts/PostCommentsContext";
 
 
 function RenderPost ({navigation, comments, post}) {
@@ -52,6 +53,15 @@ const Post = ({route, navigation}) => {
     const {postId} = route.params
     const [ post, setPost ] = useState({id: postId, user: {}})
 
+    function updateComments() {
+        console.log("Updating Comments")
+        // getCommentsForPost(postId).get().then(res => {
+        //     // console.log(res)
+        //     setComments(res)
+        // })
+        getCommentsForPost(postId).on('value',res => setComments(res))
+    }
+
     useEffect(() => {
         if(postId) {
             getPostById(postId).get().then(result => {
@@ -59,20 +69,27 @@ const Post = ({route, navigation}) => {
                 p.id = postId
                 setPost(p)
             })
-            getCommentsRef(postId).on('value', (result) => {
-                // console.log(result)
-                setComments(result.val())
-            })
+            updateComments()
         }
-
+        return () => {
+            getCommentsForPost(postId).off('value')
+        }
     }, [])
+
+    const postUpdateContext = {
+        updateComments: updateComments,
+        postId: postId
+    }
+
     if(!postId) return (
         <Block flex center>
             <Text>Error. No id found</Text>
         </Block>
     )
     return (
-        <RenderPost post={post} comments={comments} navigation={navigation}/>
+        <PostCommentsContext.Provider value={postUpdateContext}>
+            <RenderPost post={post} comments={comments} navigation={navigation}/>
+        </PostCommentsContext.Provider>
     )
 }
 

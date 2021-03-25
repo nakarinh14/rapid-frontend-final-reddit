@@ -42,6 +42,7 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
     }
 
     const onClickReply = () => actionOnClick(() => setListenerReply(true))
+    // TODO: Integrate Upvote / Downvote functionality
     const upvote = () => actionOnClick(() => {})
     const downvote = () => actionOnClick(() => {})
 

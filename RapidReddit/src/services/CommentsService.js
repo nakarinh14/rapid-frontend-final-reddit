@@ -112,15 +112,69 @@ function getRequestsToFillTree (tree, root=true) {
     else return [fillCommentData]
 }
 
-// This is single update version
-export async function getCommentsForPost(postId) {
-    const tree = (await firebase.database().ref(`post_comments/${postId}`).get()).val()
-    const requests = getRequestsToFillTree(tree)
-    await Promise.all(requests.map(v => v()))
-    console.log(tree)
-    return tree
+//Created like this to mimic firebase on vs get functions in case we wanted to use them
+export function getCommentsForPost(postId) {
+
+    async function fillTree(tree) {
+        const requests = getRequestsToFillTree(tree)
+        await Promise.all(requests.map(v => v()))
+        return tree
+    }
+
+    return {
+        /**
+         * Get comment tree and comments once.
+         * @returns {Promise<*>} Promise that will return the full comment tree when complete
+         */
+        get: async function() {
+            const tree = (await firebase.database().ref(`post_comments/${postId}`).get()).val()
+            return await fillTree(tree)
+        },
+        /**
+         * Get comment tree and comments and add a listener (Will currently not update upvotes in real time)
+         * @param value Firebase event to listen to
+         * @param listener Listener to recieve data
+         */
+        on: function (value, listener) {
+            //Listener for comment tree updates (New comments etc)
+            firebase.database().ref(`post_comments/${postId}`).on(value,async function(res) {
+                const tree = res.val()
+                const result = await fillTree(tree)
+                listener(result)
+            })
+        },
+        /**
+         * Remove listeners
+         * @param value Firebase event to listen to
+         * @param listener (Optional) Listener to remove
+         */
+        off: function(value, listener = null) {
+            firebase.database().ref(`post_comments/${postId}`).off(value,listener)
+        }
+    }
 }
 
-export async function getRealtimeCommentsForPost(listenerFunction) {
-
+/**
+ * Non real-time fetch comments for user
+ * @param userId the user id
+ * @returns {{get: (function(): unknown[]), off: off, on: on}}
+ */
+export function getCommentsForUser(userId) {
+    return {
+        get: async function() {
+            const map = {}
+            const ids = (await firebase.database().ref(`user_profile/${userId}/comments`).get()).val()
+            const requests = Object.keys(ids).map(v => async () => {
+                map[v] = (await firebase.database().ref(`comments/${v}`).get()).val()
+            })
+            await Promise.all(requests.map(v => v()))
+            return map
+        },
+        // on: function(value,listener) {
+        //
+        // },
+        // off: function(value, listener = null) {
+        //
+        // }
+    }
 }

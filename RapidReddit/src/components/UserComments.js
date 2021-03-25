@@ -3,10 +3,10 @@ import {Block, Text} from "galio-framework";
 import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {firebase} from "../firebase";
 import {withInteractionsManaged} from "./withInteractionsManaged";
-import { getUserComments, getUserCommentsRef } from "../services/CommentsService";
+import { getCommentsForUser } from "../services/CommentsService";
 import AuthenticationContext from "../contexts/AuthenticationContext";
+import { getDisplayDate } from '../utils/PostUtils'
 
 const { width } = Dimensions.get('screen');
 
@@ -59,26 +59,28 @@ const useMockData = false
 
 const UserComments = () => {
 
-    const [ userCommentIds, setUserCommentIds ] = useState(null)
-    const [userComments, setUserComments] = useState(null)
+    const [userComments, setUserComments] = useState({})
     const {user} = useContext(AuthenticationContext)
-
 
     useEffect(() => {
         if(useMockData){
             setUserComments(comments)
             return
         }
-        getUserCommentsRef(user.uid).on('value', snapshot => {
-            getUserComments(user.uid, snapshot)
+        getCommentsForUser(user.uid).get().then(res => {
+            setUserComments(res)
         })
     })
-
     // Render looks weird with spaces on height
     return (
         <Block flex space="between" style={styles.cards}>
             {userComments && Object.keys(userComments).map((post_id) => {
                 const card = userComments[post_id]
+                if(!userComments[post_id]){
+                    // For some reason comment data is null
+                    // This is usually because of broken database data
+                    return null
+                }
                 return (
                     <Block
                         key={`card-${post_id}`}
@@ -89,26 +91,27 @@ const UserComments = () => {
                             shadow
                             style={styles.box}
                         >
-                            <Text style={styles.titleText}>
-                                {card.title}
-                            </Text>
+                            {/*TODO include post title*/}
+                            {/*<Text style={styles.titleText}>*/}
+                            {/*    {card.title}*/}
+                            {/*</Text>*/}
                             <Text card style={styles.caption}>
-                                <Text style={styles.captionText}>
-                                    {card.group}
-                                </Text>
+                                {/*<Text style={styles.captionText}>*/}
+                                {/*    {card.group}*/}
+                                {/*</Text>*/}
                                 <MaterialCommunityIcons name="circle-medium" color="grey"/>
                                 <Text style={styles.timestampText}>
-                                    {card.timestamp}
+                                    {getDisplayDate(card.timestamp)}
                                 </Text>
                                 <MaterialCommunityIcons name="circle-medium" color="grey"/>
                                 <Text style={styles.timestampText}>
                                     {card.upvotes}
                                 </Text>
-                                <MaterialCommunityIcons name="arrow-up-bold-outline" color="grey"/>
+                                {/*<MaterialCommunityIcons name="arrow-up-bold-outline" color="grey"/>*/}
 
                             </Text>
                             <Text style={styles.commentText}>
-                                {card.comment}
+                                {card.body}
                             </Text>
                         </Block>
                     </Block>

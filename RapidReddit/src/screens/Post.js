@@ -55,10 +55,11 @@ const Post = ({route, navigation}) => {
 
     function updateComments() {
         console.log("Updating Comments")
-        getCommentsForPost(postId).then(res => {
-            // console.log(res)
-            setComments(res)
-        })
+        // getCommentsForPost(postId).get().then(res => {
+        //     // console.log(res)
+        //     setComments(res)
+        // })
+        getCommentsForPost(postId).on('value',res => setComments(res))
     }
 
     useEffect(() => {
@@ -69,6 +70,9 @@ const Post = ({route, navigation}) => {
                 setPost(p)
             })
             updateComments()
+        }
+        return () => {
+            getCommentsForPost(postId).off('value')
         }
     }, [])
 

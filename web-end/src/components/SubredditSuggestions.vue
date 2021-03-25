@@ -10,7 +10,7 @@
             <img :src=placeholderImg />
           </q-avatar>
         </q-item-section>
-        <q-item-section style="font-weight: 500">{{sub.name}}</q-item-section>
+        <q-item-section style="font-weight: 500">{{ sub.name }}</q-item-section>
       </q-item>
       <q-separator/>
     </div>
@@ -30,11 +30,14 @@ export default {
   },
   computed: {
     subreddits () {
+      let subs = []
       const subredditRef = SubredditService.getRefForSubreddits()
-      console.log(subredditRef)
-      return subredditRef.on('value', (snapshot) => {
-        snapshot.val()
+      subredditRef.on('value', (snapshot) => {
+        if (snapshot.exists()) {
+          subs = snapshot.val()
+        }
       })
+      return subs
     }
   }
 }

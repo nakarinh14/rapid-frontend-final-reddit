@@ -44,14 +44,14 @@ export const Comment = ({comment, depth, preview, path}) => {
     function upvote() {
         const voteTo = !upvotedComments[comment.id]
         voteComment(comment.id, user.uid, voteTo).then().catch(err => {
-                console.error(err)
-            })
+            console.error(err)
+        })
     }
 
     return (
         <Block style={{flexDirection: "row", alignItems: 'center', justifyContent: 'flex-end'}}>
-            <Block style={{flex: emptyPadded}}/>
-            <Block style={[styles.commentBlock, {flex: padded}, bg]}>
+            <Block style={{flex: emptyPadded}} />
+            <Block style={[styles.commentBlock, {flex: padded}, bg]} >
                 {depth ? <View style={[styles.line]}/> : null}
                 <Block style={[styles.box, indentColor(depth)]}>
                     <Block style={styles.topInfo}>

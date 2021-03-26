@@ -1,5 +1,4 @@
 import {firebase} from '../firebase'
-import { Subreddit } from '../screens/Subreddit'
 import * as SubredditUserService from '../services/SubredditUserService'
 
 
@@ -17,8 +16,8 @@ export function addNewSubreddit(subredditName, user, description){
     const ref = firebase.database().ref(`subreddits`).push({
             name: subredditName,
             creator: user,
-            date_created: timestamp, 
-            subscribers: 1, 
+            date_created: timestamp,
+            subscribers: 1,
             description: description,
     })
 

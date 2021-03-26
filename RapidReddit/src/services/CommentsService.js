@@ -58,33 +58,38 @@ export async function addComment(postId, comment, user, commentPath) {
     return commentId
 }
 
-function editCommentKarma(commentId,up) {
+function editCommentKarma(commentId, up) {
     const increment = (up * 2) - 1
     const ref = firebase.database().ref(`comments/${commentId}`)
-    return ref.child('upvotes').set(firebase.database.ServerValue.increment(increment))
+    return ref
+        .child('upvotes')
+        .set(firebase.database.ServerValue.increment(increment))
 }
 
 /**
  * Vote on a comment
  * @param commentId ID of the comment
- * @param userId ID of the user doing the vote
+ * @param username ID of the user doing the vote
  * @param upvote True to upvote, false to downvote/undo upvote
- * @param author
  * @returns {Promise<any[]>} Resulting promises for edit karma promise and user upvote promise
  */
-export function voteComment(commentId, userId, upvote = true) {
+export function voteComment(commentId, username, upvote = true) {
     //TODO Would be nice to move all of these post/comment functions into
     //a class where the user checks and stuff is done through polymorphism
-    if(!userId) throw Error("UserId not found. Maybe user is not logged in?")
+    if(!username) throw Error("Username not found. Maybe user is not logged in?")
     if(!commentId) throw Error("Comment ID not found")
     console.log('author is ...')
-    console.log(author)
+
     const ref = getUpvotedCommentsRef(username)
 
     const updateObj = {}
     updateObj[commentId] = upvote
     //TODO Do this in transaction
-    return Promise.all([editCommentKarma(commentId, upvote),ref.update(updateObj)])
+
+    return Promise.all([
+        editCommentKarma(commentId, upvote),
+        ref.update(updateObj)
+    ])
 }
 
 export function getCommentsRef(postId) {

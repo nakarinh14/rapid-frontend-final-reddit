@@ -25,7 +25,6 @@ const CommentSection = ({ comments, postId })=> {
         toggleModal()
     }
     console.log("Comments:", comments)
-
     return (
         <CommentTreeContext.Provider value={{
             postId: postId,

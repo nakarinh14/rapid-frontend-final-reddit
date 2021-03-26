@@ -78,7 +78,6 @@ export function voteComment(commentId, username, upvote = true) {
     //a class where the user checks and stuff is done through polymorphism
     if(!username) throw Error("Username not found. Maybe user is not logged in?")
     if(!commentId) throw Error("Comment ID not found")
-    console.log('author is ...')
 
     const ref = getUpvotedCommentsRef(username)
 

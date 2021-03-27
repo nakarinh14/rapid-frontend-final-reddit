@@ -40,11 +40,9 @@ const attachRef = async (ref, filter, setter, callback) => {
             .filter(filter(data))
             .reduce((obj, key) => {
                 obj[key] = data[key];
+                obj[key].id = key
                 return obj;
             }, {});
-        Object.keys(data).map(v => {
-            data[v].id = v
-        })
         setter(Object.values(data))
         callback()
     })
@@ -73,9 +71,3 @@ export default function ({subreadit, user}) {
         <RenderPosts posts={posts} loadingPosts={loadingState}/>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        // backgroundColor: 'lightgrey'
-    }
-})

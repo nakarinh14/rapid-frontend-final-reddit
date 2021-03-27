@@ -28,24 +28,24 @@ export const Comment = ({comment, depth, preview, path}) => {
 
     const navigation = useNavigation();
     const { postId, modalFunction } = useContext(CommentTreeContext);
+    const { user, upvotedComments } = useContext(AuthenticationContext)
 
     const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
     const padded = 100 - emptyPadded
 
-    const { user, upvotedComments } = useContext(AuthenticationContext)
-
     const commentId = preview ? null : path.slice(path.lastIndexOf('/')+1)
 
     const ellipsisOnClick = () => {
-        modalFunction(comment, path)
+        modalFunction(comment, path, commentId)
     }
 
-    function upvote() {
-        const voteTo = !upvotedComments[comment.id]
-        voteComment(comment.id, user.uid, voteTo).then().catch(err => {
-            console.error(err)
-        })
+    async function upvote() {
+        try {
+            await voteComment(commentId, user.displayName, true)
+        } catch(err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -63,7 +63,6 @@ export const Comment = ({comment, depth, preview, path}) => {
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-
                             <TouchableOpacity onPress={upvote}>
                                 <View style={styles.upvotes}>
                                     <MaterialCommunityIcons

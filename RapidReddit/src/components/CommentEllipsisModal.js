@@ -5,6 +5,7 @@ import { ListItem, Icon } from 'react-native-elements'
 import CommentReplyModal from "./CommentReplyModal";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import {useNavigation} from "@react-navigation/native";
+import {voteComment} from "../services/CommentsService";
 
 
 const list = [
@@ -30,6 +31,8 @@ const list = [
 export const CommentEllipsisModal = ({isModalVisible, closeModal, previewCommentModal}) => {
     const [isReplyModalVisible, setReplyModalVisible] = useState(false)
     const [listenToReply, setListenerReply] = useState(false)
+
+    const { message, path, postId, commentId } = previewCommentModal
     const navigation = useNavigation()
     const {user} = useContext(AuthenticationContext)
 
@@ -41,10 +44,18 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
         action()
     }
 
+    async function applyKarmaAction(upvote) {
+        // upvote = true: upvoting, false: downvoting
+        try {
+            await voteComment(commentId, user.displayName, upvote)
+        } catch(err) {
+            console.log(err)
+        }
+    }
+
     const onClickReply = () => actionOnClick(() => setListenerReply(true))
-    // TODO: Integrate Upvote / Downvote functionality
-    const upvote = () => actionOnClick(() => {})
-    const downvote = () => actionOnClick(() => {})
+    const upvote = () => actionOnClick(() => applyKarmaAction(true))
+    const downvote = () => actionOnClick(() => applyKarmaAction(false))
 
     const eventListener = () => {
         if(listenToReply){
@@ -60,9 +71,9 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
             <CommentReplyModal
                 visible={isReplyModalVisible}
                 visibilitySetter={setReplyModalVisible}
-                replyComment={previewCommentModal.message}
-                commentPath={previewCommentModal.path}
-                postId={previewCommentModal.postId}
+                replyComment={message}
+                commentPath={path}
+                postId={postId}
             />
             <Modal
                 isVisible={isModalVisible}

@@ -6,13 +6,14 @@ import {CommentTree} from "./CommentTree";
 import CommentEllipsisModal from "./CommentEllipsisModal";
 import CommentTreeContext from "../contexts/CommentTreeContext"
 import {withInteractionsManaged} from "./withInteractionsManaged";
+import {voteComment} from "../services/CommentsService";
 
 const { width } = Dimensions.get('screen');
 
 const CommentSection = ({ comments, postId })=> {
 
     const [isModalVisible, setModalVisible] = useState(false);
-    const [previewCommentModal, setPreviewCommentModal] = useState({message: '', path: '', postId: postId})
+    const [previewCommentModal, setPreviewCommentModal] = useState({message: '', path: '', postId, commentId: ''})
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -20,19 +21,19 @@ const CommentSection = ({ comments, postId })=> {
     const closeModal = () => {
         setModalVisible(false)
     }
-    const setPreviewComment = (message, path) => {
-        setPreviewCommentModal({message: message, path: path, postId: postId})
+    const setPreviewComment = (message, path, commentId) => {
+        setPreviewCommentModal({message, path, postId, commentId})
         toggleModal()
     }
+
     console.log("Comments:", comments)
     return (
         <CommentTreeContext.Provider value={{
-            postId: postId,
-            modalFunction: setPreviewComment
+            postId,
+            modalFunction: setPreviewComment,
         }}>
             <Block flex style={styles.cards}>
                 {comments && Object.keys(comments).map((comment_id) => {
-
                     const comment = comments[comment_id]
                     console.log('Comment:', comment)
                     return (

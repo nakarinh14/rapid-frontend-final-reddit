@@ -1,5 +1,4 @@
 import {firebase} from '../firebase'
-import {increaseCommentCounter} from './PostService'
 
 function parseCommentPath(commentPath) {
     if(commentPath[0] === '/') commentPath = commentPath.slice(1)
@@ -7,33 +6,44 @@ function parseCommentPath(commentPath) {
     return commentPath || ''
 }
 
-async function createNewComment(postId, comment, user, commentPath) {
-    if(commentPath) commentPath = `${parseCommentPath(commentPath)}/comments`
-    const commentItem = {
-        timestamp: new Date().getTime(),
-        user: {
-            displayName: user.displayName,
-            uid: user.uid
-        },
-        body: comment,
+async function increaseCommentCounter(postId) {
+    const ref = firebase.database().ref(`posts/${postId}`)
+    return await ref.child('comments_freq').set(firebase.database.ServerValue.increment(1))
+}
+
+function generateNewCommentObject(displayName, uid, commentBody, postId) {
+    const timestamp = new Date().getTime()
+    return {
+        timestamp,
+        user: {displayName, uid},
+        body: commentBody,
         upvotes: 0,
         post_id: postId
     }
-    // console.log(commentItem)
-    const path = `post_comments/${postId}/${commentPath || ''}`
-    const newPostRef = firebase.database().ref(`comments`).push(commentItem)
-    const postKey = newPostRef.key
-    await Promise.all([firebase.database().ref(`${path}/${postKey}`).set({id: postKey}),increaseCommentCounter(postId)])
-    // Use set to atomically update multiple data path
-    //TODO Would be nice if can include subreddit and post title. To display in user profile
-    return postKey
 }
 
-function addCommentToUser(commentId, userId){
-    const ref = firebase.database().ref(`user_profile/${userId}/comments`)
-    const obj = {}
-    obj[commentId] = true
-    return ref.update(obj)
+/**
+ * Add a comment
+ * @param postId ID of the post
+ * @param comment The contents of the comment
+ * @param user The user object (Must contain displayName and uid)
+ * @param commentPath Path to the comment as /$Comment_ID/$Comment_ID1/...
+ * @returns {Promise<string>} Returns the id of the comment
+ */
+
+async function createNewComment(postId, comment, user, commentPath) {
+    if(commentPath) commentPath = `${parseCommentPath(commentPath)}/comments`
+    const commentObj = generateNewCommentObject(user.displayName, user.uid, comment, postId)
+
+    const path = `post_comments/${postId}/${commentPath || ''}`
+    const newPostRef = firebase.database().ref(`comments`).push(commentObj)
+    const postKey = newPostRef.key
+    //TODO Would be nice if can include subreddit and post title. To display in user profile
+    await Promise.all([
+        firebase.database().ref(`${path}/${postKey}`).set({id: postKey}),
+        increaseCommentCounter(postId)
+    ])
+    return postKey
 }
 
 /**
@@ -51,19 +61,14 @@ export async function addComment(postId, comment, user, commentPath) {
 
     //TODO Do all this in a transaction
     const commentId = await createNewComment(postId, comment,user, commentPath)
-    await Promise.all([
-        voteComment(commentId, user.uid),
-        addCommentToUser(commentId,user.uid)
-    ])
-    return commentId
-}
 
-function editCommentKarma(commentId, up) {
-    const increment = (up * 2) - 1
-    const ref = firebase.database().ref(`comments/${commentId}`)
-    return ref
-        .child('upvotes')
-        .set(firebase.database.ServerValue.increment(increment))
+    await firebase.database().ref().transaction((db) => {
+        voteCommentTransactionHelper(db, true, commentId, user.displayName)
+        db['user_profile'][user.displayName].comments = true
+        return db
+    })
+
+    return commentId
 }
 
 /**
@@ -73,22 +78,50 @@ function editCommentKarma(commentId, up) {
  * @param upvote True to upvote, false to downvote/undo upvote
  * @returns {Promise<any[]>} Resulting promises for edit karma promise and user upvote promise
  */
-export function voteComment(commentId, username, upvote = true) {
+export function voteComment(commentId, username, upvote) {
     //TODO Would be nice to move all of these post/comment functions into
     //a class where the user checks and stuff is done through polymorphism
+
     if(!username) throw Error("Username not found. Maybe user is not logged in?")
     if(!commentId) throw Error("Comment ID not found")
 
-    const ref = getUpvotedCommentsRef(username)
+    firebase.database().ref().transaction((db) => {
+        voteCommentTransactionHelper(db, upvote, commentId, username)
+        return db
+    })
+}
 
-    const updateObj = {}
-    updateObj[commentId] = upvote
-    //TODO Do this in transaction
+function voteCommentTransactionHelper(db, upvote, commentId, username) {
 
-    return Promise.all([
-        editCommentKarma(commentId, upvote),
-        ref.update(updateObj)
-    ])
+    const userPath = db['user_profile'][username]
+    if(userPath['comment_upvotes'] == null){
+        userPath['comment_upvotes'] = {}
+    }
+    const isVoted = userPath['comment_upvotes'][commentId]
+    const commentAuthor = db.comments[commentId].user.displayName
+    const upvoteWeight = upvote ? 1 : -1
+    let newKarmaWeight = upvoteWeight
+
+    // For isVoted -> null: not yet voted, true: already upvoted, false: already downvoted
+    if(isVoted === upvote) {
+        // If user action apply to already applied karma status, nullified its karma
+        // (e.g. Pressing upvote/downvote when comment is already upvoted/downvoted respectively)
+        newKarmaWeight *= -1
+        userPath['comment_upvotes'][commentId]  = null
+    } else {
+        const currentKarmaWeight = isVoted == null ? 0 : -(isVoted * 2 - 1)
+        newKarmaWeight = upvoteWeight + currentKarmaWeight
+        userPath['comment_upvotes'][commentId]  = upvote
+    }
+    // Update new karma to relevant data
+    const commentPath = db.comments[commentId]
+    commentPath.upvotes = commentPath.upvotes == null ? newKarmaWeight  : commentPath.upvotes + newKarmaWeight
+    const authorProfile = db['user_profile'][commentAuthor]
+    if(authorProfile.stats == null) {
+        authorProfile.stats = {}
+    }
+    authorProfile.stats['comment_karma'] = authorProfile.stats['comment_karma'] == null ?
+        newKarmaWeight : authorProfile.stats['comment_karma'] + newKarmaWeight
 }
 
 export function getCommentsRef(postId) {
@@ -105,7 +138,7 @@ export function getUserCommentsRef(userId) {
 
 function getRequestsToFillTree (tree, root=true) {
     if(root){
-        return Object.keys(tree).reduce((ac,v) => ac.concat(getRequestsToFillTree(tree[v],false)),[])
+        return Object.keys(tree ? tree : {}).reduce((ac,v) => ac.concat(getRequestsToFillTree(tree[v],false)),[])
     }
     async function fillCommentData() {
         tree.comment=(await firebase.database().ref(`comments/${tree.id}`).get()).val()

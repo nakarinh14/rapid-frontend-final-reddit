@@ -12,14 +12,16 @@ async function increaseCommentCounter(postId) {
     return await ref.child('comments_freq').set(firebase.database.ServerValue.increment(1))
 }
 
-function generateNewCommentObject(displayName, uid, commentBody, postId) {
+function generateNewCommentObject(displayName, uid, commentBody, postId, postTitle, postSubreadit) {
     const timestamp = new Date().getTime()
     return {
         timestamp,
         user: {displayName, uid},
         body: commentBody,
         upvotes: 0,
-        post_id: postId
+        post_id: postId,
+        post_title: postTitle,
+        post_subreadit: postSubreadit
     }
 }
 
@@ -29,12 +31,16 @@ function generateNewCommentObject(displayName, uid, commentBody, postId) {
  * @param comment The contents of the comment
  * @param user The user object (Must contain displayName and uid)
  * @param commentPath Path to the comment as /$Comment_ID/$Comment_ID1/...
+ * @param postTitle
+ * @param postSubreadit
  * @returns {Promise<string>} Returns the id of the comment
  */
 
-async function createNewComment(postId, comment, user, commentPath) {
+async function createNewComment(postId, comment, user, commentPath, postTitle, postSubreadit) {
     if(commentPath) commentPath = `${parseCommentPath(commentPath)}/comments`
-    const commentObj = generateNewCommentObject(user.displayName, user.uid, comment, postId)
+    const commentObj = generateNewCommentObject(
+        user.displayName, user.uid, comment, postId, postTitle, postSubreadit
+    )
 
     const path = `post_comments/${postId}/${commentPath || ''}`
     const newCommentRef = firebase.database().ref('comments').push(commentObj)
@@ -56,12 +62,12 @@ async function createNewComment(postId, comment, user, commentPath) {
  * @param commentPath Path to the comment as /$Comment_ID/$Comment_ID1/...
  * @returns {Promise<string>} Returns the id of the comment
  */
-export async function addComment(postId, comment, user, commentPath) {
+export async function addComment(postId, comment, user, commentPath, postTitle, postSubreadit) {
     if(!user) throw Error("Trying to add comment but no user found. Maybe user is not logged in?")
     if(!postId) throw Error(`Trying to create comment but postId is undefined`)
     if(!comment) throw Error("Comment is empty")
 
-    const commentId = await createNewComment(postId, comment, user, commentPath)
+    const commentId = await createNewComment(postId, comment, user, commentPath, postTitle, postSubreadit)
     await voteComment(commentId, user.displayName)
 
     return commentId

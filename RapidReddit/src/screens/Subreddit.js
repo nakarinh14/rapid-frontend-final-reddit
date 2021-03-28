@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
@@ -6,12 +6,14 @@ import PostListComponent from "../components/PostListComponent";
 import * as SubredditService from '../services/SubredditService'
 import { Ionicons } from '@expo/vector-icons';
 import CreatePostModal from "../components/CreatePostModal";
+import {SearchBar} from "react-native-elements";
+import AuthenticationContext from "../contexts/AuthenticationContext";
 
 
 export const Subreddit = ({ route, navigation }) => {
 
-    const owner = true
     const { subreaditName } = route.params
+    const [search, updateSearch] = useState("")
     const [subreadit, setSubreadit] = useState({
             name: "Loading",
             description: "Loading",
@@ -19,6 +21,8 @@ export const Subreddit = ({ route, navigation }) => {
             subscribers: 0,
             date_created: 0
     });
+    const {user} = useContext(AuthenticationContext)
+    const owner = user ? subreadit.creator === user.displayName : false
     useEffect(() => {
         const subreaditRef = SubredditService.getRefForSubreddit(subreaditName)
         subreaditRef.on('value', snapshot => {
@@ -41,19 +45,24 @@ export const Subreddit = ({ route, navigation }) => {
                         <Icon
                             name="arrow-left"
                             family="feather"
-                            size={24}
+                            size={28}
                             color={theme.COLORS.ICON}
                         />
                     </TouchableOpacity>)
                 }
-                right = {owner ?
-                (<Block row>
-                    <TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subreaditName})}>
-                        <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
-                    </TouchableOpacity>
-                    <CreatePostModal navigation={navigation} subreadit={subreaditName} />
-                </Block>) : null
-                }
+                right = {(
+                    <Block row>
+                        {
+                            owner ?
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate("EditSubreddit", {subreaditName})}
+                                >
+                                    <Ionicons name="pencil-outline" size={28} color={theme.COLORS.BLOCK}/>
+                                </TouchableOpacity> : null
+                        }
+                        <CreatePostModal navigation={navigation} subreadit={subreaditName} />
+                    </Block>
+                )}
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
 
             />
@@ -75,6 +84,15 @@ export const Subreddit = ({ route, navigation }) => {
                         {subreadit.description}
                     </Text>
                 </Block>
+                <SearchBar
+                    platform={"ios"}
+                    containerStyle={{paddingHorizontal: 9}}
+                    inputContainerStyle={{margin: 0,  maxHeight: 37, backgroundColor: theme.COLORS.PAPER}}
+                    inputStyle={{fontSize: 15}}
+                    placeholder="Search"
+                    onChangeText={updateSearch}
+                    value={search}
+                />
                 <PostListComponent subreadit={subreaditName} />
             </ScrollView>
         </Block>

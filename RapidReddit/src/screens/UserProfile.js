@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, Platform, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, Platform, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
@@ -10,6 +10,8 @@ import "firebase/auth";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import {UnauthenticatedScreen} from "./UnauthenticatedScreen";
 import {getDisplayDate} from "../utils/post-date";
+import {getCommentsForUser} from "../services/CommentsService";
+import ProfileContext from "../contexts/ProfileContext";
 
 const profile = {
     username: "Loading",
@@ -23,8 +25,6 @@ const Tab = createMaterialTopTabNavigator();
 export const UserProfile = ({ route, navigation }) => {
     const { user } = useContext(AuthenticationContext)
     const { owner, username } = route.params
-    const [refreshing, setRefreshing] = useState(false)
-    const test = (a) => console.log("test", a)
     if(owner && !user){
         return (
            <UnauthenticatedScreen navigation={navigation} />
@@ -45,6 +45,29 @@ const RenderProfile = ({navigation, owner, username}) => {
     // If it is owner, use current displayName, else just use provided username from navigation path
     const [userStats, setUserStats] = useState(profile)
     const ref = firebase.database().ref(`user_profile/${username}/stats`)
+
+    const [userComments, setUserComments] = useState({})
+    const [refreshing, setRefreshing] = useState(false)
+
+    const fetchUserComments = async() => {
+        try {
+            const res = await getCommentsForUser(username).get()
+            setUserComments(res)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const refreshProfile = () => fetchUserComments() // incase post got involved, as it's not doing too well.
+    const onRefresh = async() =>{
+        setRefreshing(true)
+        try{
+            await refreshProfile()
+        } catch (err){
+            console.log(err)
+        }
+        setRefreshing(false)
+    }
     useEffect(() => {
         if(username){
             const listener = ref.on('value', (snapshot) => {
@@ -62,6 +85,10 @@ const RenderProfile = ({navigation, owner, username}) => {
         }
     }, [username])
 
+    const profileContextVal = {
+        refreshProfile,
+        userComments
+    }
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
@@ -72,7 +99,7 @@ const RenderProfile = ({navigation, owner, username}) => {
                         <Icon
                             name="arrow-left"
                             family="feather"
-                            size={24}
+                            size={28}
                             color={theme.COLORS.ICON}
                         />
                     </TouchableOpacity>): null
@@ -89,7 +116,14 @@ const RenderProfile = ({navigation, owner, username}) => {
                 }
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 <Block
                     style={styles.achievements}
                 >
@@ -110,17 +144,19 @@ const RenderProfile = ({navigation, owner, username}) => {
                     </Block>
                 </Block>
                 <Block flex>
-                    <Tab.Navigator>
-                        <Tab.Screen
-                            name="Posts"
-                            component={UserPosts}
-                            initialParams={{username}}
-                        />
-                        <Tab.Screen
-                            name="Comments"
-                            component={UserComments}
-                        />
-                    </Tab.Navigator>
+                    <ProfileContext.Provider value={profileContextVal} >
+                        <Tab.Navigator>
+                            <Tab.Screen
+                                name="Posts"
+                                component={UserPosts}
+                                initialParams={{username}}
+                            />
+                            <Tab.Screen
+                                name="Comments"
+                                component={UserComments}
+                            />
+                        </Tab.Navigator>
+                    </ProfileContext.Provider>
                 </Block>
             </ScrollView>
         </Block>

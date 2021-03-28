@@ -32,12 +32,12 @@ export default function({ replyComment, visible, visibilitySetter, commentPath, 
     const [ addingComment, setAddingComment ] = useState(false)
 
     const { user } = useContext(AuthenticationContext)
-    const { updateComments, refreshPost } = useContext(PostContext)
+    const { post, refreshPost } = useContext(PostContext)
 
     const createComment = async () => {
         setAddingComment(true)
         try{
-            await addComment(postId, commentText, user, commentPath)
+            await addComment(postId, commentText, user, commentPath, post.title, post.subreadit)
             visibilitySetter(false)
             refreshPost()
         } catch (err){

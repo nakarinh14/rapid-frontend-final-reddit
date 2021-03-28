@@ -51,7 +51,8 @@ const Post = ({route, navigation}) => {
 
     const postUpdateContext = {
         refreshPost,
-        postId
+        postId,
+        post
     }
 
     if(!postId) return (
@@ -69,7 +70,7 @@ const Post = ({route, navigation}) => {
                         <Icon
                             name="arrow-left"
                             family="feather"
-                            size={24}
+                            size={28}
                             color={theme.COLORS.ICON}
                         />
                     </TouchableOpacity>

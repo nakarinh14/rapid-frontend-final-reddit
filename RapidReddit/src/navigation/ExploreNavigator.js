@@ -6,8 +6,10 @@ import {EditSubreddit} from "../screens/EditSubreddit"
 import Post from "../screens/Post";
 import {UserProfile} from "../screens/UserProfile";
 
+const Stack = createStackNavigator();
+
 export const ExploreNavigator = () => {
-    const Stack = createStackNavigator();
+
     return (
         <Stack.Navigator
             initialRouteName="Explore"

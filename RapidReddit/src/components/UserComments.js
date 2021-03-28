@@ -1,71 +1,65 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {Block, Text} from "galio-framework";
-import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
+import {ActivityIndicator, Pressable, StyleSheet, TouchableOpacity} from "react-native";
 import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {withInteractionsManaged} from "./withInteractionsManaged";
-import { getCommentsForUser } from "../services/CommentsService";
-import AuthenticationContext from "../contexts/AuthenticationContext";
 import { getDisplayDate } from '../utils/post-date'
+import ProfileContext from "../contexts/ProfileContext";
 
 
-const UserComments = () => {
+const UserComments = ({navigation}) => {
 
-    const [userComments, setUserComments] = useState({})
-    const {user} = useContext(AuthenticationContext)
-    const fetchComment = async () => {
-        try {
-            const res = await getCommentsForUser(user.displayName).get()
-            setUserComments(res)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-    useEffect(() => {
-        fetchComment()
-    }, [])
-    console.log(userComments)
+    const {userComments} = useContext(ProfileContext)
+
     // Render looks weird with spaces on height
+    // Does it still looks weird? - kenny
     return (
         <Block flex space="between" style={styles.cards}>
-            {userComments && Object.keys(userComments).map((post_id) => {
+            {userComments && Object.keys(userComments).map((post_id, idx) => {
                 const card = userComments[post_id]
-                console.log(getDisplayDate(card.timestamp))
                 return (
-                    <Block
-                        key={`card-${post_id}`}
-                        flex
-                        style={styles.card}
+                    <TouchableOpacity
+                        key={`card-${idx}`}
+                        onPress={() => navigation.push('Post', {postId: card.post_id})}
                     >
                         <Block
-                            shadow
-                            style={styles.box}
+                            flex
+                            style={styles.card}
                         >
-                            <Text style={styles.titleText}>
-                                Temporary
-                                {/*{card.title}*/}
-                            </Text>
-                            <Text card style={styles.caption}>
-                                <Text style={styles.captionText}>
-                                    Placeholder
-                                    {/*{card.group}*/}
+                            <Block
+                                shadow
+                                style={styles.box}
+                            >
+                                <Text style={styles.titleText}>
+                                    {card.post_title}
                                 </Text>
-                                <MaterialCommunityIcons name="circle-medium" color="grey"/>
-                                <Text style={styles.timestampText}>
-                                    {getDisplayDate(card.timestamp)}
+                                <Text card style={styles.caption}>
+                                    <Pressable
+                                        style={{ padding: 0}}
+                                        onPress={() => navigation.push("Subreddit", {subreaditName: card.post_subreadit})}
+                                        hitSlop={20}
+                                    >
+                                        <Text style={styles.captionText}>
+                                            {card.post_subreadit}
+                                        </Text>
+                                    </Pressable>
+                                    <MaterialCommunityIcons name="circle-medium" color="grey"/>
+                                    <Text style={styles.timestampText}>
+                                        {getDisplayDate(card.timestamp)}
+                                    </Text>
+                                    <MaterialCommunityIcons name="circle-medium" color="grey"/>
+                                    <Text style={styles.timestampText}>
+                                        {card.upvotes}
+                                    </Text>
+                                    <MaterialCommunityIcons name="arrow-up-bold-outline" color="grey"/>
                                 </Text>
-                                <MaterialCommunityIcons name="circle-medium" color="grey"/>
-                                <Text style={styles.timestampText}>
-                                    {card.upvotes}
+                                <Text style={styles.commentText}>
+                                    {card.body}
                                 </Text>
-                                <MaterialCommunityIcons name="arrow-up-bold-outline" color="grey"/>
-
-                            </Text>
-                            <Text style={styles.commentText}>
-                                {card.body}
-                            </Text>
+                            </Block>
                         </Block>
-                    </Block>
+                    </TouchableOpacity>
                 )}
             )}
         </Block>
@@ -74,13 +68,14 @@ const UserComments = () => {
 
 const styles = StyleSheet.create({
     titleText: {
-        fontWeight: '600',
+        fontWeight: '500',
         fontSize: 14.6,
         marginTop: theme.SIZES.BASE * 0.905,
         color: theme.COLORS.BLACK
     },
     captionText:{
-        color: theme.COLORS.GREY
+        color: theme.COLORS.GREY,
+        fontWeight: '500'
     },
     commentText: {
         marginBottom: theme.SIZES.BASE * 0.905,
@@ -100,7 +95,8 @@ const styles = StyleSheet.create({
         backgroundColor: theme.COLORS.PAPER,
     },
     box:{
-        padding: 12,
+        paddingLeft: 12,
+        paddingRight: 12,
     },
     card: {
         backgroundColor: theme.COLORS.WHITE,

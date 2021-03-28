@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react'
 import {Block, Icon, NavBar} from "galio-framework";
-import {Modal, Text, TextInput, Button, TouchableOpacity, StyleSheet, View} from "react-native";
+import {Modal, Text, Button, TouchableOpacity, StyleSheet, View} from "react-native";
 import {Input} from 'react-native-elements'
 import theme from "../theme";
 import {useNavigation} from "@react-navigation/native";
@@ -16,7 +16,7 @@ function RenderedAddButton(props) {
     )
     else return (
         <TouchableOpacity onPress={() => setter(true)} style={styles.createPostButton}>
-            <Icon family="Ionicons" name="add" size={25}/>
+            <Icon family="Ionicons" name="add" size={28}/>
         </TouchableOpacity>
     )
 }
@@ -76,7 +76,7 @@ export default function (props) {
                                 <Icon
                                     name="close"
                                     family="Ionicons"
-                                    size={20}
+                                    size={28}
                                     color={theme.COLORS.IOS}
                                 />
                             </TouchableOpacity>

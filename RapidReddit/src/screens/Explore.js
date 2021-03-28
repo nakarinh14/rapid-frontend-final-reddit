@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Block, NavBar, Text} from "galio-framework";
-import {Platform, ScrollView, TouchableOpacity, StyleSheet} from "react-native";
+import {Platform, ScrollView, TouchableOpacity, Pressable} from "react-native";
 import theme from "../theme";
 import * as SubredditService from '../services/SubredditService'
 import SubredditPreview from "../components/SubredditPreview";
@@ -40,7 +40,7 @@ export const Explore = ({navigation}) => {
                             component={SubredditPreview}
                             key={idx}
                             onPress={() =>
-                                navigation.navigate(
+                                navigation.push(
                                     'Subreddit',
                                     {subreaditName: subreddits[key].name})
                             }
@@ -50,14 +50,16 @@ export const Explore = ({navigation}) => {
                     )}
 
                 </Block>
-                <Block row center style={{marginTop: 30}} onpress={(<CreateSubredditModal navigation={navigation}/>)}>
-                    <Block style={{marginRight: 5}} center>
-                        <Ionicons name="create-outline" size={22} color={theme.COLORS.BLOCK}/>
+                <Pressable onPress={() => {}}>
+                    <Block row center style={{marginTop: 30}}>
+                            <Block style={{marginRight: 5}} center>
+                                <Ionicons name="create-outline" size={22} color={theme.COLORS.BLOCK}/>
+                            </Block>
+                            <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
+                                {'Create your own subreddit'}
+                            </Text>
                     </Block>
-                    <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
-                        {'Create your own subreddit'}
-                    </Text>
-                </Block>
+                </Pressable>
             </ScrollView>
         </Block>
     )

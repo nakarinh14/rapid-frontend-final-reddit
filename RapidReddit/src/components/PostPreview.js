@@ -58,7 +58,9 @@ export const PostPreview = ({touchable, post}) => {
                             </Pressable>
                             <Text color={theme.COLORS.MUTED}> by </Text>
                             <Pressable
-                                onPress={() => navigation.push("User", {username: post.user.displayName})}
+                                onPress={() =>
+                                    navigation.push("User", {username: post.user.displayName, owner: false})
+                                }
                                 hitSlop={5}
                             >
                                 <Text style={styles.groupText} size={14} color={theme.COLORS.BLOCK}>
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     title:{
-      marginBottom: 15
+      marginBottom: 8
     },
     titleText:{
       fontSize: 17

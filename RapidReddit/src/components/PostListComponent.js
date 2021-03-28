@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {Block, Text} from "galio-framework";
 import {ActivityIndicator, StyleSheet, View} from "react-native";
+import {Fade, Placeholder, PlaceholderLine, PlaceholderMedia} from "rn-placeholder";
 import {PostPreview} from "./PostPreview";
 import * as PostService from '../services/PostService'
 import {Divider} from "react-native-elements";
@@ -10,7 +11,24 @@ function RenderPosts({posts, loadingPosts}) {
     if (loadingPosts) {
         return (
             <Block flex center style={styles.container}>
-                <ActivityIndicator size={"large"}/>
+                <View style={{paddingHorizontal: 30, marginTop: 20}}>
+                    {
+                        [1,1,1,1].map((key, idx) => (
+                            <Placeholder
+                                key={idx}
+                                Animation={Fade}
+                                Left={PlaceholderMedia}
+                                style={{marginBottom: 20}}
+                            >
+                                <PlaceholderLine />
+                                <PlaceholderLine width={80} />
+                                <PlaceholderLine width={30} />
+                            </Placeholder>
+                        ))
+                    }
+
+                    <ActivityIndicator size={"large"}/>
+                </View>
             </Block>
         )
     } else if (posts.length === 0) {
@@ -61,9 +79,9 @@ const attachRef = async (ref, filter, setter, callback) => {
 export default function ({subreadit, username}) {
     const [posts, setPosts] = useState([])
     const [loadingState, setLoadingState] = useState(true)
-    const [ref] = useState(PostService.getRefForPosts().orderByChild('created'))
 
     useEffect(() => {
+        const ref = PostService.getRefForPosts()
         // Temporary solution to filter
         let filter = data => key => true
         if (subreadit) {

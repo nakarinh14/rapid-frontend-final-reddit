@@ -10,16 +10,17 @@ import CreatePostModal from "../components/CreatePostModal";
 
 export const Subreddit = ({ route, navigation }) => {
 
-    owner = true
-    const { subreaditId, subreaditName } = route.params
+    const owner = true
+    const { subreaditName } = route.params
     const [subreadit, setSubreadit] = useState({
-            name: "loading",
-            description: "loading",
+            name: "Loading",
+            description: "Loading",
+            creator: "Loading",
             subscribers: 0,
             date_created: 0
     });
     useEffect(() => {
-        const subreaditRef = SubredditService.getRefForSubreddit(subreaditId)
+        const subreaditRef = SubredditService.getRefForSubreddit(subreaditName)
         subreaditRef.on('value', snapshot => {
             if(snapshot.exists()){
                 setSubreadit(snapshot.val())
@@ -33,9 +34,7 @@ export const Subreddit = ({ route, navigation }) => {
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
-                title={subreadit.name}
-
-
+                titleStyle={{fontSize: 17, fontWeight: 'bold'}}
                 title={subreadit.name}
                 left={
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
@@ -47,9 +46,9 @@ export const Subreddit = ({ route, navigation }) => {
                         />
                     </TouchableOpacity>)
                 }
-                right = {owner ? 
+                right = {owner ?
                 (<Block row>
-                    <TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subreaditId: subreaditId})}>
+                    <TouchableOpacity onPress={() => navigation.navigate("EditSubreddit", {subreaditName})}>
                         <Ionicons name="pencil-outline" size={22} color={theme.COLORS.BLOCK}/>
                     </TouchableOpacity>
                     <CreatePostModal navigation={navigation} subreadit={subreaditName} />
@@ -63,13 +62,19 @@ export const Subreddit = ({ route, navigation }) => {
                     style={styles.achievements}
                 >
                     <Block style={styles.displayScores}>
-                        <Text style={styles.subStatTitle}>{subreadit.subscribers}</Text>
-                        <Text color={theme.COLORS.GREY}>Members</Text>
+                        <Text style={styles.subStatTitle}>
+                            Created By
+                        </Text>
+                        <Text color={theme.COLORS.GREY}>
+                            {subreadit.creator}
+                        </Text>
                     </Block>
                 </Block>
-                <Text style={styles.description}>
-                    {subreadit.description}
-                </Text>
+                <Block style={{marginTop: 15}}>
+                    <Text style={styles.description}>
+                        {subreadit.description}
+                    </Text>
+                </Block>
                 <PostListComponent subreadit={subreaditName} />
             </ScrollView>
         </Block>

@@ -3,7 +3,6 @@ import {Block, Icon, NavBar} from "galio-framework";
 import {Modal, Text, TouchableOpacity, StyleSheet, View} from "react-native";
 import theme from "../theme";
 import {Input} from 'react-native-elements'
-import {useNavigation} from "@react-navigation/native";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import * as SubredditService from '../services/SubredditService'
 
@@ -21,26 +20,24 @@ function RenderedAddButton(props) {
     )
 }
 
-export default function (props) {
+export default function ({ addButton, navigation}) {
 
     const [createPostModalVisible, setCreatePostModalVisible] = useState(false);
-    const [subredditName, setSubredditName] = useState('')
+    const [subreaditName, setSubreaditName] = useState('')
     const [subredditDescription, setSubredditDescription] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
 
-    const { subreadit, addButton } = props
-    const navigation = useNavigation()
     const { user } = useContext(AuthenticationContext)
 
     //AddButton - Custom button to open the create modal. Default will use + icon
     //Subreadit - The subreadit to add the post to
 
-    function createSubreddit() {
+    async function createSubreddit() {
         try {
-            SubredditService.addNewSubreddit(subredditName, "", subredditDescription)
+            await SubredditService.addNewSubreddit(subreaditName, user, subredditDescription)
             setCreatePostModalVisible(false)
-            // navigation.push("Post")
-        }catch (e) {
+            navigation.push("Subreddit", {subreaditName})
+        } catch (e) {
             if (e.code === 3) {
                 // TODO User not logged in. Redirect to login
                 console.log("User not logged in. Should redirect to login")
@@ -80,8 +77,8 @@ export default function (props) {
                     <View style={styles.content}>
                         <Input
                             containerStyle={{marginTop: 25}}
-                            onChangeText={(text) => setSubredditName(text)}
-                            value={subredditName}
+                            onChangeText={(text) => setSubreaditName(text)}
+                            value={subreaditName}
                             label='Name'
                             placeholder='Set Subreadit Name Here'
                         />

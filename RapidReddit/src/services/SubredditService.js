@@ -1,28 +1,30 @@
 import {firebase} from '../firebase'
 import * as SubredditUserService from '../services/SubredditUserService'
 
+function generateSubreaditObj(name, creator, description) {
+    const date_created = new Date().getTime()
+    return {
+        name,
+        creator,
+        date_created,
+        subscribers: 1,
+        description: description,
+    }
+}
 
 export function getRefForSubreddits() {
     return firebase.database().ref('subreddits')
 }
 
-export function getRefForSubreddit(subredditId) {
-     return firebase.database().ref('subreddits/' + subredditId)
+export function getRefForSubreddit(subreaditName) {
+     return firebase.database().ref('subreddits/' + subreaditName)
 }
 
 export function addNewSubreddit(subredditName, user, description){
-    const timestamp = new Date().getTime()
-
-    const ref = firebase.database().ref(`subreddits`).push({
-            name: subredditName,
-            creator: user,
-            date_created: timestamp,
-            subscribers: 1,
-            description: description,
-    })
-
-    var subredditId = firebase.database().ref('subreddits').push(obj).key
-    SubredditUserService.updateSubredditUserRole(subredditId, "user", "admin")
-
+    const subreaditObj = generateSubreaditObj(subredditName, user.displayName, description)
+    return Promise.all([
+        firebase.database().ref(`subreddits/${subredditName}`).set(subreaditObj),
+        SubredditUserService.updateSubredditUserRole(subredditName, user.displayName, "admin")
+    ])
 }
 

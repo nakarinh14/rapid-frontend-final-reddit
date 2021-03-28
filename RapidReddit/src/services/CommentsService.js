@@ -198,25 +198,25 @@ export function getCommentsForPost(postId) {
 
 /**
  * Non real-time fetch comments for user
- * @param userId the user id
  * @returns {{get: (function(): unknown[]), off: off, on: on}}
+ * @param username
  */
-export function getCommentsForUser(userId) {
+export function getCommentsForUser(username) {
     return {
         get: async function() {
-            const map = {}
-            const ids = (await firebase.database().ref(`user_profile/${userId}/comments`).get()).val() || {}
-            const requests = Object.keys(ids).map(v => async () => {
-                map[v] = (await firebase.database().ref(`comments/${v}`).get()).val()
-            })
-            await Promise.all(requests.map(v => v()))
-            return map
+            // Should have add try/catch here, as nothing is catching it, will cause app to fail
+            try{
+                const map = {}
+                const ids = (await firebase.database().ref(`user_profile/${username}/comments`).get()).val() || {}
+                const requests = Object.keys(ids).map(v => async () => {
+                    map[v] = (await firebase.database().ref(`comments/${v}`).get()).val()
+                })
+                await Promise.all(requests.map(v => v()))
+                return map
+            } catch (err) {
+                console.log(err)
+            }
+
         },
-        // on: function(value,listener) {
-        //
-        // },
-        // off: function(value, listener = null) {
-        //
-        // }
     }
 }

@@ -32,14 +32,14 @@ export default function({ replyComment, visible, visibilitySetter, commentPath, 
     const [ addingComment, setAddingComment ] = useState(false)
 
     const { user } = useContext(AuthenticationContext)
-    const { updateComments } = useContext(PostContext)
+    const { updateComments, refreshPost } = useContext(PostContext)
 
     const createComment = async () => {
         setAddingComment(true)
         try{
             await addComment(postId, commentText, user, commentPath)
             visibilitySetter(false)
-            updateComments()
+            refreshPost()
         } catch (err){
             console.error(err)
             Alert.alert("Something went wrong. Please try again later")

@@ -4,14 +4,19 @@ import theme from "../theme";
 import {withInteractionsManaged} from "./withInteractionsManaged";
 import PostListComponent from "./PostListComponent";
 import AuthenticationContext from "../contexts/AuthenticationContext";
-
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    Fade
+} from "rn-placeholder";
 const UserPosts = ({ route }) => {
-    const { uid } = route.params
-    const {user} = useContext(AuthenticationContext)
+    const { username } = route.params
+    const { user } = useContext(AuthenticationContext)
 
-    const displayName = uid ? uid : user?.displayName
+    const displayName = username ? username : user?.displayName
     return (
-        <PostListComponent userId={uid} />
+        <PostListComponent username={displayName} />
     )
 }
 
@@ -26,4 +31,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withInteractionsManaged(UserPosts, ActivityIndicator)
+export default withInteractionsManaged(UserPosts, Placeholder)

@@ -17,7 +17,6 @@ const Post = ({route, navigation}) => {
     const [ post, setPost ] = useState({id: postId, user: {}})
 
     const fetchComments = async () => {
-        console.log("Fetching Comments")
         const res = await getCommentsForPost(postId).get()
         setComments(res)
     }
@@ -31,10 +30,12 @@ const Post = ({route, navigation}) => {
         }
     }
 
+    const refreshPost = () => Promise.all([fetchPost(postId), fetchComments()])
+
     const onRefresh =  async () => {
         setRefreshing(true)
         try {
-            await fetchComments()
+            await refreshPost()
         } catch (err) {
             console.log(err)
         }
@@ -42,17 +43,14 @@ const Post = ({route, navigation}) => {
     }
 
     useEffect(() => {
-        Promise.all([
-            fetchPost(postId),
-            fetchComments()
-        ])
+        refreshPost()
         return () => {
             getCommentsForPost(postId).off('value')
         }
     }, [])
 
     const postUpdateContext = {
-        updateComments: fetchComments,
+        refreshPost,
         postId
     }
 
@@ -87,8 +85,8 @@ const Post = ({route, navigation}) => {
                 }
             >
                 <Block>
-                        <PostPreview post={post}/>
                     <PostCommentsContext.Provider value={postUpdateContext}>
+                        <PostPreview post={post}/>
                         <CommentSection comments={comments} postId={post.id}/>
                     </PostCommentsContext.Provider>
                 </Block>

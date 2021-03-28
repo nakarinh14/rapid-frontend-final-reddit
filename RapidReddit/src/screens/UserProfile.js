@@ -23,7 +23,8 @@ const Tab = createMaterialTopTabNavigator();
 export const UserProfile = ({ route, navigation }) => {
     const { user } = useContext(AuthenticationContext)
     const { owner, username } = route.params
-
+    const [refreshing, setRefreshing] = useState(false)
+    const test = (a) => console.log("test", a)
     if(owner && !user){
         return (
            <UnauthenticatedScreen navigation={navigation} />
@@ -43,10 +44,9 @@ export const UserProfile = ({ route, navigation }) => {
 const RenderProfile = ({navigation, owner, username}) => {
     // If it is owner, use current displayName, else just use provided username from navigation path
     const [userStats, setUserStats] = useState(profile)
-    console.log(username)
+    const ref = firebase.database().ref(`user_profile/${username}/stats`)
     useEffect(() => {
         if(username){
-            const ref = firebase.database().ref(`user_profile/${username}/stats`)
             const listener = ref.on('value', (snapshot) => {
                 if(snapshot.exists()){
                     const data = snapshot.val()
@@ -65,6 +65,7 @@ const RenderProfile = ({navigation, owner, username}) => {
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
+                titleStyle={{fontSize: 17, fontWeight: 'bold'}}
                 title={username}
                 left={!owner ?
                     (<TouchableOpacity onPress={() => navigation.goBack()}>
@@ -113,7 +114,7 @@ const RenderProfile = ({navigation, owner, username}) => {
                         <Tab.Screen
                             name="Posts"
                             component={UserPosts}
-                            initialParams={{uid: username}}
+                            initialParams={{username}}
                         />
                         <Tab.Screen
                             name="Comments"

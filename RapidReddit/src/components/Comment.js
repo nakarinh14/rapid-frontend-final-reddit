@@ -5,10 +5,11 @@ import theme from "../theme";
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {Ionicons} from '@expo/vector-icons';
 import {useNavigation} from "@react-navigation/native";
-import {getDisplayDate} from "../utils/PostUtils";
+import {getDisplayDate} from "../utils/post-date";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import {voteComment} from "../services/CommentsService";
 import CommentTreeContext from "../contexts/CommentTreeContext";
+import PostCommentsContext from "../contexts/PostCommentsContext";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -28,7 +29,8 @@ export const Comment = ({comment, depth, preview, path}) => {
 
     const navigation = useNavigation();
     const { postId, modalFunction } = useContext(CommentTreeContext);
-    const { user, upvotedComments } = useContext(AuthenticationContext)
+    const { user } = useContext(AuthenticationContext)
+    const {updateComments} = useContext(PostCommentsContext)
 
     const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
@@ -40,12 +42,32 @@ export const Comment = ({comment, depth, preview, path}) => {
         modalFunction(comment, path, commentId)
     }
 
-    async function upvote() {
+    const upvote = async () => {
         try {
             await voteComment(commentId, user.displayName, true)
         } catch(err) {
             console.log(err)
         }
+        updateComments()
+    }
+
+    const userVote = comment.user_upvotes && comment.user_upvotes[user.displayName]
+    const upvotedColor = () => {
+        if(userVote == null) {
+            return theme.COLORS.MUTED
+        }
+        return userVote ? 'tomato' : 'blue'
+    }
+
+    const upvoteArrow = () => {
+        if(userVote == null){
+            return "arrow-up-bold-outline"
+        } else if (userVote) {
+            return "arrow-up-bold"
+        } else {
+            return "arrow-down-bold"
+        }
+
     }
 
     return (
@@ -66,10 +88,10 @@ export const Comment = ({comment, depth, preview, path}) => {
                             <TouchableOpacity onPress={upvote}>
                                 <View style={styles.upvotes}>
                                     <MaterialCommunityIcons
-                                        name="arrow-up-bold-outline"
-                                        color={upvotedComments[commentId]?'tomato':theme.COLORS.MUTED}
+                                        name={upvoteArrow()}
+                                        color={upvotedColor()}
                                     />
-                                    <Text style={styles.timestampText}>
+                                    <Text style={[styles.timestampText, {color: upvotedColor()}]} >
                                         {comment.upvotes}
                                     </Text>
                                 </View>

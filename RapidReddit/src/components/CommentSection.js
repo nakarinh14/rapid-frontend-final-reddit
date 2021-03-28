@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import {Block} from "galio-framework";
@@ -6,7 +6,6 @@ import {CommentTree} from "./CommentTree";
 import CommentEllipsisModal from "./CommentEllipsisModal";
 import CommentTreeContext from "../contexts/CommentTreeContext"
 import {withInteractionsManaged} from "./withInteractionsManaged";
-import {voteComment} from "../services/CommentsService";
 
 const { width } = Dimensions.get('screen');
 
@@ -26,7 +25,6 @@ const CommentSection = ({ comments, postId })=> {
         toggleModal()
     }
 
-    console.log("Comments:", comments)
     return (
         <CommentTreeContext.Provider value={{
             postId,
@@ -35,7 +33,7 @@ const CommentSection = ({ comments, postId })=> {
             <Block flex style={styles.cards}>
                 {comments && Object.keys(comments).map((comment_id) => {
                     const comment = comments[comment_id]
-                    console.log('Comment:', comment)
+
                     return (
                         <Block
                             key={`card-${comment_id}`}

@@ -71,3 +71,9 @@ export default function ({subreadit, user}) {
         <RenderPosts posts={posts} loadingPosts={loadingState}/>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        // backgroundColor: 'lightgrey'
+    }
+})

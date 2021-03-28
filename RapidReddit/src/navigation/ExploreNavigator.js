@@ -13,9 +13,9 @@ export const ExploreNavigator = () => {
             initialRouteName="Explore"
             screenOptions={{headerShown: false}}
             >
-            <Stack.Screen name="Explore" component={Explore}></Stack.Screen>
-            <Stack.Screen name="Subreddit" component={Subreddit}></Stack.Screen>
-            <Stack.Screen name="EditSubreddit" component={EditSubreddit}></Stack.Screen>
+            <Stack.Screen name="Explore" component={Explore}/>
+            <Stack.Screen name="Subreddit" component={Subreddit}/>
+            <Stack.Screen name="EditSubreddit" component={EditSubreddit}/>
             <Stack.Screen name="Post" component={Post} />
             <Stack.Screen
                 name="User"

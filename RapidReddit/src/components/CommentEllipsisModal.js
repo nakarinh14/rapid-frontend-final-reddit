@@ -6,6 +6,7 @@ import CommentReplyModal from "./CommentReplyModal";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import {useNavigation} from "@react-navigation/native";
 import {voteComment} from "../services/CommentsService";
+import PostContext from "../contexts/PostCommentsContext";
 
 
 const list = [
@@ -35,6 +36,7 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
     const { message, path, postId, commentId } = previewCommentModal
     const navigation = useNavigation()
     const {user} = useContext(AuthenticationContext)
+    const { updateComments } = useContext(PostContext)
 
     const actionOnClick = (action) => {
         closeModal(false)
@@ -51,6 +53,7 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
         } catch(err) {
             console.log(err)
         }
+        updateComments()
     }
 
     const onClickReply = () => actionOnClick(() => setListenerReply(true))

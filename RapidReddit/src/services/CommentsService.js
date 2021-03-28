@@ -1,4 +1,5 @@
 import {firebase} from '../firebase'
+import {calculateKarma} from "../utils/karma";
 
 function parseCommentPath(commentPath) {
     if(commentPath[0] === '/') commentPath = commentPath.slice(1)
@@ -36,14 +37,15 @@ async function createNewComment(postId, comment, user, commentPath) {
     const commentObj = generateNewCommentObject(user.displayName, user.uid, comment, postId)
 
     const path = `post_comments/${postId}/${commentPath || ''}`
-    const newPostRef = firebase.database().ref(`comments`).push(commentObj)
-    const postKey = newPostRef.key
+    const newCommentRef = firebase.database().ref('comments').push(commentObj)
+    const commentKey = newCommentRef.key
     //TODO Would be nice if can include subreddit and post title. To display in user profile
     await Promise.all([
-        firebase.database().ref(`${path}/${postKey}`).set({id: postKey}),
+        firebase.database().ref(`${path}/${commentKey}`).set({id: commentKey}),
+        firebase.database().ref(`user_profile/${user.displayName}/comments/${commentKey}`).set(true),
         increaseCommentCounter(postId)
     ])
-    return postKey
+    return commentKey
 }
 
 /**
@@ -59,14 +61,8 @@ export async function addComment(postId, comment, user, commentPath) {
     if(!postId) throw Error(`Trying to create comment but postId is undefined`)
     if(!comment) throw Error("Comment is empty")
 
-    //TODO Do all this in a transaction
-    const commentId = await createNewComment(postId, comment,user, commentPath)
-
-    await firebase.database().ref().transaction((db) => {
-        voteCommentTransactionHelper(db, true, commentId, user.displayName)
-        db['user_profile'][user.displayName].comments = true
-        return db
-    })
+    const commentId = await createNewComment(postId, comment, user, commentPath)
+    await voteComment(commentId, user.displayName)
 
     return commentId
 }
@@ -85,43 +81,51 @@ export function voteComment(commentId, username, upvote) {
     if(!username) throw Error("Username not found. Maybe user is not logged in?")
     if(!commentId) throw Error("Comment ID not found")
 
-    firebase.database().ref().transaction((db) => {
-        voteCommentTransactionHelper(db, upvote, commentId, username)
-        return db
+    return updateCommentKarmaTransaction(upvote, commentId, username)
+}
+
+function updateCommentKarmaTransaction(upvote, commentId, username){
+    let newKarma = 0
+    let upvoteStatus = null
+    return firebase.database().ref(`comments/${commentId}`).transaction((comment) => {
+        if(comment != null){
+            // Sometimes transaction return null value, as it first use cached local value
+            if(comment.user_upvotes == null) {
+                comment.user_upvotes = {}
+            }
+            newKarma = calculateKarma(comment.user_upvotes[username], upvote)
+            comment.upvotes = comment.upvotes == null ? newKarma : comment.upvotes + newKarma
+            upvoteStatus = comment.user_upvotes[username] === upvote ? null : upvote
+            comment.user_upvotes[username] = upvoteStatus
+
+            return comment
+        } else {
+            // If comment === null, return a value that is totally different
+            // from what is saved on the server at this address: to restart transaction
+            return {}
+        }
+    },(error, committed) => {
+        if (error) {
+            console.log("Update Comment Karma error in transaction");
+        } else if (!committed) {
+            console.log("Update Comment Karma Transaction not committed");
+        } else {
+            console.log("Update Comment Karma Transaction Committed");
+            updateProfileCommentKarma(newKarma, upvoteStatus, commentId, username)
+        }
     })
 }
 
-function voteCommentTransactionHelper(db, upvote, commentId, username) {
-
-    const userPath = db['user_profile'][username]
-    if(userPath['comment_upvotes'] == null){
-        userPath['comment_upvotes'] = {}
-    }
-    const isVoted = userPath['comment_upvotes'][commentId]
-    const commentAuthor = db.comments[commentId].user.displayName
-    const upvoteWeight = upvote ? 1 : -1
-    let newKarmaWeight = upvoteWeight
-
-    // For isVoted -> null: not yet voted, true: already upvoted, false: already downvoted
-    if(isVoted === upvote) {
-        // If user action apply to already applied karma status, nullified its karma
-        // (e.g. Pressing upvote/downvote when comment is already upvoted/downvoted respectively)
-        newKarmaWeight *= -1
-        userPath['comment_upvotes'][commentId]  = null
-    } else {
-        const currentKarmaWeight = isVoted == null ? 0 : -(isVoted * 2 - 1)
-        newKarmaWeight = upvoteWeight + currentKarmaWeight
-        userPath['comment_upvotes'][commentId]  = upvote
-    }
-    // Update new karma to relevant data
-    const commentPath = db.comments[commentId]
-    commentPath.upvotes = commentPath.upvotes == null ? newKarmaWeight  : commentPath.upvotes + newKarmaWeight
-    const authorProfile = db['user_profile'][commentAuthor]
-    if(authorProfile.stats == null) {
-        authorProfile.stats = {}
-    }
-    authorProfile.stats['comment_karma'] = authorProfile.stats['comment_karma'] == null ?
-        newKarmaWeight : authorProfile.stats['comment_karma'] + newKarmaWeight
+async function updateProfileCommentKarma(newKarma, upvoteStatus, commentId, username) {
+    const snapshot = await firebase.database().ref(`comments/${commentId}/user/displayName`).once('value')
+    const commentAuthor = snapshot.val()
+    console.log(newKarma, upvoteStatus, commentId, username)
+    await Promise.all([
+        firebase.database().ref(`user_profile/${username}/comment_upvotes/${commentId}`).set(upvoteStatus),
+        firebase.database().ref(`user_profile/${commentAuthor}/stats/comment_karma`).set(
+            firebase.database.ServerValue.increment(newKarma)
+        )
+    ]).catch((err) => console.log(err))
 }
 
 export function getCommentsRef(postId) {
@@ -201,7 +205,7 @@ export function getCommentsForUser(userId) {
     return {
         get: async function() {
             const map = {}
-            const ids = (await firebase.database().ref(`user_profile/${userId}/comments`).get()).val()
+            const ids = (await firebase.database().ref(`user_profile/${userId}/comments`).get()).val() || {}
             const requests = Object.keys(ids).map(v => async () => {
                 map[v] = (await firebase.database().ref(`comments/${v}`).get()).val()
             })

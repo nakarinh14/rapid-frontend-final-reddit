@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {withInteractionsManaged} from "./withInteractionsManaged";
 import { getCommentsForUser } from "../services/CommentsService";
 import AuthenticationContext from "../contexts/AuthenticationContext";
-import { getDisplayDate } from '../utils/PostUtils'
+import { getDisplayDate } from '../utils/post-date'
 
 const { width } = Dimensions.get('screen');
 

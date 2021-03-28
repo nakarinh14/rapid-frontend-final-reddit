@@ -5,10 +5,11 @@ import theme from "../theme";
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {Ionicons} from '@expo/vector-icons';
 import {useNavigation} from "@react-navigation/native";
-import {getDisplayDate} from "../utils/PostUtils";
+import {getDisplayDate} from "../utils/post-date";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import {voteComment} from "../services/CommentsService";
 import CommentTreeContext from "../contexts/CommentTreeContext";
+import PostCommentsContext from "../contexts/PostCommentsContext";
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -28,30 +29,51 @@ export const Comment = ({comment, depth, preview, path}) => {
 
     const navigation = useNavigation();
     const { postId, modalFunction } = useContext(CommentTreeContext);
+    const { user } = useContext(AuthenticationContext)
+    const {updateComments} = useContext(PostCommentsContext)
 
     const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
     const padded = 100 - emptyPadded
 
-    const { user, upvotedComments } = useContext(AuthenticationContext)
-
     const commentId = preview ? null : path.slice(path.lastIndexOf('/')+1)
 
     const ellipsisOnClick = () => {
-        modalFunction(comment, path)
+        modalFunction(comment, path, commentId)
     }
 
-    function upvote() {
-        const voteTo = !upvotedComments[comment.id]
-        voteComment(comment.id, user.uid, voteTo).then().catch(err => {
-                console.error(err)
-            })
+    const upvote = async () => {
+        try {
+            await voteComment(commentId, user.displayName, true)
+        } catch(err) {
+            console.log(err)
+        }
+        updateComments()
+    }
+
+    const userVote = comment.user_upvotes && comment.user_upvotes[user.displayName]
+    const upvotedColor = () => {
+        if(userVote == null) {
+            return theme.COLORS.MUTED
+        }
+        return userVote ? 'tomato' : 'blue'
+    }
+
+    const upvoteArrow = () => {
+        if(userVote == null){
+            return "arrow-up-bold-outline"
+        } else if (userVote) {
+            return "arrow-up-bold"
+        } else {
+            return "arrow-down-bold"
+        }
+
     }
 
     return (
         <Block style={{flexDirection: "row", alignItems: 'center', justifyContent: 'flex-end'}}>
-            <Block style={{flex: emptyPadded}}/>
-            <Block style={[styles.commentBlock, {flex: padded}, bg]}>
+            <Block style={{flex: emptyPadded}} />
+            <Block style={[styles.commentBlock, {flex: padded}, bg]} >
                 {depth ? <View style={[styles.line]}/> : null}
                 <Block style={[styles.box, indentColor(depth)]}>
                     <Block style={styles.topInfo}>
@@ -63,14 +85,13 @@ export const Comment = ({comment, depth, preview, path}) => {
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-
                             <TouchableOpacity onPress={upvote}>
                                 <View style={styles.upvotes}>
                                     <MaterialCommunityIcons
-                                        name="arrow-up-bold-outline"
-                                        color={upvotedComments[commentId]?'tomato':theme.COLORS.MUTED}
+                                        name={upvoteArrow()}
+                                        color={upvotedColor()}
                                     />
-                                    <Text style={styles.timestampText}>
+                                    <Text style={[styles.timestampText, {color: upvotedColor()}]} >
                                         {comment.upvotes}
                                     </Text>
                                 </View>

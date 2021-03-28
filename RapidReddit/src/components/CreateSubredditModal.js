@@ -39,7 +39,6 @@ export default function (props) {
         try {
             SubredditService.addNewSubreddit(subredditName, "", subredditDescription)
             setCreatePostModalVisible(false)
-
             // navigation.push("Post")
         }catch (e) {
             if (e.code === 3) {

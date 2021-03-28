@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {useNavigation} from "@react-navigation/native";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import CommentReplyModal from "./CommentReplyModal";
-import { getDisplayDate } from "../utils/PostUtils";
+import { getDisplayDate } from "../utils/post-date";
 import PostContext from "../contexts/PostCommentsContext";
 
 function PostInfo(props) {

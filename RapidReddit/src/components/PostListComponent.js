@@ -4,6 +4,7 @@ import {ActivityIndicator, StyleSheet, View} from "react-native";
 import {PostPreview} from "./PostPreview";
 import * as PostService from '../services/PostService'
 import {Divider} from "react-native-elements";
+import theme from "../theme";
 
 function RenderPosts({posts, loadingPosts}) {
     if (loadingPosts) {
@@ -15,7 +16,11 @@ function RenderPosts({posts, loadingPosts}) {
     } else if (posts.length === 0) {
         return (
             <Block flex center style={styles.container}>
-                <Text>It looks like there are no posts here :(</Text>
+                <Block style={{marginTop: 20}}>
+                    <Text style={{color: theme.COLORS.GREY}}>
+                        Ops. Looks like there are no posts here. {String.fromCodePoint('0x1F614')}
+                    </Text>
+                </Block>
             </Block>
         )
     }
@@ -38,6 +43,11 @@ const attachRef = async (ref, filter, setter, callback) => {
         let data = snapshot.val() || []
         data = Object.keys(data)
             .filter(filter(data))
+            .sort((a,b) => {
+                if(data[a].created > data[b].created) return -1
+                else if(data[a].created < data[b].created) return 1
+                return 0
+            })
             .reduce((obj, key) => {
                 obj[key] = data[key];
                 obj[key].id = key
@@ -48,18 +58,18 @@ const attachRef = async (ref, filter, setter, callback) => {
     })
 }
 
-export default function ({subreadit, user}) {
+export default function ({subreadit, username}) {
     const [posts, setPosts] = useState([])
     const [loadingState, setLoadingState] = useState(true)
-    const [ref] = useState(PostService.getRefForPosts()) // prevent recreating dup ref from re-render
+    const [ref] = useState(PostService.getRefForPosts().orderByChild('created'))
 
     useEffect(() => {
         // Temporary solution to filter
         let filter = data => key => true
         if (subreadit) {
             filter = data => key => data[key].subreadit === subreadit
-        } else if (user) {
-            filter = data => key => data[key].user.displayName === user
+        } else if (username) {
+            filter = data => key => data[key].user.displayName === username
         }
         attachRef(ref, filter, setPosts, () => setLoadingState(false))
         return () => {

@@ -8,79 +8,29 @@ import { getCommentsForUser } from "../services/CommentsService";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import { getDisplayDate } from '../utils/post-date'
 
-const { width } = Dimensions.get('screen');
-
-const comments = {
-    "1":{
-        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-        group: "DIY",
-        upvotes: 10,
-        timestamp: "2hr",
-        comment: "Try to go to other grocery stores and sees their prices by yourself."
-    },
-    "2":{
-        title: "YOLO",
-        group: "Investment",
-        upvotes: 10,
-        timestamp: "5d",
-        comment: "YOLOed some crazy stonks."
-    },
-    "3":{
-        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-        group: "DIY",
-        upvotes: 10,
-        timestamp: "5min",
-        comment: "Try to go to other grocery stores and sees their prices by yourself."
-    },
-    "4":{
-        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-        group: "DIY",
-        upvotes: 10,
-        timestamp: "5yr",
-        comment: "Try to go to other grocery stores and sees their prices by yourself."
-    },
-    "5":{
-        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-        group: "DIY",
-        upvotes: 10,
-        timestamp: "2hr",
-        comment: "Try to go to other grocery stores and sees their prices by yourself."
-    },
-    "6":{
-        title: "[PURCHASE guide] 2020, ASK ANYTHING!",
-        group: "DIY",
-        upvotes: 10,
-        timestamp: "2hr",
-        comment: "Try to go to other grocery stores and sees their prices by yourself."
-    }
-};
-
-const useMockData = false
 
 const UserComments = () => {
 
     const [userComments, setUserComments] = useState({})
     const {user} = useContext(AuthenticationContext)
-
-    useEffect(() => {
-        if(useMockData){
-            setUserComments(comments)
-            return
-        }
-        getCommentsForUser(user.uid).get().then(res => {
+    const fetchComment = async () => {
+        try {
+            const res = await getCommentsForUser(user.displayName).get()
             setUserComments(res)
-        })
-    })
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(() => {
+        fetchComment()
+    }, [])
+    console.log(userComments)
     // Render looks weird with spaces on height
     return (
         <Block flex space="between" style={styles.cards}>
             {userComments && Object.keys(userComments).map((post_id) => {
                 const card = userComments[post_id]
-                if(!userComments[post_id]){
-                    // For some reason comment data is null
-                    // This is usually because of broken database data
-                    return null
-                }
+                console.log(getDisplayDate(card.timestamp))
                 return (
                     <Block
                         key={`card-${post_id}`}
@@ -91,14 +41,15 @@ const UserComments = () => {
                             shadow
                             style={styles.box}
                         >
-                            {/*TODO include post title*/}
-                            {/*<Text style={styles.titleText}>*/}
-                            {/*    {card.title}*/}
-                            {/*</Text>*/}
+                            <Text style={styles.titleText}>
+                                Temporary
+                                {/*{card.title}*/}
+                            </Text>
                             <Text card style={styles.caption}>
-                                {/*<Text style={styles.captionText}>*/}
-                                {/*    {card.group}*/}
-                                {/*</Text>*/}
+                                <Text style={styles.captionText}>
+                                    Placeholder
+                                    {/*{card.group}*/}
+                                </Text>
                                 <MaterialCommunityIcons name="circle-medium" color="grey"/>
                                 <Text style={styles.timestampText}>
                                     {getDisplayDate(card.timestamp)}
@@ -107,7 +58,7 @@ const UserComments = () => {
                                 <Text style={styles.timestampText}>
                                     {card.upvotes}
                                 </Text>
-                                {/*<MaterialCommunityIcons name="arrow-up-bold-outline" color="grey"/>*/}
+                                <MaterialCommunityIcons name="arrow-up-bold-outline" color="grey"/>
 
                             </Text>
                             <Text style={styles.commentText}>
@@ -147,18 +98,16 @@ const styles = StyleSheet.create({
     },
     cards: {
         backgroundColor: theme.COLORS.PAPER,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     box:{
-        width: width - theme.SIZES.BASE * 2,
+        padding: 12,
     },
     card: {
         backgroundColor: theme.COLORS.WHITE,
-        width,
         marginVertical: theme.SIZES.BASE * 0.19,
         elevation: theme.SIZES.BASE / 2,
-        alignItems: 'center',
+        flex: 1,
+        alignContent: 'stretch',
         justifyContent: 'center',
     },
     scene: {

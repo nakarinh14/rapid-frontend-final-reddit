@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
-import {Block} from "galio-framework";
+import {Block, Text} from "galio-framework";
 import {CommentTree} from "./CommentTree";
 import CommentEllipsisModal from "./CommentEllipsisModal";
 import CommentTreeContext from "../contexts/CommentTreeContext"
@@ -10,6 +10,18 @@ import {withInteractionsManaged} from "./withInteractionsManaged";
 const { width } = Dimensions.get('screen');
 
 const CommentSection = ({ comments, postId })=> {
+
+    if(!comments){
+        return (
+            <Block flex style={styles.emptyContainer}>
+                <Block style={{marginTop: 20}}>
+                    <Text style={{color: theme.COLORS.GREY}}>
+                        Ops. Looks like there are no comments here. {String.fromCodePoint('0x1F614')}
+                    </Text>
+                </Block>
+            </Block>
+        )
+    }
 
     const [isModalVisible, setModalVisible] = useState(false);
     const [previewCommentModal, setPreviewCommentModal] = useState({message: '', path: '', postId, commentId: ''})
@@ -55,6 +67,10 @@ const CommentSection = ({ comments, postId })=> {
 }
 
 const styles = StyleSheet.create({
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     cards: {
         backgroundColor: theme.COLORS.PAPER,
         alignItems: 'center',

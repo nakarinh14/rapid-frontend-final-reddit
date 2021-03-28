@@ -34,6 +34,7 @@
     "react-native-unimodules": "~0.12.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
+    "rn-placeholder": "^3.0.3",
     "yarn": "^1.22.10"
   },
   "devDependencies": {

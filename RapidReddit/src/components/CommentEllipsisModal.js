@@ -36,7 +36,7 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
     const { message, path, postId, commentId } = previewCommentModal
     const navigation = useNavigation()
     const {user} = useContext(AuthenticationContext)
-    const { updateComments } = useContext(PostContext)
+    const { refreshPost } = useContext(PostContext)
 
     const actionOnClick = (action) => {
         closeModal(false)
@@ -53,7 +53,7 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
         } catch(err) {
             console.log(err)
         }
-        updateComments()
+        refreshPost()
     }
 
     const onClickReply = () => actionOnClick(() => setListenerReply(true))

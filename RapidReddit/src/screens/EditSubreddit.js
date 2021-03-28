@@ -1,24 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Platform, TouchableOpacity, ScrollView, View, Button} from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {Block, NavBar, Icon, Text} from 'galio-framework';
+import {StyleSheet, Platform, TouchableOpacity, ScrollView, View} from 'react-native';
+import {Block, NavBar, Text} from 'galio-framework';
 import theme from '../theme';
-// Not really reuseable. Might need to create new one here.
-import SubredditAbout from "../components/UserComments";
-import UserPosts from "../components/UserPosts"
-import {firebase} from "../firebase";
-import PostListComponent from "../components/PostListComponent";
 import * as SubredditService from '../services/SubredditService'
 import * as SubredditUserService from '../services/SubredditUserService'
 import {Input} from 'react-native-elements'
-import { Subreddit } from './Subreddit';
 import { Ionicons } from '@expo/vector-icons';
 
 
 
 export const EditSubreddit = ({ route, navigation}) => {
 
-    const {subreaditId} = route.params
+    const {subreaditName} = route.params
 
     const[subreadit, setSubreadit] = useState({
         name: "",
@@ -27,31 +20,26 @@ export const EditSubreddit = ({ route, navigation}) => {
         date_created: 0,
      })
 
-     var [subreaditRoles, setSubreaditRoles] = useState({})
-
-
-     const [subreaditName, setSubreaditName] = useState("")
+     const [subreaditRoles, setSubreaditRoles] = useState({})
+     const [newSubreaditName, setSubreaditName] = useState("")
      const [subreaditDescription, setSubreaditDescription] = useState("")
      const [newRoles, setNewRoles] = useState({})
 
      const updateSubreadit = () => {
-         SubredditService.updateSubreadit(subreaditId, subreaditName, subreaditDescription, newRoles)
+         SubredditService.updateSubreadit(subreaditName, newSubreaditName, subreaditDescription, newRoles)
      }
 
      const isModified = () => {
          window.console.log(subreadit)
          window.console.log(JSON.stringify(subreaditRoles))
          window.console.log(subreaditName + " " + subreaditDescription + " " + JSON.stringify(newRoles))
-         return subreadit.name != subreaditName 
-         || subreadit.description != subreaditDescription 
+         return subreadit.name != subreaditName
+         || subreadit.description != subreaditDescription
          || JSON.stringify(subreaditRoles) != JSON.stringify(newRoles)
      }
 
 
-
     useEffect(() => {
-
-
         const subreaditRef = SubredditService.getRefForSubreddit(subreaditId)
         const newRolesRef = SubredditUserService.getRefForSubredditRoles(subreaditId)
 
@@ -65,7 +53,7 @@ export const EditSubreddit = ({ route, navigation}) => {
                 window.console.log("subreadit is now")
                 window.console.log(subreadit)
             }
-            
+
         })
 
         newRolesRef.get().then(function(snapshot) {
@@ -138,15 +126,15 @@ export const EditSubreddit = ({ route, navigation}) => {
                         <Text color="grey">Add new user</Text>
                     </Block>
                 </Block>
-                
+
             </Block>
             </ScrollView>
             <View row center style={[styles.footer, {justifyContent: "center"}]}>
-            {isModified() ? 
+            {isModified() ?
             (<TouchableOpacity style={{ height: 50, marginTop: 10, backgroundColor: "cyan", justifyContent: "center" }} onPress={() => {updateSubreadit()}}>
                 <Text center color="white">Save</Text>
             </TouchableOpacity>) : null}
-            {!isModified() ? 
+            {!isModified() ?
             (<TouchableOpacity style={{ height: 50, marginTop: 10, backgroundColor: "grey", justifyContent: "center" }}>
                 <Text center color="white">Save</Text>
             </TouchableOpacity>) : null}
@@ -165,7 +153,7 @@ const styles = StyleSheet.create({
     },
     hr: {
         borderBottomColor: 'lightgrey',
-        borderBottomWidth: 1,   
+        borderBottomWidth: 1,
     },
     content: {
         alignItems: 'center',
@@ -178,5 +166,4 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: "100%",
     }
-
 });

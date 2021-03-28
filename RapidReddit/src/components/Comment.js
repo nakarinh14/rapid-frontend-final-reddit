@@ -30,7 +30,7 @@ export const Comment = ({comment, depth, preview, path}) => {
     const navigation = useNavigation();
     const { postId, modalFunction } = useContext(CommentTreeContext);
     const { user } = useContext(AuthenticationContext)
-    const {updateComments} = useContext(PostCommentsContext)
+    const {refreshPost} = useContext(PostCommentsContext)
 
     const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
@@ -48,7 +48,7 @@ export const Comment = ({comment, depth, preview, path}) => {
         } catch(err) {
             console.log(err)
         }
-        updateComments()
+        refreshPost()
     }
 
     const userVote = comment.user_upvotes && comment.user_upvotes[user.displayName]

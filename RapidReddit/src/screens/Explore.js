@@ -42,7 +42,7 @@ export const Explore = ({navigation}) => {
                             onPress={() =>
                                 navigation.navigate(
                                     'Subreddit',
-                                    {subreaditId: key, subreaditName: subreddits[key].name})
+                                    {subreaditName: subreddits[key].name})
                             }
                         >
                             <SubredditPreview subreadit={subreddits[key]}/>

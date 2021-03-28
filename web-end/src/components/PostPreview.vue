@@ -12,7 +12,7 @@
           </p>
         </router-link>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
-        <p class="text-grey-7 inline-block author">{{ time_from_now }}</p>
+        <p class="text-grey-7 inline-block author">{{ getDisplayDate(time_from_now) }}</p>
       </div>
       <div class="title">
         <router-link
@@ -82,6 +82,17 @@ export default {
         icon: 'announcement',
         timeout: 500
       })
+    },
+    getDisplayDate (timestamp) {
+      const nowTime = new Date().getTime()
+      const difference = nowTime - timestamp
+      // See if days
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+      if (days) return `${days}d`
+      const hours = Math.floor(difference / (1000 * 60 * 60))
+      if (hours) return `${hours}h`
+      const minutes = Math.floor(difference / (1000 * 60))
+      return `${minutes}m`
     }
   }
 }

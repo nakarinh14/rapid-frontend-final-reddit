@@ -12,11 +12,12 @@
             v-for="(post, idx) in posts"
             :key="idx"
             :author="post.user.displayName"
+            :group="post.subreadit"
             :title="post.title"
             :content="post.caption"
-            :karma="post.karma"
-            :comment_freq="post.comment_freq"
-            :time_from_now="post.created.toRelative()"
+            :karma="String(post.karma)"
+            :comment_freq="String(post.comments_freq)"
+            :time_from_now="post.created"
             :bordered="true"
             :id="idx"
           />
@@ -42,10 +43,12 @@ export default {
       let posts = []
       const postRef = PostService.getRefForPosts()
       postRef.on('value', (snapshot) => {
+        console.log(snapshot.val())
         if (snapshot.exists()) {
           posts = snapshot.val()
         }
       })
+      console.log(posts)
       return posts
     }
   }

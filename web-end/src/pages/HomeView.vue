@@ -11,13 +11,12 @@
             class="post-preview"
             v-for="(post, idx) in posts"
             :key="idx"
-            :group="post.group"
-            :author="post.author"
+            :author="post.user.displayName"
             :title="post.title"
-            :content="post.content"
+            :content="post.caption"
             :karma="post.karma"
             :comment_freq="post.comment_freq"
-            :time_from_now="post.timestamp.toRelative()"
+            :time_from_now="post.created.toRelative()"
             :bordered="true"
             :id="idx"
           />
@@ -32,70 +31,22 @@
 
 <script>
 import PostPreview from 'components/PostPreview'
-import { DateTime } from 'luxon'
 import SubredditSuggestions from 'components/SubredditSuggestions'
+import * as PostService from '../services/PostService'
 
 export default {
   name: 'HomeView',
   components: { SubredditSuggestions, PostPreview },
-  data: function () {
-    return {
-      posts: {
-        1: {
-          group: 'r/movie',
-          author: 'some_crazy_guy',
-          title: 'This is awesome post',
-          content: 'This is a really awesome post',
-          karma: '10',
-          comment_freq: '1000',
-          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
-        },
-        2: {
-          group: 'r/movie',
-          author: 'some_crazy_guy',
-          title: 'This is awesome post',
-          content: 'This is a really awesome post',
-          karma: '10',
-          comment_freq: '1000',
-          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
-        },
-        3: {
-          group: 'r/movie',
-          author: 'some_crazy_guy',
-          title: 'This is awesome post',
-          content: 'This is a really awesome post',
-          karma: '10',
-          comment_freq: '1000',
-          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
-        },
-        4: {
-          group: 'r/movie',
-          author: 'some_crazy_guy',
-          title: 'This is awesome post',
-          content: 'This is a really awesome post',
-          karma: '10',
-          comment_freq: '1000',
-          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
-        },
-        5: {
-          group: 'r/movie',
-          author: 'some_crazy_guy',
-          title: 'This is awesome post',
-          content: 'This is a really awesome post',
-          karma: '10',
-          comment_freq: '1000',
-          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
-        },
-        6: {
-          group: 'r/movie',
-          author: 'some_crazy_guy',
-          title: 'This is awesome post',
-          content: 'This is a really awesome post',
-          karma: '10',
-          comment_freq: '1000',
-          timestamp: DateTime.now().minus({ weeks: 1 }).endOf('day')
+  computed: {
+    posts () {
+      let posts = []
+      const postRef = PostService.getRefForPosts()
+      postRef.on('value', (snapshot) => {
+        if (snapshot.exists()) {
+          posts = snapshot.val()
         }
-      }
+      })
+      return posts
     }
   }
 }

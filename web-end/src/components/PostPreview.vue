@@ -2,7 +2,7 @@
   <q-card flat :bordered="bordered" class="my-card">
     <q-card-section>
       <div>
-        <b class="inline group">{{ group }}</b>
+        <b class="inline group">Group</b>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
         <router-link
           :to="`/user/${author}`"

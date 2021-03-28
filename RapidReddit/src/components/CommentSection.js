@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import {Block} from "galio-framework";
@@ -12,7 +12,7 @@ const { width } = Dimensions.get('screen');
 const CommentSection = ({ comments, postId })=> {
 
     const [isModalVisible, setModalVisible] = useState(false);
-    const [previewCommentModal, setPreviewCommentModal] = useState({message: '', path: '', postId: postId})
+    const [previewCommentModal, setPreviewCommentModal] = useState({message: '', path: '', postId, commentId: ''})
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -20,20 +20,20 @@ const CommentSection = ({ comments, postId })=> {
     const closeModal = () => {
         setModalVisible(false)
     }
-    const setPreviewComment = (message, path) => {
-        setPreviewCommentModal({message: message, path: path, postId: postId})
+    const setPreviewComment = (message, path, commentId) => {
+        setPreviewCommentModal({message, path, postId, commentId})
         toggleModal()
     }
 
     return (
         <CommentTreeContext.Provider value={{
-            postId: postId,
-            modalFunction: setPreviewComment
+            postId,
+            modalFunction: setPreviewComment,
         }}>
             <Block flex style={styles.cards}>
                 {comments && Object.keys(comments).map((comment_id) => {
                     const comment = comments[comment_id]
-                    // console.log(comment)
+
                     return (
                         <Block
                             key={`card-${comment_id}`}

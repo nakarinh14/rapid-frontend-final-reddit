@@ -2,24 +2,66 @@ import React, {useEffect, useState} from 'react';
 import {Block, Icon, Text} from "galio-framework";
 import {PostPreview} from "../components/PostPreview";
 import CommentSection from "../components/CommentSection"
-import {Platform, ScrollView, TouchableOpacity } from "react-native";
+import {Platform, RefreshControl, ScrollView, TouchableOpacity} from "react-native";
 import { NavBar } from 'galio-framework';
 import theme from "../theme";
 import { getPostById } from "../services/PostService";
-import { getCommentsRef } from '../services/CommentsService'
+import { getCommentsForPost } from '../services/CommentsService'
+import PostCommentsContext from "../contexts/PostCommentsContext";
 
+const Post = ({route, navigation}) => {
 
-function RenderPost ({navigation, comments, post}) {
+    const { postId } = route.params
+    const [refreshing, setRefreshing] = useState(false)
+    const [ comments, setComments ] = useState({})
+    const [ post, setPost ] = useState({id: postId, user: {}})
 
-    if(!post) {
-        return(
-            <Block flex center>
-                <Text>Post not found</Text>
-            </Block>
-        )
+    const fetchComments = async () => {
+        console.log("Fetching Comments")
+        const res = await getCommentsForPost(postId).get()
+        setComments(res)
     }
 
-    return(
+    const fetchPost = async (postId) => {
+        if(postId) {
+            const result = await getPostById(postId).get()
+            const fetchedPost = result.val()
+            fetchedPost.id = postId
+            setPost(fetchedPost)
+        }
+    }
+
+    const onRefresh =  async () => {
+        setRefreshing(true)
+        try {
+            await fetchComments()
+        } catch (err) {
+            console.log(err)
+        }
+        setRefreshing(false)
+    }
+
+    useEffect(() => {
+        Promise.all([
+            fetchPost(postId),
+            fetchComments()
+        ])
+        return () => {
+            getCommentsForPost(postId).off('value')
+        }
+    }, [])
+
+    const postUpdateContext = {
+        updateComments: fetchComments,
+        postId
+    }
+
+    if(!postId) return (
+        <Block flex center>
+            <Text>Error. No id found</Text>
+        </Block>
+    )
+    return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
                 titleStyle={{fontSize: 19, fontWeight: 'bold'}}
@@ -36,43 +78,22 @@ function RenderPost ({navigation, comments, post}) {
                 )}
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 <Block>
-                    <PostPreview post={post}/>
-                    <CommentSection comments={comments} postId={post.id}/>
+                        <PostPreview post={post}/>
+                    <PostCommentsContext.Provider value={postUpdateContext}>
+                        <CommentSection comments={comments} postId={post.id}/>
+                    </PostCommentsContext.Provider>
                 </Block>
             </ScrollView>
         </Block>
-    )
-}
-
-const Post = ({route, navigation}) => {
-
-    const [ comments, setComments ] = useState({})
-    const {postId} = route.params
-    const [ post, setPost ] = useState({id: postId, user: {}})
-
-    useEffect(() => {
-        if(postId) {
-            getPostById(postId).get().then(result => {
-                const p = result.val()
-                p.id = postId
-                setPost(p)
-            })
-            getCommentsRef(postId).on('value', (result) => {
-                // console.log(result)
-                setComments(result.val())
-            })
-        }
-
-    }, [])
-    if(!postId) return (
-        <Block flex center>
-            <Text>Error. No id found</Text>
-        </Block>
-    )
-    return (
-        <RenderPost post={post} comments={comments} navigation={navigation}/>
     )
 }
 

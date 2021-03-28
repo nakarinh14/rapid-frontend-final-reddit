@@ -1,11 +1,21 @@
 import React, {useContext, useState} from 'react'
-import {ActivityIndicator, Button, Platform, StyleSheet, TextInput, TouchableOpacity, View, ToastAndroid} from "react-native";
+import {
+    ActivityIndicator,
+    Button,
+    Platform,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    View,
+    Alert
+} from "react-native";
 import {Icon, NavBar} from "galio-framework";
 import theme from "../theme";
 import {Comment} from "./Comment";
 import Modal from "react-native-modal";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import { addComment } from "../services/CommentsService";
+import PostContext from "../contexts/PostCommentsContext";
 
 function RenderComment({replyComment}) {
     if(replyComment) return (
@@ -16,22 +26,23 @@ function RenderComment({replyComment}) {
     return null
 }
 
-export default function({ replyComment, visible, visibilitySetter, postId, commentPath }) {
+export default function({ replyComment, visible, visibilitySetter, commentPath, postId }) {
 
     const [ commentText, setCommentText ] = useState('')
     const [ addingComment, setAddingComment ] = useState(false)
 
     const { user } = useContext(AuthenticationContext)
+    const { updateComments } = useContext(PostContext)
 
     const createComment = async () => {
         setAddingComment(true)
-
         try{
-            await addComment(postId,commentText, user, commentPath)
+            await addComment(postId, commentText, user, commentPath)
             visibilitySetter(false)
+            updateComments()
         } catch (err){
             console.error(err)
-            ToastAndroid.show("Something went wrong. Please try again later", ToastAndroid.SHORT)
+            Alert.alert("Something went wrong. Please try again later")
         } finally {
             setAddingComment(false)
         }

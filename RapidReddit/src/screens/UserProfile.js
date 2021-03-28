@@ -9,7 +9,7 @@ import {firebase} from "../firebase";
 import "firebase/auth";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import {UnauthenticatedScreen} from "./UnauthenticatedScreen";
-import {getDisplayDate} from "../utils/PostUtils";
+import {getDisplayDate} from "../utils/post-date";
 
 const profile = {
     username: "Loading",
@@ -43,7 +43,7 @@ export const UserProfile = ({ route, navigation }) => {
 const RenderProfile = ({navigation, owner, username}) => {
     // If it is owner, use current displayName, else just use provided username from navigation path
     const [userStats, setUserStats] = useState(profile)
-
+    console.log(username)
     useEffect(() => {
         if(username){
             const ref = firebase.database().ref(`user_profile/${username}/stats`)

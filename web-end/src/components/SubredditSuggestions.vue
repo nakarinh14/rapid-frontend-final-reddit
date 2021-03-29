@@ -3,8 +3,8 @@
     <q-card-section class="subredditCardHeader text-white">
       <span class="text-h6">Communities</span>
     </q-card-section>
-    <div v-for="(sub,subID) in subreddits" :key="subID">
-      <q-item clickable v-ripple>
+    <div v-for="(sub,subID) in subs" :key="subID">
+      <q-item clickable :to="`/subreadit/${sub.name}`">
         <q-item-section avatar>
           <q-avatar>
             <img :src=placeholderImg />
@@ -14,30 +14,43 @@
       </q-item>
       <q-separator/>
     </div>
+    <div v-if="loading">
+      <subreddit-suggestion-placeholder
+        v-for="n in 6"
+        :key="n"
+      />
+    </div>
   </q-card>
 </template>
 
 <script>
 
 import * as SubredditService from '../services/SubredditService.js'
+import SubredditSuggestionPlaceholder from 'components/SubredditSuggestionPlaceholder'
 
 export default {
   name: 'SubredditSuggestions',
+  components: { SubredditSuggestionPlaceholder },
   data () {
     return {
-      placeholderImg: 'https://www.resorgs.org.nz/wp-content/uploads/2018/11/logo-placeholder.jpeg'
+      placeholderImg: 'https://www.resorgs.org.nz/wp-content/uploads/2018/11/logo-placeholder.jpeg',
+      subs: [],
+      subreaditRef: null,
+      loading: true
     }
   },
-  computed: {
-    subreddits () {
-      let subs = []
-      const subredditRef = SubredditService.getRefForSubreddits()
-      subredditRef.on('value', (snapshot) => {
+  created () {
+    this.fetchSubreadits()
+  },
+  methods: {
+    fetchSubreadits () {
+      this.subreaditRef = SubredditService.getRefForSubreddits()
+      this.subreaditRef.on('value', (snapshot) => {
         if (snapshot.exists()) {
-          subs = snapshot.val()
+          this.loading = false
+          this.subs = snapshot.val()
         }
       })
-      return subs
     }
   }
 }

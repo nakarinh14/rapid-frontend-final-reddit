@@ -21,6 +21,13 @@
             :bordered="true"
             :id="idx"
           />
+          <div v-if="loading">
+            <post-placeholder
+              style="margin-bottom: 15px"
+              v-for="n in 6"
+              :key="n"
+            />
+          </div>
         </div>
         <div class="col-3 suggestion">
           <SubredditSuggestions/>
@@ -34,29 +41,32 @@
 import PostPreview from 'components/PostPreview'
 import SubredditSuggestions from 'components/SubredditSuggestions'
 import * as PostService from '../services/PostService'
+import PostPlaceholder from 'components/PostPlaceholder'
 
 export default {
   name: 'HomeView',
-  components: { SubredditSuggestions, PostPreview },
+  components: { PostPlaceholder, SubredditSuggestions, PostPreview },
   data () {
     return {
       posts: [],
-      postRef: null
+      postRef: null,
+      loading: true
     }
   },
   created () {
     this.postRef = PostService.getRefForPosts()
     this.postRef.on('value', (snapshot) => {
       if (snapshot.exists()) {
+        this.loading = false
         this.posts = snapshot.val()
       }
     })
-  },
-  beforeDestroy () {
-    if (this.postRef) {
-      this.postRef.off()
-    }
   }
+  // beforeDestroy () {
+  //   if (this.postRef) {
+  //     this.postRef.off()
+  //   }
+  // }
 }
 </script>
 

@@ -13,7 +13,7 @@ function RenderPosts({posts, loadingPosts}) {
             <Block flex center style={styles.container}>
                 <View style={{paddingHorizontal: 30, marginTop: 20}}>
                     {
-                        [1,1,1,1].map((key, idx) => (
+                        [1,1,1,1,1].map((key, idx) => (
                             <Placeholder
                                 key={idx}
                                 Animation={Fade}

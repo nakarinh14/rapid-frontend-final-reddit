@@ -1,6 +1,6 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {Block, Text} from "galio-framework";
-import {ActivityIndicator, Pressable, StyleSheet, TouchableOpacity} from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity} from "react-native";
 import theme from "../theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {withInteractionsManaged} from "./withInteractionsManaged";
@@ -11,9 +11,14 @@ import ProfileContext from "../contexts/ProfileContext";
 const UserComments = ({navigation}) => {
 
     const {userComments} = useContext(ProfileContext)
+    const [show, setShow] = useState(false);
+
+    // It's a known issue that all tab are set to highest height tab, causing weird looking UI. Hide them when out of focus.
+    // Not ideal :(
 
     // Render looks weird with spaces on height
     // Does it still looks weird? - kenny
+
     return (
         <Block flex space="between" style={styles.cards}>
             {userComments && Object.keys(userComments).map((post_id, idx) => {
@@ -111,4 +116,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withInteractionsManaged(UserComments, ActivityIndicator)
+export default withInteractionsManaged(UserComments)

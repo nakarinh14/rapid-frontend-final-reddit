@@ -15,7 +15,7 @@
               <b>{{ author }}</b>
             </router-link>
             <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
-            <p class="text-grey-7 inline-block time">{{ time_from_now }}</p>
+            <p class="text-grey-7 inline-block time">{{ parseDate(time_from_now) }}</p>
             <transition name="fade">
               <span v-if="!drawerIsSelected">
                 <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
@@ -47,10 +47,10 @@
             <recursive-nested-collapse
               v-for="child in data"
               :key="child.id"
-              :author="child.author"
-              :content="child.content"
-              :karma="child.karma"
-              :time_from_now="child.timestamp.toRelative()"
+              :author="child.comment.user.displayName"
+              :content="child.comment.body"
+              :karma="child.comment.upvotes"
+              :time_from_now="child.comment.timestamp"
               :data="child.comments"
             />
           </div>
@@ -61,13 +61,15 @@
 </template>
 
 <script>
+import { getDisplayDate } from 'src/utils/post-util'
+
 export default {
   name: 'RecursiveNestedCollapse',
   props: {
     author: String,
     content: String,
     karma: Number,
-    time_from_now: String,
+    time_from_now: Number,
     data: Object
   },
   data () {
@@ -83,6 +85,9 @@ export default {
   methods: {
     expandDropdown () {
       this.drawerIsSelected = !this.drawerIsSelected
+    },
+    parseDate (timestamp) {
+      return getDisplayDate(timestamp)
     }
   }
 }

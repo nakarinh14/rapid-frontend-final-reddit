@@ -12,7 +12,7 @@
           </p>
         </router-link>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
-        <p class="text-grey-7 inline-block author">{{ getDisplayDate(time_from_now) }}</p>
+        <p class="text-grey-7 inline-block author">{{ parseDate(time_from_now) }}</p>
       </div>
       <div class="title">
         <router-link
@@ -25,7 +25,7 @@
       </div>
       <p class="content">{{ content }}</p>
     </q-card-section>
-    <q-card-actions align="flex-start">
+    <q-card-actions>
       <div class="row items-center action">
         <q-btn flat round color="grey" class="no-margin" icon="arrow_upward" />
         <h6 class="text-subtitle2 text-grey-7">{{ karma }}</h6>
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import { getDisplayDate } from '../utils/post-util'
+
 export default {
   name: 'PostPreview',
   // Might change karma type and comment freq type into number
@@ -65,10 +67,10 @@ export default {
     author: String,
     title: String,
     content: String,
-    karma: String,
-    comment_freq: String,
+    karma: Number,
+    comment_freq: Number,
     bordered: Boolean,
-    time_from_now: String,
+    time_from_now: Number,
     id: String
   },
   methods: {
@@ -83,16 +85,8 @@ export default {
         timeout: 500
       })
     },
-    getDisplayDate (timestamp) {
-      const nowTime = new Date().getTime()
-      const difference = nowTime - timestamp
-      // See if days
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
-      if (days) return `${days}d`
-      const hours = Math.floor(difference / (1000 * 60 * 60))
-      if (hours) return `${hours}h`
-      const minutes = Math.floor(difference / (1000 * 60))
-      return `${minutes}m`
+    parseDate (timestamp) {
+      return getDisplayDate(timestamp)
     }
   }
 }

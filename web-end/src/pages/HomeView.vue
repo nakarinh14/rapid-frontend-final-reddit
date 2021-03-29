@@ -15,8 +15,8 @@
             :group="post.subreadit"
             :title="post.title"
             :content="post.caption"
-            :karma="String(post.karma)"
-            :comment_freq="String(post.comments_freq)"
+            :karma="post.karma"
+            :comment_freq="post.comments_freq"
             :time_from_now="post.created"
             :bordered="true"
             :id="idx"
@@ -38,18 +38,23 @@ import * as PostService from '../services/PostService'
 export default {
   name: 'HomeView',
   components: { SubredditSuggestions, PostPreview },
-  computed: {
-    posts () {
-      let posts = []
-      const postRef = PostService.getRefForPosts()
-      postRef.on('value', (snapshot) => {
-        console.log(snapshot.val())
-        if (snapshot.exists()) {
-          posts = snapshot.val()
-        }
-      })
-      console.log(posts)
-      return posts
+  data () {
+    return {
+      posts: [],
+      postRef: null
+    }
+  },
+  created () {
+    this.postRef = PostService.getRefForPosts()
+    this.postRef.on('value', (snapshot) => {
+      if (snapshot.exists()) {
+        this.posts = snapshot.val()
+      }
+    })
+  },
+  beforeDestroy () {
+    if (this.postRef) {
+      this.postRef.off()
     }
   }
 }

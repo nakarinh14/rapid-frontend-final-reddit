@@ -9,7 +9,7 @@
       <div>
         <span class="inline-block author"><b>{{ author }}</b></span>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
-        <p class="text-grey-7 inline-block author">{{ time_from_now }}</p>
+        <p class="text-grey-7 inline-block author">{{ parseDate(time_from_now) }}</p>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
         <q-icon flat round color="grey" class="no-margin" name="arrow_upward" />
         <p class="text-grey-7 inline-block author">{{ karma }}</p>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { getDisplayDate } from 'src/utils/post-util'
+
 export default {
   name: 'CommentPreview',
   props: {
@@ -27,9 +29,14 @@ export default {
     author: String,
     title: String,
     content: String,
-    karma: String,
+    karma: Number,
     bordered: Boolean,
-    time_from_now: String
+    time_from_now: Number
+  },
+  methods: {
+    parseDate (timestamp) {
+      return getDisplayDate(timestamp)
+    }
   }
 }
 </script>

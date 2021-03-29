@@ -6,7 +6,7 @@
     </div>
 
     <!--    Sort/CreatePost Bar-->
-    <div style="width: 40%" class="q-pt-md q-pl-md q-pr-md text-black">
+    <div style="width: 50%; position:relative; left:400px" class="q-pt-md q-pl-md q-pr-md text-black">
       <q-list dark bordered class="bg-grey-6 rounded-borders" >
         <q-item class="q-mt-sm q-mb-sm" >
           <div class="q-gutter-sm ">

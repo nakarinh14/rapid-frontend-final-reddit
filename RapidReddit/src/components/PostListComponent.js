@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Block, Text} from "galio-framework";
-import {ActivityIndicator, StyleSheet, View} from "react-native";
+import { StyleSheet, View} from "react-native";
 import {Fade, Placeholder, PlaceholderLine, PlaceholderMedia} from "rn-placeholder";
 import {PostPreview} from "./PostPreview";
 import * as PostService from '../services/PostService'
@@ -26,8 +26,6 @@ function RenderPosts({posts, loadingPosts}) {
                             </Placeholder>
                         ))
                     }
-
-                    <ActivityIndicator size={"large"}/>
                 </View>
             </Block>
         )
@@ -93,7 +91,7 @@ export default function ({subreadit, username}) {
         return () => {
             ref.off('value')
         }
-    }, [])
+    }, [subreadit, username])
 
     return (
         <RenderPosts posts={posts} loadingPosts={loadingState}/>

@@ -1,15 +1,10 @@
-import React, {useContext} from 'react';
-import {ActivityIndicator, StyleSheet} from "react-native";
+import React, {useContext, useEffect, useState} from 'react';
+import {ActivityIndicator, StyleSheet, View} from "react-native";
 import theme from "../theme";
 import {withInteractionsManaged} from "./withInteractionsManaged";
 import PostListComponent from "./PostListComponent";
 import AuthenticationContext from "../contexts/AuthenticationContext";
-import {
-    Placeholder,
-    PlaceholderMedia,
-    PlaceholderLine,
-    Fade
-} from "rn-placeholder";
+
 const UserPosts = ({ route }) => {
     const { username } = route.params
     const { user } = useContext(AuthenticationContext)
@@ -31,4 +26,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withInteractionsManaged(UserPosts, Placeholder)
+export default withInteractionsManaged(UserPosts)

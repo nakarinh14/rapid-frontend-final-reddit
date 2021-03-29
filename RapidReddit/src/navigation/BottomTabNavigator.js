@@ -17,9 +17,7 @@ export const BottomTabNavigator = () => {
                     let iconName;
 
                     if (route.name === 'Home') {
-                        iconName = focused
-                            ? 'ios-newspaper'
-                            : 'ios-newspaper-outline';
+                        iconName = focused ? 'ios-newspaper' : 'ios-newspaper-outline';
                     } else if (route.name === 'User') {
                         iconName = focused ? 'ios-man-sharp' : 'ios-man-outline';
                     } else if (route.name === 'Setting') {
@@ -27,7 +25,6 @@ export const BottomTabNavigator = () => {
                     } else if (route.name === 'Explore') {
                         iconName = focused ? 'ios-rocket-sharp' : 'ios-rocket-outline';
                     }
-
                     // You can return any component that you like here!
                     return <Ionicons name={iconName} size={size} color={color}/>;
                 },

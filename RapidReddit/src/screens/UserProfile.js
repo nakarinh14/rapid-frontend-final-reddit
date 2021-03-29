@@ -1,5 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, Platform, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {
+    StyleSheet,
+    Platform,
+    TouchableOpacity,
+    ScrollView,
+    RefreshControl,
+    ActivityIndicator,
+    View
+} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Block, NavBar, Icon, Text} from 'galio-framework';
 import theme from '../theme';
@@ -48,6 +56,10 @@ const RenderProfile = ({navigation, owner, username}) => {
 
     const [userComments, setUserComments] = useState({})
     const [refreshing, setRefreshing] = useState(false)
+    // It's a known issue that all tab are set to highest height tab,
+    // causing weird looking UI. Hide them when out of focus.
+    // Not ideal :(
+    const [activeTab, setActiveTab] = useState('tab1')
 
     const fetchUserComments = async() => {
         try {
@@ -70,6 +82,7 @@ const RenderProfile = ({navigation, owner, username}) => {
     }
     useEffect(() => {
         if(username){
+            refreshProfile()
             const listener = ref.on('value', (snapshot) => {
                 if(snapshot.exists()){
                     const data = snapshot.val()
@@ -148,12 +161,14 @@ const RenderProfile = ({navigation, owner, username}) => {
                         <Tab.Navigator>
                             <Tab.Screen
                                 name="Posts"
-                                component={UserPosts}
+                                component={activeTab === 'tab1' ? UserPosts : DefaultScreen }
                                 initialParams={{username}}
+                                listeners={{ focus: () => setActiveTab('tab1') }}
                             />
                             <Tab.Screen
                                 name="Comments"
-                                component={UserComments}
+                                component={activeTab === 'tab2' ? UserComments : DefaultScreen}
+                                listeners={{ focus: () => setActiveTab('tab2') }}
                             />
                         </Tab.Navigator>
                     </ProfileContext.Provider>
@@ -163,6 +178,15 @@ const RenderProfile = ({navigation, owner, username}) => {
     )
 }
 
+const DefaultScreen = () => (
+    <View
+        alignItems="center"
+        justifyContent="center"
+        style={{backgroundColor: theme.COLORS.PAPER}}
+    >
+        <ActivityIndicator style={{marginTop: 20}} size="large" animating />
+    </View>
+)
 
 const styles = StyleSheet.create({
     achievements: {

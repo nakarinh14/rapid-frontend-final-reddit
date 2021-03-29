@@ -14,7 +14,7 @@ const routes = [
   },
   {
     path: '/subreadit/:name',
-    component: () => import('../components/Subreddit')
+    component: () => import('pages/Subreddit')
   },
   {
     path: '/login',

@@ -18,8 +18,21 @@
           </q-item>
         </div>
       </q-card>
-      <div class="inner-container fit row wrap justify-start items-start content-start">
+      <div class="inner-container fit row wrap justify-center items-start content-start"  style="max-width: 900px;">
         <div class="col">
+          <div>
+            <q-card flat class="my-card">
+              <q-card-section>
+                <div class="row">
+                  <span class="text-grey-7" style="font-weight: 600">Create a new post.</span>
+                  <q-space />
+                  <q-btn flat text-color="primary" label="Post" />
+                </div>
+                <q-input v-model.trim="newPostTitle" label="Title"/>
+                <q-input autogrow v-model.trim="newPostBody" label="Body Content"/>
+              </q-card-section>
+            </q-card>
+          </div>
           <post-preview
             class="post-preview text-left"
             v-for="(post, idx) in posts"
@@ -35,6 +48,13 @@
             :id="idx"
           />
         </div>
+        <div class="col-4 suggestion">
+          <SubredditBlockInfo :subreadit="subreadit"/>
+          <div style="margin-top: 30px">
+<!--            Switching subreddit in subredditview got some trouble, will fix later-->
+            <SubredditSuggestions/>
+          </div>
+        </div>
       </div>
     </div>
   </q-page>
@@ -44,15 +64,19 @@
 import PostPreview from 'components/PostPreview'
 import * as PostService from 'src/services/PostService'
 import { getRefForSubreddit } from '../services/SubredditService'
+import SubredditBlockInfo from 'components/SubredditBlockInfo'
+import SubredditSuggestions from 'components/SubredditSuggestions'
 
 export default {
   name: 'Subreddit.vue',
-  components: { PostPreview },
+  components: { SubredditBlockInfo, PostPreview, SubredditSuggestions },
   data: function () {
     return {
       posts: {},
       postRef: null,
-      subreadit: {}
+      subreadit: {},
+      newPostTitle: '',
+      newPostBody: ''
     }
   },
   created () {
@@ -112,5 +136,12 @@ export default {
 }
 .title-caption{
   font-size: 19px;
+}
+.my-card {
+  width: 100%;
+  max-width: 725px
+}
+.suggestion {
+  margin-left: 30px;
 }
 </style>

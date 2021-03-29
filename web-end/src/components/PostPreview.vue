@@ -1,5 +1,6 @@
 <template>
   <q-card flat :bordered="bordered" class="my-card">
+    <post-reply-modal :prompt="postModalVisible" :toggle-modal="togglePostModal" />
     <q-card-section>
       <div>
         <router-link
@@ -38,7 +39,7 @@
         <q-btn flat round color="grey" class="no-margin" icon="arrow_downward" />
       </div>
       <div class="row items-center action">
-        <q-btn flat text-color="grey" icon="comment">
+        <q-btn flat text-color="grey" icon="comment" @click="togglePostModal()">
           <p class="text-subtitle2 text-grey-7" style="margin-left: 9px">
             {{ comment_freq }}
           </p>
@@ -64,9 +65,16 @@
 
 <script>
 import { getDisplayDate } from '../utils/post-util'
+import PostReplyModal from 'components/PostReplyModal'
 
 export default {
   name: 'PostPreview',
+  components: { PostReplyModal },
+  data () {
+    return {
+      postModalVisible: false
+    }
+  },
   // Might change karma type and comment freq type into number
   props: {
     group: String,
@@ -93,6 +101,9 @@ export default {
     },
     parseDate (timestamp) {
       return getDisplayDate(timestamp)
+    },
+    togglePostModal (visible) {
+      this.postModalVisible = visible == null ? !this.postModalVisible : visible
     }
   }
 }
@@ -101,7 +112,6 @@ export default {
 <style scoped>
 .my-card {
   width: 100%;
-  max-width: 725px
 }
 .title {
   margin-top: 7px;

@@ -24,6 +24,13 @@
 <!--      // Might need to find a way to lazy load with q-tab-panel for performance -->
           <q-tab-panel name="posts">
             <user-posts :posts="userPosts"/>
+            <div v-if="loading">
+              <post-placeholder
+                style="margin-bottom: 15px"
+                v-for="n in 4"
+                :key="n"
+              />
+            </div>
           </q-tab-panel>
           <q-tab-panel name="comments">
             <user-comments :comments="userComments" />
@@ -39,18 +46,23 @@ import UserPosts from 'components/UserPosts.vue'
 import UserComments from 'components/UserComments'
 import { getCommentsForUser } from 'src/services/CommentService'
 import * as PostService from 'src/services/PostService'
+import PostPlaceholder from 'components/PostPlaceholder'
 export default {
   name: 'UserProfile',
-  components: { UserComments, UserPosts },
+  components: { PostPlaceholder, UserComments, UserPosts },
   data: function () {
     return {
       tab: 'posts',
       userComments: {},
-      userPosts: {}
+      userPosts: {},
+      loading: true
     }
   },
   created () {
     Promise.all([this.fetchUserComments(), this.fetchUserPosts()])
+      .then(() => {
+        this.loading = false
+      })
   },
   methods: {
     async fetchUserComments () {

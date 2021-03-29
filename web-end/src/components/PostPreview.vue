@@ -2,7 +2,13 @@
   <q-card flat :bordered="bordered" class="my-card">
     <q-card-section>
       <div>
-        <b class="inline group">{{ group }}</b>
+        <router-link
+          :to="`/subreadit/${group}`"
+          tag="b"
+          class="direct inline group"
+        >
+          {{ group }}
+        </router-link>
         <q-icon name="circle" style="font-size: 0.17em; color: grey; margin-right: 5px; margin-left: 5px"></q-icon>
         <router-link
           :to="`/user/${author}`"
@@ -103,6 +109,9 @@ export default {
 }
 .title h6 {
   font-size: 21px;
+  cursor: pointer;
+}
+.direct {
   cursor: pointer;
 }
 .direct:hover {

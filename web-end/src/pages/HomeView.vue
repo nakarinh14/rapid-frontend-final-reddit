@@ -5,7 +5,7 @@
         <q-icon name="bed" style="font-size: 2.5em; color: #FF6F00"></q-icon>
         <span class="text-grey-7 home-title">Home</span>
       </div>
-      <div class="inner-container fit row wrap justify-start items-start content-start">
+      <div class="inner-container fit row wrap justify-center items-start content-start" style="max-width: 900px;">
         <div class="col">
           <post-preview
             class="post-preview"
@@ -29,7 +29,7 @@
             />
           </div>
         </div>
-        <div class="col-3 suggestion">
+        <div class="col-4 suggestion">
           <SubredditSuggestions/>
         </div>
       </div>

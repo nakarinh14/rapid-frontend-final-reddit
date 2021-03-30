@@ -32,7 +32,7 @@
                 <q-btn flat round color="grey" class="no-margin" icon="arrow_downward" />
               </div>
               <div class="row items-center action">
-                <q-btn flat text-color="grey" icon="comment" no-caps>
+                <q-btn flat text-color="grey" icon="comment" @click="reply_onclick(true)"  no-caps>
                   <span class="text-subtitle2 text-grey-7" style="margin-left: 7px">Reply</span>
                 </q-btn>
               </div>
@@ -52,6 +52,7 @@
               :karma="child.comment.upvotes"
               :time_from_now="child.comment.timestamp"
               :data="child.comments"
+              :reply_onclick="reply_onclick"
             />
           </div>
         </div>
@@ -70,7 +71,8 @@ export default {
     content: String,
     karma: Number,
     time_from_now: Number,
-    data: Object
+    data: Object,
+    reply_onclick: Function
   },
   data () {
     return {

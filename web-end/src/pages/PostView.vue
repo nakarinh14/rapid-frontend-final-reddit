@@ -1,6 +1,7 @@
 <template>
   <q-page>
     <div class="container column items-start justify-start content-center">
+      <comment-reply-modal :prompt="commentModalVisible" :toggle-modal="toggleCommentModal"/>
       <div class="inner-container">
         <post-preview
           :author="post.user.displayName"
@@ -21,7 +22,15 @@
             :karma="comment.comment.upvotes"
             :time_from_now="comment.comment.timestamp"
             :data="comment.comments"
+            :reply_onclick="toggleCommentModal"
           />
+          <div v-if="loading">
+            <comment-placeholder
+              style="margin-bottom: 8px"
+              v-for="n in 6"
+              :key="n"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -33,14 +42,18 @@ import RecursiveNestedCollapse from 'components/RecursiveNestedCollapse'
 import PostPreview from 'components/PostPreview'
 import { getCommentsForPost } from '../services/CommentService'
 import { getPostById } from 'src/services/PostService'
+import CommentPlaceholder from 'components/CommentPlaceholder'
+import CommentReplyModal from 'components/CommentReplyModal'
 
 export default {
   name: 'PostView',
-  components: { RecursiveNestedCollapse, PostPreview },
+  components: { CommentReplyModal, CommentPlaceholder, RecursiveNestedCollapse, PostPreview },
   data: function () {
     return {
       post: {},
-      comments: {}
+      comments: {},
+      loading: true,
+      commentModalVisible: false
     }
   },
   created () {
@@ -73,7 +86,10 @@ export default {
       return Promise.all([
         this.fetchPost(),
         this.fetchComments()
-      ])
+      ]).finally(() => { this.loading = false })
+    },
+    toggleCommentModal (visible) {
+      this.commentModalVisible = visible == null ? !this.commentModalVisible : visible
     }
   }
 }

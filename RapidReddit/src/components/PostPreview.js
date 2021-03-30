@@ -9,6 +9,7 @@ import AuthenticationContext from "../contexts/AuthenticationContext";
 import CommentReplyModal from "./CommentReplyModal";
 import { getDisplayDate } from "../utils/post-date";
 import { votePost } from "../services/PostService";
+import * as Haptics from 'expo-haptics';
 
 export const PostPreview = ({touchable, post}) => {
 
@@ -17,6 +18,7 @@ export const PostPreview = ({touchable, post}) => {
     const { user } = useContext(AuthenticationContext)
 
     const onPressComment = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         if(!user){
             return navigation.push("Login")
         }

@@ -2,19 +2,23 @@
   <q-card flat bordered class="subredditCard">
     <create-subreadit-modal :prompt="modal" :toggle-modal="toggleModal" />
     <q-card-section class="subredditCardHeader text-white">
-      <span class="text-h6">Communities</span>
+      <span class="text-h6">About Community</span>
     </q-card-section>
-    <div v-for="(sub,subID) in subs" :key="subID">
-      <q-item clickable :to="`/subreadit/${sub.name}`">
-        <q-item-section avatar>
-          <q-avatar>
-            <img :src=placeholderImg />
-          </q-avatar>
-        </q-item-section>
-        <q-item-section style="font-weight: 500">{{ sub.name }}</q-item-section>
-      </q-item>
-      <q-separator/>
-    </div>
+    <q-card-section>
+      <span>{{ subreadit.description }} </span>
+    </q-card-section>
+    <q-separator />
+    <q-card-section>
+      <span>Created by
+        <router-link
+          :to="`/user/${subreadit.creator}`"
+          tag="b"
+          class="direct"
+        >
+          {{ subreadit.creator }}
+        </router-link>
+      </span>
+    </q-card-section>
     <div v-if="!loading">
       <q-item clickable @click="toggleModal()">
         <q-item-section avatar>
@@ -23,24 +27,15 @@
         <q-item-section style="font-weight: 700; color: #0e6bcf">Create new community</q-item-section>
       </q-item>
     </div>
-    <div v-if="loading">
-      <subreddit-suggestion-placeholder
-        v-for="n in 6"
-        :key="n"
-      />
-    </div>
   </q-card>
 </template>
 
 <script>
-
-import * as SubredditService from '../services/SubredditService.js'
-import SubredditSuggestionPlaceholder from 'components/SubredditSuggestionPlaceholder'
 import CreateSubreaditModal from 'components/CreateSubreaditModal'
-
 export default {
-  name: 'SubredditSuggestions',
-  components: { CreateSubreaditModal, SubredditSuggestionPlaceholder },
+  name: 'SubredditBlockInfo',
+  components: { CreateSubreaditModal },
+  props: ['subreadit'],
   data () {
     return {
       placeholderImg: 'https://www.resorgs.org.nz/wp-content/uploads/2018/11/logo-placeholder.jpeg',
@@ -51,18 +46,8 @@ export default {
     }
   },
   created () {
-    this.fetchSubreadits()
   },
   methods: {
-    fetchSubreadits () {
-      this.subreaditRef = SubredditService.getRefForSubreddits()
-      this.subreaditRef.on('value', (snapshot) => {
-        if (snapshot.exists()) {
-          this.loading = false
-          this.subs = snapshot.val()
-        }
-      })
-    },
     toggleModal (visible) {
       this.modal = visible == null ? !this.modal : visible
       console.log(this.modal)
@@ -77,5 +62,11 @@ export default {
 }
 .subredditCardHeader {
   background-color: #FF6F00;
+}
+.direct {
+  cursor: pointer;
+}
+.direct:hover {
+  text-decoration: underline;
 }
 </style>

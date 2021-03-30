@@ -10,6 +10,7 @@ import AuthenticationContext from "../contexts/AuthenticationContext";
 import {voteComment} from "../services/CommentsService";
 import CommentTreeContext from "../contexts/CommentTreeContext";
 import PostCommentsContext from "../contexts/PostCommentsContext";
+import * as Haptics from 'expo-haptics';
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -28,9 +29,9 @@ const paddedFlex = (depth) => {
 export const Comment = ({comment, depth, preview, path}) => {
 
     const navigation = useNavigation();
-    const { postId, modalFunction } = useContext(CommentTreeContext);
+    const {  modalFunction } = useContext(CommentTreeContext);
     const { user } = useContext(AuthenticationContext)
-    const {refreshPost} = useContext(PostCommentsContext)
+    const { refreshPost } = useContext(PostCommentsContext)
 
     const bg = preview ? {backgroundColor: theme.COLORS.PAPER} : null
     const emptyPadded = paddedFlex(depth)
@@ -39,19 +40,32 @@ export const Comment = ({comment, depth, preview, path}) => {
     const commentId = preview ? null : path.slice(path.lastIndexOf('/')+1)
 
     const ellipsisOnClick = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         modalFunction(comment, path, commentId)
     }
 
     const upvote = async () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        if(!user) {
+            return navigation.push('Login')
+        }
         try {
-            await voteComment(commentId, user.displayName, true)
+            await voteComment(
+                commentId,
+                user.displayName,
+                true,
+                comment.user.displayName,
+                comment.post_id,
+                comment.post_subreadit
+            )
         } catch(err) {
             console.log(err)
+        } finally {
+            refreshPost()
         }
-        refreshPost()
     }
 
-    const userVote = comment.user_upvotes && comment.user_upvotes[user.displayName]
+    const userVote = user && comment.user_upvotes && comment.user_upvotes[user.displayName]
     const upvotedColor = () => {
         if(userVote == null) {
             return theme.COLORS.MUTED
@@ -67,7 +81,6 @@ export const Comment = ({comment, depth, preview, path}) => {
         } else {
             return "arrow-down-bold"
         }
-
     }
 
     return (

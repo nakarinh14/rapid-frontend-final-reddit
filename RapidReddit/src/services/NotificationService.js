@@ -12,7 +12,7 @@ async function increaseNotificationCounter(recipient) {
 
 export async function addNotification(recipient, notifyObj) {
     // Prevent same notification to own action
-    if(recipient !== notifyObj.name) {
+    if(recipient && recipient !== notifyObj.name) {
         return Promise.all([
             getNotificationRef(recipient).child('objects').push(notifyObj),
             increaseNotificationCounter(recipient)

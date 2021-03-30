@@ -64,15 +64,16 @@ const RenderProfile = ({navigation, owner, username}) => {
         }
     }
 
-    const refreshProfile = () => fetchUserComments() // incase post got involved, as it's not doing too well.
+    const refreshProfile = () => fetchUserComments()
     const onRefresh = async() =>{
         setRefreshing(true)
         try{
             await refreshProfile()
         } catch (err){
             console.log(err)
+        } finally {
+            setRefreshing(false)
         }
-        setRefreshing(false)
     }
     useEffect(() => {
         if(username){

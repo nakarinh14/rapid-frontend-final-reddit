@@ -1,21 +1,26 @@
 import React, {useState, useContext} from 'react'
 import {Block, Icon, NavBar} from "galio-framework";
-import {Modal, Text, TouchableOpacity, StyleSheet, View} from "react-native";
+import {Modal, Text, TouchableOpacity, StyleSheet, View, Pressable} from "react-native";
 import theme from "../theme";
 import {Input} from 'react-native-elements'
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import * as SubredditService from '../services/SubredditService'
+import * as Haptics from 'expo-haptics';
 
 function RenderedAddButton(props) {
     const { AddButton, setter } = props
+    const onPress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setter(true)
+    }
     if(AddButton()) return (
-        <TouchableOpacity onPress={() => setter(true)}>
+        <TouchableOpacity onPress={() => onPress()}>
             <AddButton/>
         </TouchableOpacity>
     )
     else return (
-        <TouchableOpacity onPress={() => setter(true)} style={styles.createPostButton}>
-            <Icon family="Ionicons" name="add" size={25}/>
+        <TouchableOpacity onPress={() => onPress()} style={styles.createPostButton}>
+            <Icon family="Ionicons" name="add" size={28}/>
         </TouchableOpacity>
     )
 }
@@ -59,20 +64,22 @@ export default function ({ addButton, navigation}) {
                         title="Create Subreadit"
                         titleStyle={{fontSize: 19, fontWeight: 'bold'}}
                         left={(
-                            <TouchableOpacity onPress={() => setCreatePostModalVisible(false)}>
+                            <Pressable hitSlop={50} onPress={() => setCreatePostModalVisible(false)}>
                                 <Icon
                                     name="close"
                                     family="Ionicons"
-                                    size={20}
+                                    size={28}
                                     color={theme.COLORS.IOS}
                                 />
-                            </TouchableOpacity>
+                            </Pressable>
                         )}
-                        right={(<TouchableOpacity onPress={createSubreddit} >
-                            <Text style={{color: 'blue', fontSize: 16}}>
-                                Create
-                            </Text>
-                        </TouchableOpacity>)}
+                        right={(
+                            <Pressable hitSlop={50} onPress={createSubreddit} >
+                                <Text style={{color: '#007AFF', fontSize: 18}}>
+                                    Create
+                                </Text>
+                            </Pressable>
+                        )}
                     />
                     <View style={styles.content}>
                         <Input

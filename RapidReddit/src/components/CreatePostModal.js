@@ -1,21 +1,27 @@
 import React, {useState, useContext} from 'react'
 import {Block, Icon, NavBar} from "galio-framework";
-import {Modal, Text, Button, TouchableOpacity, StyleSheet, View} from "react-native";
+import {Modal, Text, Button, TouchableOpacity, StyleSheet, View, Pressable} from "react-native";
 import {Input} from 'react-native-elements'
 import theme from "../theme";
 import {useNavigation} from "@react-navigation/native";
 import { addNewPost } from '../services/PostService'
 import AuthenticationContext from "../contexts/AuthenticationContext";
+import * as Haptics from 'expo-haptics';
 
 function RenderedAddButton(props) {
     const { AddButton, setter } = props
+    const onPress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setter(true)
+    }
+
     if(AddButton()) return (
-        <TouchableOpacity onPress={() => setter(true)}>
+        <TouchableOpacity onPress={() => onPress()}>
             <AddButton/>
         </TouchableOpacity>
     )
     else return (
-        <TouchableOpacity onPress={() => setter(true)} style={styles.createPostButton}>
+        <TouchableOpacity onPress={() => onPress()} style={styles.createPostButton}>
             <Icon family="Ionicons" name="add" size={28}/>
         </TouchableOpacity>
     )
@@ -72,21 +78,21 @@ export default function (props) {
                         title="Create Post"
                         titleStyle={{fontSize: 19, fontWeight: 'bold'}}
                         left={(
-                            <TouchableOpacity onPress={() => setCreatePostModalVisible(false)}>
+                            <Pressable hitSlop={50} onPress={() => setCreatePostModalVisible(false)}>
                                 <Icon
                                     name="close"
                                     family="Ionicons"
                                     size={28}
                                     color={theme.COLORS.IOS}
                                 />
-                            </TouchableOpacity>
+                            </Pressable>
                         )}
                         right={(<Button title={"Post"} onPress={addPost}/>)}
                     />
                     <View style={styles.content}>
                         <Text>
                             <Text style={{fontSize: 17}}>This will be posted on </Text>
-                            <Text style={{fontWeight: '700', fontSize: 18}}>r/{subreadit}</Text>
+                            <Text style={{fontWeight: '700', fontSize: 18}}>{subreadit}</Text>
                         </Text>
                         <Input
                             containerStyle={{marginTop: 25}}

@@ -50,7 +50,6 @@ async function createNewComment(postId, comment, user, commentPath, postTitle, p
     const commentObj = generateNewCommentObject(
         user.displayName, user.uid, comment, postId, postTitle, postSubreadit, timestamp
     )
-
     const path = `post_comments/${postId}/${commentPath || ''}`
     const newCommentRef = firebase.database().ref('comments').push(commentObj)
     const commentKey = newCommentRef.key

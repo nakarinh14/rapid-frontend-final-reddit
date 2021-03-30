@@ -1,16 +1,18 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Block, NavBar, Text} from "galio-framework";
-import {Platform, ScrollView, StyleSheet, View} from "react-native";
+import {Platform, ScrollView, StyleSheet, View, TouchableOpacity} from "react-native";
 import theme from "../theme";
 import {NotificationPreview} from "../components/NotificationPreview";
-import {clearNotificationCounter, getNotificationRef} from "../services/NotificationService";
+import {clearNotificationCounter, getNotificationRef, removeNotification} from "../services/NotificationService";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import { useFocusEffect } from '@react-navigation/native';
+import {SwipeListView} from "react-native-swipe-list-view";
+import {Icon} from "react-native-elements";
 
 export const NotificationScreen = ({navigation}) => {
 
     const { user } = useContext(AuthenticationContext)
-    const [notifications, setNotifications] = useState({})
+    const [notifications, setNotifications] = useState([])
 
     useEffect(() => {
         if(user) {
@@ -24,16 +26,18 @@ export const NotificationScreen = ({navigation}) => {
                             else if(data[a].timestamp < data[b].timestamp) return 1
                             return 0
                         })
-                        .reduce((obj, key) => {
-                            obj[key] = data[key];
-                            return obj;
-                        }, {});
+                        .map((val) => {
+                            const obj = {...data[val]}
+                            obj.id = val
+                            obj.key = val
+                            return obj
+                        })
                     setNotifications(data)
                 }
             })
             return () => ref.off()
         } else {
-            setNotifications({})
+            setNotifications([])
         }
     }, [user])
 
@@ -55,34 +59,75 @@ export const NotificationScreen = ({navigation}) => {
             />
             <ScrollView>
                 <View style={styles.container}>
-                    {notifications
-                        ? Object.keys(notifications).map((val, idx) =>
-                            <NotificationPreview
-                                navigation={navigation}
-                                key={idx}
-                                id={val}
-                                notification={notifications[val]}
-                            />)
-                        :   <Block flex center style={styles.container}>
-                                <Block style={{marginTop: 20}}>
-                                    <Text style={{color: theme.COLORS.GREY}}>
-                                        No new notifications. {String.fromCodePoint('0x1F515')}
-                                    </Text>
-                                </Block>
+                    {notifications ?
+                        <NotificationSwipeList
+                            notifications={notifications}
+                            navigation={navigation}
+                            user={user}
+                        /> :
+                        <Block flex center style={styles.container}>
+                            <Block style={{marginTop: 20}}>
+                                <Text style={{color: theme.COLORS.GREY}}>
+                                    No new notifications. {String.fromCodePoint('0x1F515')}
+                                </Text>
                             </Block>
+                        </Block>
                     }
                 </View>
             </ScrollView>
         </Block>
     )
 }
+const NotificationSwipeList = ({notifications, navigation, user}) => {
+
+    return (
+        <SwipeListView
+            disableRightSwipe
+            scrollEnabled={false}
+            initialRightActionState={true}
+            data={notifications}
+            renderItem={ (data) => (
+                <NotificationPreview
+                    navigation={navigation}
+                    id={data.item.id}
+                    notification={data.item}
+                />
+            )}
+            renderHiddenItem={ (data) => (
+                <TouchableOpacity
+                    style={styles.hiddenContainer}
+                    onPress={() => removeNotification(user.displayName, data.item.id)}>
+                    <View style={styles.hiddenContainer}>
+                        <Icon
+                            name={'trash'}
+                            type={'feather'}
+                            color='white'
+                            size={32}
+                        />
+                    </View>
+                </TouchableOpacity>
+            )}
+            leftOpenValue={75}
+            rightOpenValue={-75}
+        />
+    )
+}
+
+
 const styles = StyleSheet.create({
     line: {
         borderBottomColor: theme.COLORS.LINE,
         borderBottomWidth: StyleSheet.hairlineWidth,
         marginBottom: 10
     },
-
+    hiddenContainer: {
+        justifyContent: 'flex-end',
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        backgroundColor: '#f44336',
+        paddingRight: 10
+    },
     container: {
         // backgroundColor: 'lightgrey'
     }

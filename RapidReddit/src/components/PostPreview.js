@@ -25,21 +25,36 @@ export const PostPreview = ({touchable, post}) => {
         setReplyModal(true)
     }
 
-    function upvoteColor() {
-        if(post.user_upvotes) {
-            if(post.user_upvotes[user.displayName]) return 'tomato'
+    const userVote = user && post.user_upvotes && post.user_upvotes[user.displayName]
+
+    const upvotedColor = (bool) => {
+        if(bool == null){
+            bool = userVote
         }
-        return theme.COLORS.MUTED
+        if(userVote == null || userVote !== bool) {
+            return theme.COLORS.GREY
+        }
+        return userVote ? 'tomato' : '#4791db'
     }
-    function downvoteColour() {
-        if(post.user_upvotes) {
-            if(post.user_upvotes[user.displayName] === false) return 'blue'
+
+    const upvoteArrow = (bool) => {
+        const arrowType = bool ? 'up' : 'down'
+        if(userVote == null || userVote !== bool){
+            return `arrow-${arrowType}-bold-outline`
+        } else if (userVote) {
+            return `arrow-${arrowType}-bold`
+        } else {
+            return `arrow-${arrowType}-bold`
         }
-        return theme.COLORS.MUTED
     }
 
     const onPressPost = () => {
         navigation.push("Post", {postId: post.id})
+    }
+
+    const onPressKarma = (bool) =>{
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        votePost(post.id, user.displayName,bool)
     }
 
     return (
@@ -93,27 +108,27 @@ export const PostPreview = ({touchable, post}) => {
                     </Block>
                     <Block row style={styles.bottomActions}>
                         <Block center row>
-                            <Pressable hitSlop={3} onPress={() => votePost(post.id,user.displayName,true)}>
+                            <Pressable hitSlop={3} onPress={() => onPressKarma(true)}>
                                 <MaterialCommunityIcons
                                     size={24}
-                                    name="arrow-up-bold-outline"
-                                    color={upvoteColor()}
+                                    name={upvoteArrow(true)}
+                                    color={upvotedColor(true)}
                                 />
                             </Pressable>
                             <Block>
                                 <Text
                                     size={15}
-                                    color={theme.COLORS.BLOCK}
-                                    style={{marginLeft: 3, marginRight: 3, fontWeight: '500'}}
+                                    color={upvotedColor()}
+                                    style={{marginHorizontal: 6, fontWeight: '500'}}
                                 >
                                     {post.karma}
                                 </Text>
                             </Block>
-                            <Pressable hitSlop={3} onPress={() => votePost(post.id,user.displayName,false)}>
+                            <Pressable hitSlop={3} onPress={() => onPressKarma(false)}>
                                 <MaterialCommunityIcons
                                     size={24}
-                                    name="arrow-down-bold-outline"
-                                    color={downvoteColour()}
+                                    name={upvoteArrow(false)}
+                                    color={upvotedColor(false)}
                                 />
                             </Pressable>
                         </Block>

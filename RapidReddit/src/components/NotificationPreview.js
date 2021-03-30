@@ -10,7 +10,6 @@ import {readNotification} from "../services/NotificationService";
 export const NotificationPreview = ({navigation, id, notification}) => {
 
     const { user } = useContext(AuthenticationContext)
-
     const onPressNotify = () => {
         navigation.push("Post", {postId: notification.post_id})
         readNotification(user.displayName, id)
@@ -73,7 +72,7 @@ const getIcon = (notificationType) => {
         karma_dislike: {name: 'thumbs-down', type: 'feather'},
     }
     const iconAttrs = iconMap[notificationType]
-    return (<Icon name={iconAttrs.name} type={iconAttrs.type} color={theme.COLORS.BLOCK} />)
+    return (<Icon name={iconAttrs.name} size={28} type={iconAttrs.type} color={theme.COLORS.BLOCK} />)
 }
 
 const styles = StyleSheet.create({
@@ -105,13 +104,14 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     notificationTitleText: {
-        fontSize: 15
+        fontSize: 15.5
     },
     notificationBoldText: {
         fontWeight: '700'
     },
     notificationCaption: {
-        color: theme.COLORS.GREY
+        color: theme.COLORS.GREY,
+        fontSize: 13.4
     },
     subreadit: {
         color: 'tomato',

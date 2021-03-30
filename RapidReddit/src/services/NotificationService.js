@@ -20,6 +20,10 @@ export async function addNotification(recipient, notifyObj) {
     }
 }
 
+export async function removeNotification(recipient, notificationId) {
+    return await getNotificationRef(recipient).child(`objects/${notificationId}`).set(null)
+}
+
 export async function readNotification(recipient, notificationId) {
     return await getNotificationRef(recipient).child(`objects/${notificationId}/read`).set(true)
 }

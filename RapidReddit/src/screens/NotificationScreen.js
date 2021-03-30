@@ -16,7 +16,20 @@ export const NotificationScreen = ({navigation}) => {
         if(user) {
             const ref = getNotificationRef(user.displayName).child('objects')
             ref.on('value', (snapshot) => {
-                setNotifications(snapshot.val())
+                if(snapshot.exists()){
+                    let data = snapshot.val()
+                    data = Object.keys(data)
+                        .sort((a,b) => {
+                            if(data[a].timestamp > data[b].timestamp) return -1
+                            else if(data[a].timestamp < data[b].timestamp) return 1
+                            return 0
+                        })
+                        .reduce((obj, key) => {
+                            obj[key] = data[key];
+                            return obj;
+                        }, {});
+                    setNotifications(data)
+                }
             })
             return () => ref.off()
         } else {

@@ -77,7 +77,9 @@ export async function addComment(postId, comment, user, commentPath, postTitle, 
     if(!postId) throw Error(`Trying to create comment but postId is undefined`)
     if(!comment) throw Error("Comment is empty")
 
-    const commentId = await createNewComment(postId, comment, user, commentPath, postTitle, postSubreadit, recipient)
+    const commentId = await createNewComment(
+        postId, comment, user, commentPath, postTitle, postSubreadit, recipient
+    )
     await voteComment(commentId, user.displayName)
 
     return commentId

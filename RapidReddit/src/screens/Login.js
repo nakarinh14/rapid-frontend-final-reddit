@@ -1,6 +1,14 @@
 import React, {useState} from 'react';
 import {Block, Button, Icon, NavBar, Text} from "galio-framework";
-import {TouchableOpacity, Alert, Platform, StyleSheet, KeyboardAvoidingView} from "react-native";
+import {
+    TouchableOpacity,
+    Alert,
+    Platform,
+    StyleSheet,
+    KeyboardAvoidingView,
+    View,
+    ActivityIndicator
+} from "react-native";
 import {Input} from "react-native-elements";
 import {firebase} from "../firebase";
 import "firebase/auth";
@@ -9,8 +17,18 @@ import theme from "../theme";
 export const Login = ({navigation}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+
+    if(isLoading){
+        return(
+            <View style={styles.preloader}>
+                <ActivityIndicator size="large" color="#9E9E9E"/>
+            </View>
+        )
+    }
 
     const loginUser = async () => {
+        setIsLoading(true)
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password)
             navigation.popToTop()
@@ -18,6 +36,8 @@ export const Login = ({navigation}) => {
 
         } catch (error) {
             Alert.alert(error.message)
+        } finally {
+            setIsLoading(false)
         }
     }
 

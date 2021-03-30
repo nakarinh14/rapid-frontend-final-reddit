@@ -33,6 +33,8 @@ export const NotificationScreen = ({navigation}) => {
                             return obj
                         })
                     setNotifications(data)
+                } else {
+                    setNotifications([])
                 }
             })
             return () => ref.off()
@@ -50,6 +52,7 @@ export const NotificationScreen = ({navigation}) => {
         }, [user])
     );
 
+    console.log(notifications.length)
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
@@ -59,7 +62,7 @@ export const NotificationScreen = ({navigation}) => {
             />
             <ScrollView>
                 <View style={styles.container}>
-                    {notifications ?
+                    {notifications.length > 0 ?
                         <NotificationSwipeList
                             notifications={notifications}
                             navigation={navigation}

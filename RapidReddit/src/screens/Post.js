@@ -30,7 +30,7 @@ const Post = ({route, navigation}) => {
         }
     }
 
-    const refreshPost = () => Promise.all([fetchPost(postId), fetchComments()])
+    const refreshPost = () => fetchComments()
 
     const onRefresh =  async () => {
         setRefreshing(true)
@@ -44,8 +44,14 @@ const Post = ({route, navigation}) => {
 
     useEffect(() => {
         refreshPost()
+        getPostById(postId).on('value',(snapshot) => {
+            const p = snapshot.val()
+            p.id = postId
+            setPost(p)
+        })
         return () => {
             getCommentsForPost(postId).off('value')
+            getPostById(postId).off('value')
         }
     }, [])
 

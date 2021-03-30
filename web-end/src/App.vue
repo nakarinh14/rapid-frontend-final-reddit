@@ -8,36 +8,42 @@
             <q-toolbar-title>read-it</q-toolbar-title>
           </q-btn>
           <q-space />
-          <q-btn flat round dense icon="circle_notifications" style="font-size: 16px; margin-right: 10px" />
-          <q-btn flat round dense icon="account_circle" style="font-size: 16px;">
-            <q-menu>
-              <div class="column no-wrap q-pa-md">
-                <div class="column items-center">
-                  <div class="text-h6 q-mb-md">i_am_a_user</div>
-                  <q-avatar size="72px">
-                    <img src="https://cdn.quasar.dev/img/avatar4.jpg">
-                  </q-avatar>
-
-                  <div class="text-subtitle1 q-mt-md q-mb-xs" style="font-size: 15px">iamuser@gmail.com</div>
+          <div v-if="user">
+            <q-btn flat round dense icon="circle_notifications" style="font-size: 16px; margin-right: 10px" />
+            <q-btn flat round dense icon="account_circle" style="font-size: 16px;">
+              <q-menu>
+                <div class="column no-wrap q-pa-md">
+                  <div class="column items-center">
+                    <div class="text-h6 q-mb-md">{{ user.displayName }}</div>
+                    <div class="text-subtitle1 q-mt-md q-mb-xs" style="font-size: 15px">
+                      {{ user.email }}
+                    </div>
+                  </div>
+                  <div class="column" style="margin-top: 10px">
+                    <q-btn
+                      @click="() => this.$router.push( {path: `/user/${user.displayName}`})"
+                      color="primary"
+                      label="Profile"
+                      size="sm"
+                      v-close-popup
+                    />
+                    <q-btn
+                      @click="signOut()"
+                      style="margin-top: 10px"
+                      color="red"
+                      label="Logout"
+                      size="sm"
+                      v-close-popup
+                    />
+                  </div>
                 </div>
-                <div class="column" style="margin-top: 10px">
-                  <q-btn
-                    color="primary"
-                    label="Profile"
-                    size="sm"
-                    v-close-popup
-                  />
-                  <q-btn
-                    style="margin-top: 10px"
-                    color="red"
-                    label="Logout"
-                    size="sm"
-                    v-close-popup
-                  />
-                </div>
-              </div>
-            </q-menu>
-          </q-btn>
+              </q-menu>
+            </q-btn>
+          </div>
+          <div v-else>
+            <q-btn unelevated color="primary" style="font-size: 13px; margin-right: 10px" to="/login">Sign In</q-btn>
+            <q-btn unelevated color="secondary" style="font-size: 13px; margin-right: 10px" to="/register">Sign up</q-btn>
+          </div>
         </q-toolbar>
       </q-header>
       <q-page-container>
@@ -47,8 +53,21 @@
   </div>
 </template>
 <script>
+import { firebase } from './firebase'
+import 'firebase/auth'
+
 export default {
-  name: 'App'
+  name: 'App',
+  methods: {
+    signOut () {
+      firebase.auth().signOut()
+    }
+  },
+  computed: {
+    user () {
+      return this.$store.getters['auth/getUser']
+    }
+  }
 }
 </script>
 <style>

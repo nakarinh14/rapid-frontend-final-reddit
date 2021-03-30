@@ -20,7 +20,7 @@
       </q-card>
       <div class="inner-container fit row wrap justify-center items-start content-start"  style="max-width: 900px;">
         <div class="col">
-          <div>
+          <div v-if="user" >
             <q-card flat class="my-card">
               <q-card-section>
                 <div class="row">
@@ -113,6 +113,9 @@ export default {
   computed: {
     subreaditName () {
       return this.$route.params.name
+    },
+    user () {
+      return this.$store.getters['auth/getUser']
     }
   }
 }

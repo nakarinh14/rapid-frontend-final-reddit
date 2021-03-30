@@ -12,13 +12,15 @@
       </q-card-section>
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="Create" v-close-popup />
+        <q-btn @click="createdSubreddit()" flat label="Create" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
+import { addNewSubreddit } from 'src/services/SubredditService'
+
 export default {
   name: 'CreateSubreaditModal',
   props: { prompt: Boolean, toggleModal: Function },
@@ -26,6 +28,16 @@ export default {
     return {
       name: '',
       description: ''
+    }
+  },
+  methods: {
+    createdSubreddit () {
+      addNewSubreddit(this.name, this.user, this.description)
+    }
+  },
+  computed: {
+    user () {
+      return this.$store.getters['auth/getUser']
     }
   }
 }

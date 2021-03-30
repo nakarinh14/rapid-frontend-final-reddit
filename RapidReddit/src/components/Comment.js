@@ -10,6 +10,7 @@ import AuthenticationContext from "../contexts/AuthenticationContext";
 import {voteComment} from "../services/CommentsService";
 import CommentTreeContext from "../contexts/CommentTreeContext";
 import PostCommentsContext from "../contexts/PostCommentsContext";
+import * as Haptics from 'expo-haptics';
 
 const indentColor = (depth) => {
     const colors = ['red', 'orange', '#e9de1a', 'green']
@@ -39,10 +40,12 @@ export const Comment = ({comment, depth, preview, path}) => {
     const commentId = preview ? null : path.slice(path.lastIndexOf('/')+1)
 
     const ellipsisOnClick = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         modalFunction(comment, path, commentId)
     }
 
     const upvote = async () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         if(!user) {
             return navigation.push('Login')
         }

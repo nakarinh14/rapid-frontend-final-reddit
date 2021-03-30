@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {Block, Text} from "galio-framework";
-import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {StyleSheet, View, Pressable} from "react-native";
 import theme from "../theme";
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {Ionicons} from '@expo/vector-icons';
@@ -13,20 +13,19 @@ import PostCommentsContext from "../contexts/PostCommentsContext";
 import * as Haptics from 'expo-haptics';
 
 const indentColor = (depth) => {
-    const colors = ['red', 'orange', '#e9de1a', 'green']
+    const colors = ['red', 'orange', '#e9de1a', 'green', 'purple']
     if (depth > 0) {
-        return {borderLeftColor: colors[depth - 1], ...styles.indented}
+        return {borderLeftColor: colors[(depth - 1) % colors.length], ...styles.indented}
     }
     return null
 }
 
 const paddedFlex = (depth) => {
     const idx = depth ? depth : 0
-    const indents = [0, 4, 6, 8, 10]
-    return indents[idx]
+    return idx === 0 ? 0 : 4 + ((idx-1)*2)
 }
 
-export const Comment = ({comment, depth, preview, path}) => {
+export const Comment = ({comment, depth, preview, path, hide}) => {
 
     const navigation = useNavigation();
     const {  modalFunction } = useContext(CommentTreeContext);
@@ -70,7 +69,7 @@ export const Comment = ({comment, depth, preview, path}) => {
         if(userVote == null) {
             return theme.COLORS.MUTED
         }
-        return userVote ? 'tomato' : 'blue'
+        return userVote ? 'tomato' : '#4791db'
     }
 
     const upvoteArrow = () => {
@@ -84,21 +83,21 @@ export const Comment = ({comment, depth, preview, path}) => {
     }
 
     return (
-        <Block style={{flexDirection: "row", alignItems: 'center', justifyContent: 'flex-end'}}>
+        <>
             <Block style={{flex: emptyPadded}} />
             <Block style={[styles.commentBlock, {flex: padded}, bg]} >
                 {depth ? <View style={[styles.line]}/> : null}
                 <Block style={[styles.box, indentColor(depth)]}>
                     <Block style={styles.topInfo}>
                         <Block style={styles.topLeftFlex}>
-                            <TouchableOpacity onPress={() => navigation.push("User", {username: comment.user.displayName})}>
+                            <Pressable hitSlop={2} onPress={() => navigation.push("User", {username: comment.user.displayName})}>
                                 <View>
                                     <Text style={styles.titleText}>
                                         {comment.user.displayName}
                                     </Text>
                                 </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={upvote}>
+                            </Pressable>
+                            <Pressable hitSlop={2} onPress={upvote}>
                                 <View style={styles.upvotes}>
                                     <MaterialCommunityIcons
                                         name={upvoteArrow()}
@@ -108,11 +107,13 @@ export const Comment = ({comment, depth, preview, path}) => {
                                         {comment.upvotes}
                                     </Text>
                                 </View>
-                            </TouchableOpacity>
+                            </Pressable>
+                            {hide && <Text style={{color: 'grey', fontSize: 12}}> (Hidden)</Text>}
                             </Block>
                         <Block style={styles.topRightFlex}>
                             {preview ? null :
-                                <TouchableOpacity
+                                <Pressable
+                                    hitSlop={15}
                                     onPress={() => ellipsisOnClick()}
                                 >
                                     <View style={{marginRight: 7}}>
@@ -122,7 +123,7 @@ export const Comment = ({comment, depth, preview, path}) => {
                                             color={theme.COLORS.MUTED}
                                         />
                                     </View>
-                                </TouchableOpacity>
+                                </Pressable>
                             }
                             <View>
                                 <Text style={styles.timestampText}>
@@ -131,12 +132,10 @@ export const Comment = ({comment, depth, preview, path}) => {
                             </View>
                         </Block>
                     </Block>
-                    <Text style={styles.commentText}>
-                        {comment.body}
-                    </Text>
+                    {!hide &&  <Text style={styles.commentText}>{comment.body}</Text>}
                 </Block>
             </Block>
-        </Block>
+        </>
     )
 }
 

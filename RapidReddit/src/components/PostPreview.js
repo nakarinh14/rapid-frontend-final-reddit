@@ -8,6 +8,7 @@ import {useNavigation} from "@react-navigation/native";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import CommentReplyModal from "./CommentReplyModal";
 import { getDisplayDate } from "../utils/post-date";
+import { votePost } from "../services/PostService";
 import * as Haptics from 'expo-haptics';
 
 export const PostPreview = ({touchable, post}) => {
@@ -22,6 +23,19 @@ export const PostPreview = ({touchable, post}) => {
             return navigation.push("Login")
         }
         setReplyModal(true)
+    }
+
+    function upvoteColor() {
+        if(post.user_upvotes) {
+            if(post.user_upvotes[user.displayName]) return 'tomato'
+        }
+        return theme.COLORS.MUTED
+    }
+    function downvoteColour() {
+        if(post.user_upvotes) {
+            if(post.user_upvotes[user.displayName] === false) return 'blue'
+        }
+        return theme.COLORS.MUTED
     }
 
     const onPressPost = () => {
@@ -79,11 +93,11 @@ export const PostPreview = ({touchable, post}) => {
                     </Block>
                     <Block row style={styles.bottomActions}>
                         <Block center row>
-                            <Pressable hitSlop={3}>
+                            <Pressable hitSlop={3} onPress={() => votePost(post.id,user.displayName,true)}>
                                 <MaterialCommunityIcons
                                     size={24}
                                     name="arrow-up-bold-outline"
-                                    color={theme.COLORS.BLOCK}
+                                    color={upvoteColor()}
                                 />
                             </Pressable>
                             <Block>
@@ -95,11 +109,11 @@ export const PostPreview = ({touchable, post}) => {
                                     {post.karma}
                                 </Text>
                             </Block>
-                            <Pressable hitSlop={3}>
+                            <Pressable hitSlop={3} onPress={() => votePost(post.id,user.displayName,false)}>
                                 <MaterialCommunityIcons
                                     size={24}
                                     name="arrow-down-bold-outline"
-                                    color={theme.COLORS.BLOCK}
+                                    color={downvoteColour()}
                                 />
                             </Pressable>
                         </Block>

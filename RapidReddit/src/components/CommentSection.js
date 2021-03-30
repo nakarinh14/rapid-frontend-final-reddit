@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {ActivityIndicator, Dimensions, StyleSheet} from "react-native";
 import theme from "../theme";
 import {Block, Text} from "galio-framework";

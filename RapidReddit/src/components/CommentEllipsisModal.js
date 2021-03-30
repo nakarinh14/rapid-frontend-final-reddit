@@ -8,7 +8,6 @@ import {useNavigation} from "@react-navigation/native";
 import {voteComment} from "../services/CommentsService";
 import PostContext from "../contexts/PostCommentsContext";
 
-
 const list = [
     {
         title: 'Upvote',
@@ -27,7 +26,6 @@ const list = [
         type: 'ionicon'
     },
 ]
-
 
 export const CommentEllipsisModal = ({isModalVisible, closeModal, previewCommentModal}) => {
     const [isReplyModalVisible, setReplyModalVisible] = useState(false)
@@ -48,8 +46,16 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
 
     async function applyKarmaAction(upvote) {
         // upvote = true: upvoting, false: downvoting
+        const recipient = message.user.displayName
         try {
-            await voteComment(commentId, user.displayName, upvote)
+            await voteComment(
+                commentId,
+                user.displayName,
+                upvote,
+                recipient,
+                message.post_id,
+                message.post_subreadit
+            )
         } catch(err) {
             console.log(err)
         }

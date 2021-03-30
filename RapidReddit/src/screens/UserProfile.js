@@ -16,7 +16,6 @@ import UserPosts from "../components/UserPosts"
 import {firebase} from "../firebase";
 import "firebase/auth";
 import AuthenticationContext from "../contexts/AuthenticationContext";
-import {UnauthenticatedScreen} from "./UnauthenticatedScreen";
 import {getDisplayDate} from "../utils/post-date";
 import {getCommentsForUser} from "../services/CommentsService";
 import ProfileContext from "../contexts/ProfileContext";
@@ -33,11 +32,6 @@ const Tab = createMaterialTopTabNavigator();
 export const UserProfile = ({ route, navigation }) => {
     const { user } = useContext(AuthenticationContext)
     const { owner, username } = route.params
-    if(owner && !user){
-        return (
-           <UnauthenticatedScreen navigation={navigation} />
-        )
-    }
 
     const displayName = owner ? user?.displayName : username
     return (

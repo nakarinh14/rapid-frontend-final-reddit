@@ -1,5 +1,6 @@
 import {firebase} from '../firebase'
 import {calculateKarma} from "../utils/karma";
+import {addNotification} from "./NotificationService";
 
 function parseCommentPath(commentPath) {
     if(commentPath[0] === '/') commentPath = commentPath.slice(1)
@@ -12,8 +13,7 @@ async function increaseCommentCounter(postId) {
     return await ref.child('comments_freq').set(firebase.database.ServerValue.increment(1))
 }
 
-function generateNewCommentObject(displayName, uid, commentBody, postId, postTitle, postSubreadit) {
-    const timestamp = new Date().getTime()
+function generateNewCommentObject(displayName, uid, commentBody, postId, postTitle, postSubreadit, timestamp) {
     return {
         timestamp,
         user: {displayName, uid},
@@ -23,6 +23,10 @@ function generateNewCommentObject(displayName, uid, commentBody, postId, postTit
         post_title: postTitle,
         post_subreadit: postSubreadit
     }
+}
+
+function generateNotifyCommentObject(type, postId, convo_type, targetUser, timestamp, subreadit) {
+    return { type, convo_type, post_id: postId, name: targetUser, timestamp, read: false, subreadit }
 }
 
 /**
@@ -36,20 +40,26 @@ function generateNewCommentObject(displayName, uid, commentBody, postId, postTit
  * @returns {Promise<string>} Returns the id of the comment
  */
 
-async function createNewComment(postId, comment, user, commentPath, postTitle, postSubreadit) {
+async function createNewComment(postId, comment, user, commentPath, postTitle, postSubreadit, recipient) {
+    const timestamp = new Date().getTime()
+    const notifyObj = generateNotifyCommentObject(
+        'reply', postId, commentPath ? 'comment' : 'post', user.displayName, timestamp, postSubreadit
+    )
+
     if(commentPath) commentPath = `${parseCommentPath(commentPath)}/comments`
     const commentObj = generateNewCommentObject(
-        user.displayName, user.uid, comment, postId, postTitle, postSubreadit
+        user.displayName, user.uid, comment, postId, postTitle, postSubreadit, timestamp
     )
 
     const path = `post_comments/${postId}/${commentPath || ''}`
     const newCommentRef = firebase.database().ref('comments').push(commentObj)
     const commentKey = newCommentRef.key
-    //TODO Would be nice if can include subreddit and post title. To display in user profile
+
     await Promise.all([
         firebase.database().ref(`${path}/${commentKey}`).set({id: commentKey}),
         firebase.database().ref(`user_profile/${user.displayName}/comments/${commentKey}`).set(true),
-        increaseCommentCounter(postId)
+        increaseCommentCounter(postId),
+        addNotification(recipient, notifyObj)
     ])
     return commentKey
 }
@@ -62,12 +72,12 @@ async function createNewComment(postId, comment, user, commentPath, postTitle, p
  * @param commentPath Path to the comment as /$Comment_ID/$Comment_ID1/...
  * @returns {Promise<string>} Returns the id of the comment
  */
-export async function addComment(postId, comment, user, commentPath, postTitle, postSubreadit) {
+export async function addComment(postId, comment, user, commentPath, postTitle, postSubreadit, recipient) {
     if(!user) throw Error("Trying to add comment but no user found. Maybe user is not logged in?")
     if(!postId) throw Error(`Trying to create comment but postId is undefined`)
     if(!comment) throw Error("Comment is empty")
 
-    const commentId = await createNewComment(postId, comment, user, commentPath, postTitle, postSubreadit)
+    const commentId = await createNewComment(postId, comment, user, commentPath, postTitle, postSubreadit, recipient)
     await voteComment(commentId, user.displayName)
 
     return commentId
@@ -80,17 +90,21 @@ export async function addComment(postId, comment, user, commentPath, postTitle, 
  * @param upvote True to upvote, false to downvote/undo upvote
  * @returns {Promise<any[]>} Resulting promises for edit karma promise and user upvote promise
  */
-export function voteComment(commentId, username, upvote) {
+export function voteComment(commentId, username, upvote, recipient, postId, postSubreadit) {
     //TODO Would be nice to move all of these post/comment functions into
     //a class where the user checks and stuff is done through polymorphism
 
     if(!username) throw Error("Username not found. Maybe user is not logged in?")
     if(!commentId) throw Error("Comment ID not found")
-
-    return updateCommentKarmaTransaction(upvote, commentId, username)
+    const timestamp = new Date().getTime()
+    const karmaType = upvote ? 'karma_like' : 'karma_dislike'
+    const notifyObj = generateNotifyCommentObject(
+        karmaType, postId,'comment', username, timestamp, postSubreadit
+    )
+    return updateCommentKarmaTransaction(upvote, commentId, username, notifyObj, recipient)
 }
 
-function updateCommentKarmaTransaction(upvote, commentId, username){
+function updateCommentKarmaTransaction(upvote, commentId, username, notifyObj, recipient){
     let newKarma = 0
     let upvoteStatus = null
     return firebase.database().ref(`comments/${commentId}`).transaction((comment) => {
@@ -117,7 +131,10 @@ function updateCommentKarmaTransaction(upvote, commentId, username){
             console.log("Update Comment Karma Transaction not committed");
         } else {
             console.log("Update Comment Karma Transaction Committed");
-            updateProfileCommentKarma(newKarma, upvoteStatus, commentId, username)
+            Promise.all([
+                updateProfileCommentKarma(newKarma, upvoteStatus, commentId, username),
+                addNotification(recipient, notifyObj)
+            ])
         }
     })
 }

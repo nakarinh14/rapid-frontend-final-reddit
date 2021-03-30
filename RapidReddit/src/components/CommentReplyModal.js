@@ -37,7 +37,10 @@ export default function({ replyComment, visible, visibilitySetter, commentPath, 
     const createComment = async () => {
         setAddingComment(true)
         try{
-            await addComment(postId, commentText, user, commentPath, post.title, post.subreadit)
+            const recipient = commentPath != null ? replyComment.user.displayName : post.user.displayName
+            await addComment(
+                postId, commentText, user, commentPath, post.title, post.subreadit, recipient
+            )
             visibilitySetter(false)
             refreshPost()
         } catch (err){

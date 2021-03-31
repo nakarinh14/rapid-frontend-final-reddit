@@ -18,6 +18,8 @@ import { addComment } from "../services/CommentsService";
 import PostContext from "../contexts/PostCommentsContext";
 
 function RenderComment({replyComment}) {
+
+
     if(replyComment) return (
         <View>
             {replyComment && (<Comment preview={true} comment={replyComment}/>)}
@@ -26,15 +28,18 @@ function RenderComment({replyComment}) {
     return null
 }
 
-export default function({ replyComment, visible, visibilitySetter, commentPath, postId }) {
+export default function({ replyComment, visible, visibilitySetter, commentPath, postId, post }) {
 
     const [ commentText, setCommentText ] = useState('')
     const [ addingComment, setAddingComment ] = useState(false)
 
     const { user } = useContext(AuthenticationContext)
-    const { post, refreshPost } = useContext(PostContext)
+    const postContext = useContext(PostContext)
 
     const createComment = async () => {
+        if(!user){
+            return
+        }
         setAddingComment(true)
         try{
             const recipient = commentPath != null ? replyComment.user.displayName : post.user.displayName
@@ -42,7 +47,9 @@ export default function({ replyComment, visible, visibilitySetter, commentPath, 
                 postId, commentText, user, commentPath, post.title, post.subreadit, recipient
             )
             visibilitySetter(false)
-            refreshPost()
+            if(postContext.refreshPost){
+                postContext.refreshPost()
+            }
         } catch (err){
             console.error(err)
             Alert.alert("Something went wrong. Please try again later")

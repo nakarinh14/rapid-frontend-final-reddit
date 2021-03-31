@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     copyURL () {
-      navigator.clipboard.writeText(`${window.location.origin}/post/${this.id}`)
+      navigator.clipboard.writeText(`${window.location.origin}/#/post/${this.id}`)
       this.showNotif()
     },
     showNotif () {

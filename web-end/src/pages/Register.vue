@@ -4,11 +4,6 @@
       <div class="row">
         <q-card square class="shadow-24" style="width:300px;height:500px;">
           <q-card-section class="bg-orange-8" style="height: 100px">
-            <q-img class="label"
-                   src="https://www.vectorico.com/download/social_media/Reddit-Icon.png"
-                   spinner-color="white"
-                   style="max-height: 100%; max-width:20%; left: 110px ;"
-            />
           </q-card-section>
           <q-card-section>
             <q-form class="q-px-sm q-pt-xl q-pb-lg">
@@ -32,9 +27,6 @@
           <q-card-actions class="q-px-lg">
             <q-btn @click="onClickRegister()" unelevated size="lg" color="orange-4" class="full-width text-white" label="Sign Up" />
           </q-card-actions>
-          <q-card-section class="text-center q-pa-sm">
-            <p class="text-grey-6">Back to Login</p>
-          </q-card-section>
         </q-card>
       </div>
     </div>

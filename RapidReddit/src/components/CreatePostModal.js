@@ -46,10 +46,10 @@ export default function (props) {
             setCreatePostModalVisible(false)
         }
         try {
-            const key = addNewPost(subreadit,authentication.user, postTitle, postContent)
+            const key = addNewPost(subreadit, authentication.user, postTitle, postContent)
             // console.log(key)
             setCreatePostModalVisible(false)
-            setErrorMessage('')
+            setErrorMessage('')``
             setPostContent('')
             setPostTitle('')
             navigation.push("Post",{postId: key})

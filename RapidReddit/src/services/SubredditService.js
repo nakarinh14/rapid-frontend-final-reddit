@@ -21,10 +21,14 @@ export function getRefForSubreddit(subreaditName) {
 }
 
 export function addNewSubreddit(subredditName, user, description){
-    const subreaditObj = generateSubreaditObj(subredditName, user.displayName, description)
-    return Promise.all([
-        firebase.database().ref(`subreddits/${subredditName}`).set(subreaditObj),
-        SubredditUserService.updateSubredditUserRole(subredditName, user.displayName, "admin")
-    ])
+    getRefForSubreddit(subredditName).get().then((snapshot) => {
+        if(!snapshot.exists()){
+            const subreaditObj = generateSubreaditObj(subredditName, user.displayName, description)
+            return Promise.all([
+                firebase.database().ref(`subreddits/${subredditName}`).set(subreaditObj),
+                SubredditUserService.updateSubredditUserRole(subredditName, user.displayName, "admin")
+            ])
+        }
+    })
 }
 

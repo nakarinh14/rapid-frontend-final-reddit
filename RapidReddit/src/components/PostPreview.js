@@ -16,7 +16,7 @@ export const PostPreview = ({touchable, post}) => {
     const navigation = useNavigation()
     const [ replyModal, setReplyModal ] = useState(false)
     const { user } = useContext(AuthenticationContext)
-
+    console.log(post)
     const onPressComment = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         if(!user){
@@ -49,6 +49,9 @@ export const PostPreview = ({touchable, post}) => {
     }
 
     const onPressPost = () => {
+        if(!user){
+            return navigation.push("Login")
+        }
         navigation.push("Post", {postId: post.id})
     }
 
@@ -147,6 +150,7 @@ export const PostPreview = ({touchable, post}) => {
                                     visible={replyModal}
                                     visibilitySetter={setReplyModal}
                                     postId={post.id}
+                                    post={post}
                                 />
                             </Block>
                             <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>

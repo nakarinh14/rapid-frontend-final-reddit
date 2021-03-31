@@ -33,6 +33,9 @@ export default {
   methods: {
     createdSubreddit () {
       addNewSubreddit(this.name, this.user, this.description)
+      this.name = ''
+      this.user = ''
+      this.description = ''
     }
   },
   computed: {

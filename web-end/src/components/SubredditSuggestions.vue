@@ -1,5 +1,6 @@
 <template>
   <q-card flat bordered class="subredditCard">
+    <unauthorize-modal v-model="unAuthModalVisible"/>
     <create-subreadit-modal :prompt="modal" :toggle-modal="toggleModal" />
     <q-card-section class="subredditCardHeader text-white">
       <span class="text-h6">Communities</span>
@@ -37,17 +38,19 @@
 import * as SubredditService from '../services/SubredditService.js'
 import SubredditSuggestionPlaceholder from 'components/SubredditSuggestionPlaceholder'
 import CreateSubreaditModal from 'components/CreateSubreaditModal'
+import UnauthorizeModal from 'components/UnauthorizeModal'
 
 export default {
   name: 'SubredditSuggestions',
-  components: { CreateSubreaditModal, SubredditSuggestionPlaceholder },
+  components: { UnauthorizeModal, CreateSubreaditModal, SubredditSuggestionPlaceholder },
   data () {
     return {
       placeholderImg: 'https://www.resorgs.org.nz/wp-content/uploads/2018/11/logo-placeholder.jpeg',
       subs: [],
       subreaditRef: null,
       loading: true,
-      modal: false
+      modal: false,
+      unAuthModalVisible: false
     }
   },
   created () {
@@ -64,8 +67,17 @@ export default {
       })
     },
     toggleModal (visible) {
-      this.modal = visible == null ? !this.modal : visible
-      console.log(this.modal)
+      if (this.checkAuthorized()) {
+        this.modal = visible == null ? !this.modal : visible
+        console.log(this.modal)
+      }
+    },
+    checkAuthorized () {
+      if (!this.$store.getters['auth/getUser']) {
+        this.unAuthModalVisible = true
+        return false
+      }
+      return true
     }
   }
 }

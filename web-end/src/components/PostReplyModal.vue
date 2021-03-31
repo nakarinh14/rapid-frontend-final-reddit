@@ -53,6 +53,7 @@ export default {
         this.subreadit
       )
       this.onCreate()
+      this.commentBody = ''
     }
   }
 }

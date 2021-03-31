@@ -12,7 +12,7 @@ import PostCommentsContext from "../contexts/PostCommentsContext";
 const Post = ({route, navigation}) => {
 
     const { postId } = route.params
-    const [refreshing, setRefreshing] = useState(false)
+    const [ refreshing, setRefreshing ] = useState(false)
     const [ comments, setComments ] = useState({})
     const [ post, setPost ] = useState({id: postId, user: {}})
 

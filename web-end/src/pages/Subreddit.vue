@@ -33,7 +33,15 @@
               </q-card-section>
             </q-card>
           </div>
+          <div v-if="loading">
+            <post-placeholder
+              style="margin-bottom: 15px"
+              v-for="n in 6"
+              :key="n"
+            />
+          </div>
           <post-preview
+            v-else
             class="post-preview text-left"
             v-for="(post, idx) in posts"
             :key="idx"
@@ -47,6 +55,9 @@
             :bordered="true"
             :id="idx"
           />
+          <div class="row text-center" v-if="posts">
+            <h6 class="text-grey-7">Ops. There are no posts here</h6>
+          </div>
         </div>
         <div class="col-4 suggestion">
           <SubredditBlockInfo :subreadit="subreadit"/>
@@ -67,22 +78,25 @@ import { getRefForSubreddit } from '../services/SubredditService'
 import { addNewPost } from 'src/services/PostService'
 import SubredditBlockInfo from 'components/SubredditBlockInfo'
 import SubredditSuggestions from 'components/SubredditSuggestions'
+import PostPlaceholder from 'components/PostPlaceholder'
 
 export default {
   name: 'Subreddit.vue',
-  components: { SubredditBlockInfo, PostPreview, SubredditSuggestions },
+  components: { PostPlaceholder, SubredditBlockInfo, PostPreview, SubredditSuggestions },
   data: function () {
     return {
       posts: {},
       postRef: null,
       subreadit: {},
       newPostTitle: '',
-      newPostBody: ''
+      newPostBody: '',
+      loading: true
     }
   },
   created () {
     Promise.all([this.fetchSubreaditPosts(), this.fetchSubreaditInfo()])
       .catch((err) => { console.log(err) })
+      .finally(() => { this.loading = false })
   },
   methods: {
     async fetchSubreaditPosts () {
@@ -134,8 +148,12 @@ export default {
   },
   watch: {
     $route () {
+      this.loading = true
       Promise.all([this.fetchSubreaditPosts(), this.fetchSubreaditInfo()])
         .catch((err) => { console.log(err) })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }

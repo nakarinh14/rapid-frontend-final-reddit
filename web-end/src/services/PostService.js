@@ -21,6 +21,7 @@ async function updateProfilePostKarma (newKarma, upvoteStatus, postId, username)
 }
 
 export function votePost (postId, username, upvote = true) {
+  console.log(`Voting on post: ${postId}, username: ${username}`)
   const ref = firebase.database().ref(`posts/${postId}`)
   let newKarma = 0
   let upvoteStatus = null

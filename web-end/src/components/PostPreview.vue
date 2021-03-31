@@ -1,6 +1,12 @@
 <template>
   <q-card flat :bordered="bordered" class="my-card">
-    <post-reply-modal :prompt="postModalVisible" :toggle-modal="togglePostModal" />
+    <post-reply-modal :prompt="postModalVisible"
+                      :toggle-modal="togglePostModal"
+                      :post-title="title"
+                      :post-id="id"
+                      :subreadit="subreadit"
+                      :on-create="onCreateComment"
+    />
     <q-card-section>
       <div>
         <router-link
@@ -79,7 +85,9 @@ export default {
   computed: {
     userVoteStatus () {
       if (this.userVotes && this.$store.getters['auth/getUser']) {
-        return this.userVotes[this.$store.getters['auth/getUser'].displayName]
+        if (this.userVotes[this.$store.getters['auth/getUser'].displayName] !== undefined) {
+          return this.userVotes[this.$store.getters['auth/getUser'].displayName]
+        }
       }
       return null
     }
@@ -95,7 +103,12 @@ export default {
     bordered: Boolean,
     time_from_now: Number,
     id: String,
-    userVotes: Object
+    userVotes: Object,
+    subreadit: String,
+    onCreateComment: {
+      type: Function,
+      default: () => {}
+    }
   },
   methods: {
     copyURL () {

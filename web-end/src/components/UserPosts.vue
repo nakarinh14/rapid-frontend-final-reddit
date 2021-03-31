@@ -12,6 +12,7 @@
       :comment_freq="post.comments_freq"
       :time_from_now="post.created"
       :bordered="true"
+      :subreadit="post.subreadit"
       :id="idx"
     />
   </div>

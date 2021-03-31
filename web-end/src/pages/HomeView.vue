@@ -17,6 +17,7 @@
             :content="post.caption"
             :karma="post.karma"
             :comment_freq="post.comments_freq"
+            :user-votes="post.user_upvotes"
             :time_from_now="post.created"
             :bordered="true"
             :id="idx"

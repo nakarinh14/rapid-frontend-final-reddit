@@ -11,6 +11,7 @@
           :karma="post.karma"
           :comment_freq="post.comments_freq"
           :time_from_now="post.created"
+          :user-votes="post.user_upvotes"
         />
         <q-separator />
         <div class="comment-section">
@@ -71,6 +72,7 @@ export default {
         const fetchedPost = result.val()
         fetchedPost.id = this.currentPostId
         this.post = fetchedPost
+        console.log(this.post)
       } catch (err) {
         console.log(err)
       }

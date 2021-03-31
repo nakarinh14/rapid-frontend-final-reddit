@@ -56,7 +56,7 @@ export default {
     async onClickRegister () {
       try {
         await registerNewUser(this.email, this.password, this.username)
-        await this.$router.replace({ path: '/' })
+        window.location.href = `${window.location.origin}`
       } catch (err) {
         console.log(err)
       }

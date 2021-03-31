@@ -1,11 +1,16 @@
 <template>
   <q-card flat :bordered="bordered" class="my-card">
-    <post-reply-modal :prompt="postModalVisible"
-                      :toggle-modal="togglePostModal"
-                      :post-title="title"
-                      :post-id="id"
-                      :subreadit="subreadit"
-                      :on-create="onCreateComment"
+    <unauthorize-modal
+      :prompt="unAuthModalVisible"
+      :toggle-modal="() => {this.unAuthModalVisible = !this.unAuthModalVisible}"
+    />
+    <post-reply-modal
+      :prompt="postModalVisible"
+      :toggle-modal="togglePostModal"
+      :post-title="title"
+      :post-id="id"
+      :subreadit="subreadit"
+      :on-create="onCreateComment"
     />
     <q-card-section>
       <div>
@@ -45,7 +50,7 @@
         <q-btn flat round :color="downvoteColour()" class="no-margin" icon="arrow_downward" v-on:click="downvote()" />
       </div>
       <div class="row items-center action">
-        <q-btn flat text-color="grey" icon="comment" @click="togglePostModal()">
+        <q-btn flat text-color="grey" icon="comment" @click="commentOnClick()">
           <p class="text-subtitle2 text-grey-7" style="margin-left: 9px">
             {{ comment_freq }}
           </p>
@@ -73,16 +78,21 @@
 import { getDisplayDate } from '../utils/post-util'
 import PostReplyModal from 'components/PostReplyModal'
 import { votePost } from '../services/PostService'
+import UnauthorizeModal from 'components/UnauthorizeModal'
 
 export default {
   name: 'PostPreview',
-  components: { PostReplyModal },
+  components: { UnauthorizeModal, PostReplyModal },
   data () {
     return {
-      postModalVisible: false
+      postModalVisible: false,
+      unAuthModalVisible: false
     }
   },
   computed: {
+    user () {
+      return this.$store.getters['auth/getUser']
+    },
     userVoteStatus () {
       if (this.userVotes && this.$store.getters['auth/getUser']) {
         if (this.userVotes[this.$store.getters['auth/getUser'].displayName] !== undefined) {
@@ -141,6 +151,13 @@ export default {
     downvoteColour () {
       if (this.userVoteStatus !== null && !this.userVoteStatus) return 'blue'
       else return 'grey'
+    },
+    commentOnClick () {
+      if (this.user) {
+        this.togglePostModal()
+      } else {
+        this.unAuthModalVisible = true
+      }
     }
   }
 }

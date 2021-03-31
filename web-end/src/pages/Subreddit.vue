@@ -26,7 +26,7 @@
                 <div class="row">
                   <span class="text-grey-7" style="font-weight: 600">Create a new post.</span>
                   <q-space />
-                  <q-btn flat text-color="primary" label="Post" />
+                  <q-btn flat text-color="primary" label="Post" @click="addPost()" />
                 </div>
                 <q-input v-model.trim="newPostTitle" label="Title"/>
                 <q-input autogrow v-model.trim="newPostBody" label="Body Content"/>
@@ -64,6 +64,7 @@
 import PostPreview from 'components/PostPreview'
 import * as PostService from 'src/services/PostService'
 import { getRefForSubreddit } from '../services/SubredditService'
+import { addNewPost } from 'src/services/PostService'
 import SubredditBlockInfo from 'components/SubredditBlockInfo'
 import SubredditSuggestions from 'components/SubredditSuggestions'
 
@@ -107,6 +108,19 @@ export default {
       if (subreaditInfo.exists()) {
         this.subreadit = subreaditInfo.val()
         console.log(this.subreadit)
+      }
+    },
+    addPost () {
+      if (!this.user) {
+        this.$router.push({ path: 'login' })
+      }
+      try {
+        const key = addNewPost(this.subreaditName, this.user, this.newPostTitle, this.newPostBody)
+        this.newPostTitle = ''
+        this.newPostBody = ''
+        this.$router.push({ path: `/post/${key}` })
+      } catch (e) {
+        console.error(e)
       }
     }
   },

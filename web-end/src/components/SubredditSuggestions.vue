@@ -58,9 +58,9 @@ export default {
       this.subreaditRef = SubredditService.getRefForSubreddits()
       this.subreaditRef.on('value', (snapshot) => {
         if (snapshot.exists()) {
-          this.loading = false
           this.subs = snapshot.val()
         }
+        this.loading = false
       })
     },
     toggleModal (visible) {

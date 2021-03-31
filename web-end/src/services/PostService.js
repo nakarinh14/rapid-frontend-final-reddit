@@ -1,6 +1,19 @@
 import { firebase } from '../firebase'
 import { calculateKarma } from '../utils/karma'
 
+function generatePostObject (uid, displayName, title, caption, subreadit) {
+  const created = new Date().getTime()
+  return {
+    title,
+    caption,
+    subreadit,
+    user: { displayName, uid },
+    created,
+    comments_freq: 0,
+    karma: 1
+  }
+}
+
 export function getRefForPosts () {
   return firebase.database().ref('posts')
 }
@@ -18,6 +31,12 @@ async function updateProfilePostKarma (newKarma, upvoteStatus, postId, username)
       firebase.database.ServerValue.increment(newKarma)
     )
   ]).catch(err => console.log(err))
+}
+
+export function addNewPost (subreadit, user, postTitle, description) {
+  const postObj = generatePostObject(user.uid, user.displayName, postTitle, description, subreadit)
+  const ref = firebase.database().ref('posts').push(postObj)
+  return ref.key
 }
 
 export function votePost (postId, username, upvote = true) {

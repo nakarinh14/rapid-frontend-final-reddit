@@ -59,9 +59,20 @@ export default {
     this.postRef = PostService.getRefForPosts()
     this.postRef.on('value', (snapshot) => {
       if (snapshot.exists()) {
-        this.loading = false
-        this.posts = snapshot.val()
+        const data = snapshot.val()
+        this.posts = Object.keys(data)
+          .sort((a, b) => {
+            if (data[a].created > data[b].created) return -1
+            else if (data[a].created < data[b].created) return 1
+            return 0
+          })
+          .reduce((obj, key) => {
+            obj[key] = data[key]
+            obj[key].id = key
+            return obj
+          }, {})
       }
+      this.loading = false
     })
   }
   // beforeDestroy () {

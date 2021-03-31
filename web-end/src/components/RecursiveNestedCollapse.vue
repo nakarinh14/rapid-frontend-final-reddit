@@ -28,7 +28,7 @@
             <div class="row">
               <div class="row items-center action">
                 <q-btn flat round :color="upvoteColour()" class="no-margin" icon="arrow_upward" v-on:click="upvoteComment()"/>
-                <span class="text-subtitle2 text-grey-7">{{ karma }}</span>
+                <span class="text-subtitle2" :style="{color: textColor}">{{ karma }}</span>
                 <q-btn flat round :color="downvoteColour()" class="no-margin" icon="arrow_downward" v-on:click="downvoteComment()" />
               </div>
               <div class="row items-center action">
@@ -102,6 +102,10 @@ export default {
         }
       }
       return null
+    },
+    textColor () {
+      if (this.userVoteStatus == null) return 'grey'
+      return this.userVoteStatus ? 'orange' : 'blue'
     }
   },
   methods: {

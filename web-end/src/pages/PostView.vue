@@ -1,13 +1,18 @@
 <template>
   <q-page>
     <div class="container column items-start justify-start content-center">
-      <comment-reply-modal :prompt="commentModalVisible"
-                           :post-id="post.id"
-                           :post-title="post.title"
-                           :subreadit="post.subreadit"
-                           :comment-path="commentPath"
-                           :toggle-modal="toggleCommentModal"
-                           :on-create="refreshPost"
+      <unauthorize-modal
+        :prompt="unAuthModalVisible"
+        :toggle-modal="() => {this.unAuthModalVisible = !this.unAuthModalVisible}"
+      />
+      <comment-reply-modal
+        :prompt="commentModalVisible"
+        :post-id="post.id"
+        :post-title="post.title"
+        :subreadit="post.subreadit"
+        :comment-path="commentPath"
+        :toggle-modal="toggleCommentModal"
+        :on-create="refreshPost"
       />
       <div class="inner-container">
         <post-preview
@@ -59,17 +64,19 @@ import { getCommentsForPost } from '../services/CommentService'
 import { getPostById } from 'src/services/PostService'
 import CommentPlaceholder from 'components/CommentPlaceholder'
 import CommentReplyModal from 'components/CommentReplyModal'
+import UnauthorizeModal from 'components/UnauthorizeModal'
 
 export default {
   name: 'PostView',
-  components: { CommentReplyModal, CommentPlaceholder, RecursiveNestedCollapse, PostPreview },
+  components: { UnauthorizeModal, CommentReplyModal, CommentPlaceholder, RecursiveNestedCollapse, PostPreview },
   data: function () {
     return {
       post: {},
       comments: {},
       loading: true,
       commentModalVisible: false,
-      commentPath: ''
+      commentPath: '',
+      unAuthModalVisible: false
     }
   },
   mounted () {
@@ -79,6 +86,9 @@ export default {
   computed: {
     currentPostId () {
       return this.$route.params.id
+    },
+    user () {
+      return this.$store.getters['auth/getUser']
     }
   },
   methods: {
@@ -99,7 +109,6 @@ export default {
         const fetchedPost = result.val()
         fetchedPost.id = this.currentPostId
         this.post = fetchedPost
-        console.log(this.post)
       } catch (err) {
         console.log(err)
       }
@@ -107,10 +116,6 @@ export default {
     async fetchComments () {
       try {
         this.comments = await getCommentsForPost(this.currentPostId).get()
-        console.log('Comments:', this.comments)
-        for (const comment in this.comments) {
-          console.log('Comment:', this.comments[comment])
-        }
       } catch (err) {
         console.log(err)
       }
@@ -122,9 +127,12 @@ export default {
       ]).finally(() => { this.loading = false })
     },
     toggleCommentModal (visible, commentPath = '') {
-      this.commentPath = commentPath
-      console.log(commentPath)
-      this.commentModalVisible = visible == null ? !this.commentModalVisible : visible
+      if (this.user) {
+        this.commentPath = commentPath
+        this.commentModalVisible = visible == null ? !this.commentModalVisible : visible
+      } else {
+        this.unAuthModalVisible = true
+      }
     }
   }
 }

@@ -35,3 +35,5 @@ yarn-error.log*
 .quasar.env.json
 .env
 .env.prod
+# Local Netlify folder
+.netlify

@@ -20,6 +20,7 @@
             :user-votes="post.user_upvotes"
             :time_from_now="post.created"
             :bordered="true"
+            :subreadit="post.subreadit"
             :id="idx"
           />
           <div v-if="loading">

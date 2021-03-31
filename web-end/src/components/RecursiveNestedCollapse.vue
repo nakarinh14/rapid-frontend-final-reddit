@@ -27,12 +27,12 @@
             <p class="content-text"> {{ content }}</p>
             <div class="row">
               <div class="row items-center action">
-                <q-btn flat round color="grey" class="no-margin" icon="arrow_upward" />
+                <q-btn flat round :color="upvoteColour()" class="no-margin" icon="arrow_upward" v-on:click="upvoteComment()"/>
                 <span class="text-subtitle2 text-grey-7">{{ karma }}</span>
-                <q-btn flat round color="grey" class="no-margin" icon="arrow_downward" />
+                <q-btn flat round :color="downvoteColour()" class="no-margin" icon="arrow_downward" v-on:click="downvoteComment()" />
               </div>
               <div class="row items-center action">
-                <q-btn flat text-color="grey" icon="comment" @click="reply_onclick(true)"  no-caps>
+                <q-btn flat text-color="grey" icon="comment" @click="reply_onclick(true, path)"  no-caps>
                   <span class="text-subtitle2 text-grey-7" style="margin-left: 7px">Reply</span>
                 </q-btn>
               </div>
@@ -47,12 +47,16 @@
             <recursive-nested-collapse
               v-for="child in data"
               :key="child.id"
+              :id="child.id"
               :author="child.comment.user.displayName"
               :content="child.comment.body"
               :karma="child.comment.upvotes"
               :time_from_now="child.comment.timestamp"
               :data="child.comments"
+              :user-upvotes="child.comment.user_upvotes"
               :reply_onclick="reply_onclick"
+              :path="`${path}/${child.id}`"
+              :on-update="onUpdate"
             />
           </div>
         </div>
@@ -63,16 +67,24 @@
 
 <script>
 import { getDisplayDate } from 'src/utils/post-util'
+import { voteComment } from 'src/services/CommentService'
 
 export default {
   name: 'RecursiveNestedCollapse',
+  mounted () {
+    console.log(this.userUpvotes)
+  },
   props: {
+    id: String,
     author: String,
     content: String,
     karma: Number,
     time_from_now: Number,
     data: Object,
-    reply_onclick: Function
+    reply_onclick: Function,
+    path: String,
+    userUpvotes: Object,
+    onUpdate: Function
   },
   data () {
     return {
@@ -82,6 +94,14 @@ export default {
   computed: {
     componentID () {
       return `${this.author}-${this.content}`
+    },
+    userVoteStatus () {
+      if (this.userUpvotes && this.$store.getters['auth/getUser']) {
+        if (this.userUpvotes[this.$store.getters['auth/getUser'].displayName] !== undefined) {
+          return this.userUpvotes[this.$store.getters['auth/getUser'].displayName]
+        }
+      }
+      return null
     }
   },
   methods: {
@@ -90,6 +110,22 @@ export default {
     },
     parseDate (timestamp) {
       return getDisplayDate(timestamp)
+    },
+    async upvoteComment () {
+      await voteComment(this.id, this.$store.getters['auth/getUser'].displayName)
+      this.onUpdate()
+    },
+    async downvoteComment () {
+      await voteComment(this.id, this.$store.getters['auth/getUser'].displayName, false)
+      this.onUpdate()
+    },
+    upvoteColour () {
+      if (this.userVoteStatus) return 'orange'
+      else return 'grey'
+    },
+    downvoteColour () {
+      if (this.userVoteStatus !== null && !this.userVoteStatus) return 'blue'
+      else return 'grey'
     }
   }
 }

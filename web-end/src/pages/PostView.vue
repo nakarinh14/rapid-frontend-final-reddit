@@ -1,9 +1,17 @@
 <template>
   <q-page>
     <div class="container column items-start justify-start content-center">
-      <comment-reply-modal :prompt="commentModalVisible" :toggle-modal="toggleCommentModal"/>
+      <comment-reply-modal :prompt="commentModalVisible"
+                           :post-id="post.id"
+                           :post-title="post.title"
+                           :subreadit="post.subreadit"
+                           :comment-path="commentPath"
+                           :toggle-modal="toggleCommentModal"
+                           :on-create="refreshPost"
+      />
       <div class="inner-container">
         <post-preview
+          :id="post.id"
           :author="post.user.displayName"
           :group="post.subreadit"
           :title="post.title"
@@ -11,19 +19,25 @@
           :karma="post.karma"
           :comment_freq="post.comments_freq"
           :time_from_now="post.created"
+          :subreadit="post.subreadit"
           :user-votes="post.user_upvotes"
+          :on-create-comment="refreshPost"
         />
         <q-separator />
         <div class="comment-section">
           <recursive-nested-collapse
             v-for="comment in comments"
             :key="comment.id"
+            :id="comment.id"
             :author="comment.comment.user.displayName"
             :content="comment.comment.body"
             :karma="comment.comment.upvotes"
             :time_from_now="comment.comment.timestamp"
             :data="comment.comments"
+            :user-upvotes="comment.comment.user_upvotes"
+            :path="`${comment.id}`"
             :reply_onclick="toggleCommentModal"
+            :on-update="refreshPost"
           />
           <div v-if="loading">
             <comment-placeholder
@@ -54,11 +68,13 @@ export default {
       post: {},
       comments: {},
       loading: true,
-      commentModalVisible: false
+      commentModalVisible: false,
+      commentPath: ''
     }
   },
-  created () {
+  mounted () {
     this.refreshPost()
+    this.addPostListener()
   },
   computed: {
     currentPostId () {
@@ -66,6 +82,17 @@ export default {
     }
   },
   methods: {
+    addPostListener () {
+      try {
+        getPostById(this.currentPostId).on('value', result => {
+          const fetchedPost = result.val()
+          fetchedPost.id = this.currentPostId
+          this.post = fetchedPost
+        })
+      } catch (err) {
+        console.error(err)
+      }
+    },
     async fetchPost () {
       try {
         const result = await getPostById(this.currentPostId).get()
@@ -80,6 +107,10 @@ export default {
     async fetchComments () {
       try {
         this.comments = await getCommentsForPost(this.currentPostId).get()
+        console.log('Comments:', this.comments)
+        for (const comment in this.comments) {
+          console.log('Comment:', this.comments[comment])
+        }
       } catch (err) {
         console.log(err)
       }
@@ -90,7 +121,9 @@ export default {
         this.fetchComments()
       ]).finally(() => { this.loading = false })
     },
-    toggleCommentModal (visible) {
+    toggleCommentModal (visible, commentPath = '') {
+      this.commentPath = commentPath
+      console.log(commentPath)
       this.commentModalVisible = visible == null ? !this.commentModalVisible : visible
     }
   }

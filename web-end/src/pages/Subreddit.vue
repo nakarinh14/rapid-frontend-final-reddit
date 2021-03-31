@@ -117,6 +117,12 @@ export default {
     user () {
       return this.$store.getters['auth/getUser']
     }
+  },
+  watch: {
+    $route () {
+      Promise.all([this.fetchSubreaditPosts(), this.fetchSubreaditInfo()])
+        .catch((err) => { console.log(err) })
+    }
   }
 }
 </script>

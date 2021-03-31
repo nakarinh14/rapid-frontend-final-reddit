@@ -30,7 +30,7 @@
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-lg">
-            <q-btn unelevated size="lg" color="orange-4" class="full-width text-white" label="Sign Up" />
+            <q-btn @click="onClickRegister()" unelevated size="lg" color="orange-4" class="full-width text-white" label="Sign Up" />
           </q-card-actions>
           <q-card-section class="text-center q-pa-sm">
             <p class="text-grey-6">Back to Login</p>
@@ -42,8 +42,26 @@
 </template>
 
 <script>
+import { registerNewUser } from 'src/services/AuthService'
 export default {
-  name: 'Register.vue'
+  name: 'Register.vue',
+  data () {
+    return {
+      username: '',
+      password: '',
+      email: ''
+    }
+  },
+  methods: {
+    async onClickRegister () {
+      try {
+        await registerNewUser(this.email, this.password, this.username)
+        await this.$router.replace({ path: '/' })
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
 }
 </script>
 

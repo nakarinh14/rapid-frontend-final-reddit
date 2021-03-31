@@ -1,5 +1,5 @@
 <template>
-  <q-dialog :value="prompt" @input="toggleModal()">
+  <q-dialog v-model="show">
     <q-card style="min-width: 350px">
       <q-card-section>
         <div class="text-h6">You aren't signed in</div>
@@ -16,8 +16,17 @@
 export default {
   name: 'UnauthorizeModal',
   props: {
-    prompt: Boolean,
-    toggleModal: Function
+    value: Boolean
+  },
+  computed: {
+    show: {
+      get () {
+        return this.value
+      },
+      set (val) {
+        this.$emit('input', val)
+      }
+    }
   }
 }
 </script>

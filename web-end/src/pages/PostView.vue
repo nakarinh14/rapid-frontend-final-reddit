@@ -1,10 +1,7 @@
 <template>
   <q-page>
     <div class="container column items-start justify-start content-center">
-      <unauthorize-modal
-        :prompt="unAuthModalVisible"
-        :toggle-modal="() => {this.unAuthModalVisible = !this.unAuthModalVisible}"
-      />
+      <unauthorize-modal v-model="unAuthModalVisible"/>
       <comment-reply-modal
         :prompt="commentModalVisible"
         :post-id="post.id"

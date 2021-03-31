@@ -1,9 +1,6 @@
 <template>
   <q-card flat :bordered="bordered" class="my-card">
-    <unauthorize-modal
-      :prompt="unAuthModalVisible"
-      :toggle-modal="() => {this.unAuthModalVisible = !this.unAuthModalVisible}"
-    />
+    <unauthorize-modal v-model="unAuthModalVisible"/>
     <post-reply-modal
       :prompt="postModalVisible"
       :toggle-modal="togglePostModal"
@@ -139,9 +136,11 @@ export default {
       this.postModalVisible = visible == null ? !this.postModalVisible : visible
     },
     upvote () {
+      if (!this.checkAuthorized()) return
       votePost(this.id, this.$store.getters['auth/getUser'].displayName)
     },
     downvote () {
+      if (!this.checkAuthorized()) return
       votePost(this.id, this.$store.getters['auth/getUser'].displayName, false)
     },
     upvoteColour () {
@@ -151,6 +150,13 @@ export default {
     downvoteColour () {
       if (this.userVoteStatus !== null && !this.userVoteStatus) return 'blue'
       else return 'grey'
+    },
+    checkAuthorized () {
+      if (!this.$store.getters['auth/getUser']) {
+        this.unAuthModalVisible = true
+        return false
+      }
+      return true
     },
     commentOnClick () {
       if (this.user) {

@@ -3,6 +3,7 @@
     <div
       class="d-flex row items-stretch"
     >
+      <UnauthorizeModal v-model="unauthorizedModal"/>
       <div class="crazy-comment-border" @click="expandDropdown()" />
       <div class="column">
         <div class="column">
@@ -32,7 +33,7 @@
                 <q-btn flat round :color="downvoteColour()" class="no-margin" icon="arrow_downward" v-on:click="downvoteComment()" />
               </div>
               <div class="row items-center action">
-                <q-btn flat text-color="grey" icon="comment" @click="reply_onclick(true, path)"  no-caps>
+                <q-btn flat text-color="grey" icon="comment" @click="attemptComment"  no-caps>
                   <span class="text-subtitle2 text-grey-7" style="margin-left: 7px">Reply</span>
                 </q-btn>
               </div>
@@ -68,9 +69,11 @@
 <script>
 import { getDisplayDate } from 'src/utils/post-util'
 import { voteComment } from 'src/services/CommentService'
+import UnauthorizeModal from 'components/UnauthorizeModal'
 
 export default {
   name: 'RecursiveNestedCollapse',
+  components: { UnauthorizeModal },
   mounted () {
     console.log(this.userUpvotes)
   },
@@ -88,7 +91,8 @@ export default {
   },
   data () {
     return {
-      drawerIsSelected: true
+      drawerIsSelected: true,
+      unauthorizedModal: false
     }
   },
   computed: {
@@ -115,13 +119,26 @@ export default {
     parseDate (timestamp) {
       return getDisplayDate(timestamp)
     },
+    attemptComment () {
+      if (!this.checkLoginStatus()) return
+      this.reply_onclick(true, this.path)
+    },
     async upvoteComment () {
+      if (!this.checkLoginStatus()) return
       await voteComment(this.id, this.$store.getters['auth/getUser'].displayName)
       this.onUpdate()
     },
     async downvoteComment () {
+      if (!this.checkLoginStatus()) return
       await voteComment(this.id, this.$store.getters['auth/getUser'].displayName, false)
       this.onUpdate()
+    },
+    checkLoginStatus () {
+      if (!this.$store.getters['auth/getUser']) {
+        this.unauthorizedModal = true
+        return false
+      }
+      return true
     },
     upvoteColour () {
       if (this.userVoteStatus) return 'orange'
@@ -130,6 +147,9 @@ export default {
     downvoteColour () {
       if (this.userVoteStatus !== null && !this.userVoteStatus) return 'blue'
       else return 'grey'
+    },
+    toggleAuthorizedModal () {
+      this.unauthorizedModal = !this.unauthorizedModal
     }
   }
 }

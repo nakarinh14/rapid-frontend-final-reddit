@@ -34,9 +34,9 @@
     </q-card-section>
     <q-card-actions>
       <div class="row items-center action">
-        <q-btn flat round color="grey" class="no-margin" icon="arrow_upward" />
+        <q-btn flat round :color="upvoteColour()" class="no-margin" icon="arrow_upward" v-on:click="upvote()" />
         <h6 class="text-subtitle2 text-grey-7">{{ karma }}</h6>
-        <q-btn flat round color="grey" class="no-margin" icon="arrow_downward" />
+        <q-btn flat round :color="downvoteColour()" class="no-margin" icon="arrow_downward" v-on:click="downvote()" />
       </div>
       <div class="row items-center action">
         <q-btn flat text-color="grey" icon="comment" @click="togglePostModal()">
@@ -66,6 +66,7 @@
 <script>
 import { getDisplayDate } from '../utils/post-util'
 import PostReplyModal from 'components/PostReplyModal'
+import { votePost } from '../services/PostService'
 
 export default {
   name: 'PostPreview',
@@ -73,6 +74,14 @@ export default {
   data () {
     return {
       postModalVisible: false
+    }
+  },
+  computed: {
+    userVoteStatus () {
+      if (this.userVotes && this.$store.getters['auth/getUser']) {
+        return this.userVotes[this.$store.getters['auth/getUser'].displayName]
+      }
+      return null
     }
   },
   // Might change karma type and comment freq type into number
@@ -85,7 +94,8 @@ export default {
     comment_freq: Number,
     bordered: Boolean,
     time_from_now: Number,
-    id: String
+    id: String,
+    userVotes: Object
   },
   methods: {
     copyURL () {
@@ -104,6 +114,20 @@ export default {
     },
     togglePostModal (visible) {
       this.postModalVisible = visible == null ? !this.postModalVisible : visible
+    },
+    upvote () {
+      votePost(this.id, this.$store.getters['auth/getUser'].displayName)
+    },
+    downvote () {
+      votePost(this.id, this.$store.getters['auth/getUser'].displayName, false)
+    },
+    upvoteColour () {
+      if (this.userVoteStatus) return 'orange'
+      else return 'grey'
+    },
+    downvoteColour () {
+      if (this.userVoteStatus !== null && !this.userVoteStatus) return 'blue'
+      else return 'grey'
     }
   }
 }

@@ -24,8 +24,11 @@
               </q-input>
             </q-form>
           </q-card-section>
+          <q-card-section>
+            <span class="text-red-4"> {{errorMessage}}</span>
+          </q-card-section>
           <q-card-actions class="q-px-lg">
-            <q-btn @click="onClickRegister()" unelevated size="lg" color="orange-4" class="full-width text-white" label="Sign Up" />
+            <q-btn :loading="loading" @click="onClickRegister()" unelevated size="lg" color="orange-4" class="full-width text-white" label="Sign Up" />
           </q-card-actions>
         </q-card>
       </div>
@@ -41,16 +44,25 @@ export default {
     return {
       username: '',
       password: '',
-      email: ''
+      email: '',
+      errorMessage: '',
+      loading: false
     }
   },
   methods: {
     async onClickRegister () {
-      try {
-        await registerNewUser(this.email, this.password, this.username)
-        window.location.href = `${window.location.origin}`
-      } catch (err) {
-        console.log(err)
+      if (!this.loading) {
+        try {
+          this.loading = true
+          this.errorMessage = ''
+          await registerNewUser(this.email, this.password, this.username)
+          window.location.href = `${window.location.origin}`
+        } catch (err) {
+          console.log(err)
+          this.errorMessage = err
+        } finally {
+          this.loading = false
+        }
       }
     }
   }

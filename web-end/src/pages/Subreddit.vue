@@ -41,7 +41,7 @@
             />
           </div>
           <post-preview
-            v-else
+            v-else-if="Object.keys(posts).length"
             class="post-preview text-left"
             v-for="(post, idx) in posts"
             :key="idx"
@@ -55,7 +55,7 @@
             :bordered="true"
             :id="idx"
           />
-          <div class="row text-center" v-if="posts">
+          <div class="row text-center" v-else>
             <h6 class="text-grey-7">Ops. There are no posts here</h6>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default {
   created () {
     Promise.all([this.fetchSubreaditPosts(), this.fetchSubreaditInfo()])
       .catch((err) => { console.log(err) })
-      .finally(() => { this.loading = false })
+      .finally(() => { this.loading = false; console.log(this.posts) })
   },
   methods: {
     async fetchSubreaditPosts () {

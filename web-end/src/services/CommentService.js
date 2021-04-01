@@ -199,7 +199,17 @@ export function getCommentsForUser (username) {
           map[v] = (await firebase.database().ref(`comments/${v}`).get()).val()
         })
         await Promise.all(requests.map(v => v()))
-        return map
+        return Object.keys(map)
+          .sort((a, b) => {
+            if (map[a].timestamp > map[b].timestamp) return -1
+            else if (map[a].timestamp < map[b].timestamp) return 1
+            return 0
+          })
+          .reduce((obj, key) => {
+            obj[key] = map[key]
+            obj[key].id = key
+            return obj
+          }, {})
       } catch (err) {
         console.log(err)
       }

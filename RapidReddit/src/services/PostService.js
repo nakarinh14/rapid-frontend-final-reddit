@@ -51,7 +51,7 @@ export function getRefForSubreaditPosts(subreadit) {
 
 async function updateProfilePostKarma(newKarma,upvoteStatus, postId, username) {
     const author = (await firebase.database().ref(`posts/${postId}/user/displayName`).once('value')).val()
-    console.log()
+
     await Promise.all([
         firebase.database().ref(`user_profile/${username}/post_upvotes/${postId}`).set(upvoteStatus),
         firebase.database().ref(`user_profile/${author}/stats/post_karma`).set(

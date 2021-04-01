@@ -27,7 +27,7 @@ const list = [
     },
 ]
 
-export const CommentEllipsisModal = ({isModalVisible, closeModal, previewCommentModal}) => {
+export const CommentEllipsisModal = ({isModalVisible, closeModal, previewCommentModal, post}) => {
     const [isReplyModalVisible, setReplyModalVisible] = useState(false)
     const [listenToReply, setListenerReply] = useState(false)
 
@@ -83,6 +83,7 @@ export const CommentEllipsisModal = ({isModalVisible, closeModal, previewComment
                 replyComment={message}
                 commentPath={path}
                 postId={postId}
+                post={post}
             />
             <Modal
                 isVisible={isModalVisible}

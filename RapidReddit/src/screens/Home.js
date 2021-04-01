@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Block, NavBar} from "galio-framework";
-import {Platform, ScrollView, StyleSheet} from "react-native";
+import {Platform, RefreshControl, ScrollView, StyleSheet} from "react-native";
 import theme from "../theme";
 import PostListComponent from "../components/PostListComponent";
 import { SearchBar } from 'react-native-elements';
@@ -8,7 +8,11 @@ import { SearchBar } from 'react-native-elements';
 export const Home = () => {
 
     const [search, updateSearch] = useState("")
+    const [ refreshing, setRefreshing ] = useState(false)
 
+    const onRefresh =  async () => {
+        setRefreshing(true)
+    }
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
@@ -16,7 +20,14 @@ export const Home = () => {
                 title="Home"
                 style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : null}
             />
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 <SearchBar
                     platform={"ios"}
                     containerStyle={{paddingHorizontal: 9}}
@@ -26,7 +37,10 @@ export const Home = () => {
                     onChangeText={updateSearch}
                     value={search}
                 />
-                <PostListComponent />
+                <PostListComponent
+                    refresh={refreshing}
+                    setter={() => setRefreshing(false)}
+                />
             </ScrollView>
         </Block>
     )

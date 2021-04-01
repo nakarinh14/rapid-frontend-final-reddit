@@ -16,7 +16,7 @@ export const PostPreview = ({touchable, post}) => {
     const navigation = useNavigation()
     const [ replyModal, setReplyModal ] = useState(false)
     const { user } = useContext(AuthenticationContext)
-    console.log(post)
+
     const onPressComment = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         if(!user){
@@ -49,14 +49,14 @@ export const PostPreview = ({touchable, post}) => {
     }
 
     const onPressPost = () => {
-        if(!user){
-            return navigation.push("Login")
-        }
         navigation.push("Post", {postId: post.id})
     }
 
     const onPressKarma = (bool) =>{
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        if(!user){
+            return navigation.push("Login")
+        }
         votePost(post.id, user.displayName,bool)
     }
 

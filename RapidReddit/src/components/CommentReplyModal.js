@@ -9,24 +9,13 @@ import {
     View,
     Alert
 } from "react-native";
-import {Icon, NavBar} from "galio-framework";
+import {Block, Icon, NavBar } from "galio-framework";
 import theme from "../theme";
 import {Comment} from "./Comment";
 import Modal from "react-native-modal";
 import AuthenticationContext from "../contexts/AuthenticationContext";
 import { addComment } from "../services/CommentsService";
 import PostContext from "../contexts/PostCommentsContext";
-
-function RenderComment({replyComment}) {
-
-
-    if(replyComment) return (
-        <View>
-            {replyComment && (<Comment preview={true} comment={replyComment}/>)}
-        </View>
-    )
-    return null
-}
 
 export default function({ replyComment, visible, visibilitySetter, commentPath, postId, post }) {
 
@@ -100,7 +89,12 @@ export default function({ replyComment, visible, visibilitySetter, commentPath, 
                     placeholder='Add a Comment'
                     style={{marginBottom: 50}}
                 />
-                <RenderComment replyComment={replyComment}/>
+                {
+                   replyComment != null ?
+                       <Block>
+                           <Comment preview={true} depth={0} comment={replyComment}/>
+                       </Block> : null
+                }
             </View>
         </Modal>
     )
@@ -121,6 +115,7 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderBottomLeftRadius: 4,
         borderBottomRightRadius: 4,
+        flexDirection: 'column'
     },
     contentText: {
         fontSize: 20,

@@ -74,7 +74,7 @@ const attachRef = async (ref, filter, setter, callback) => {
     })
 }
 
-export default function ({subreadit, username}) {
+export default function ({subreadit, username, refresh, setter}) {
     const [posts, setPosts] = useState([])
     const [loadingState, setLoadingState] = useState(true)
 
@@ -87,11 +87,16 @@ export default function ({subreadit, username}) {
         } else if (username) {
             filter = data => key => data[key].user.displayName === username
         }
-        attachRef(ref, filter, setPosts, () => setLoadingState(false))
+        attachRef(ref, filter, setPosts, () => {
+            setLoadingState(false)
+            if(setter != null){
+                setter()
+            }
+        })
         return () => {
             ref.off('value')
         }
-    }, [subreadit, username])
+    }, [subreadit, username, refresh])
 
     return (
         <RenderPosts posts={posts} loadingPosts={loadingState}/>

@@ -94,7 +94,7 @@ const Post = ({route, navigation}) => {
                 <Block>
                     <PostCommentsContext.Provider value={postUpdateContext}>
                         <PostPreview post={post}/>
-                        <CommentSection comments={comments} postId={post.id}/>
+                        <CommentSection comments={comments} postId={post.id} post={post}/>
                     </PostCommentsContext.Provider>
                 </Block>
             </ScrollView>

@@ -9,7 +9,7 @@ import {withInteractionsManaged} from "./withInteractionsManaged";
 
 const { width } = Dimensions.get('screen');
 
-const CommentSection = ({ comments, postId })=> {
+const CommentSection = ({ comments, postId, post })=> {
 
     if(!comments){
         return (
@@ -61,6 +61,7 @@ const CommentSection = ({ comments, postId })=> {
                 previewCommentModal={previewCommentModal}
                 isModalVisible={isModalVisible}
                 closeModal={closeModal}
+                post={post}
             />
         </CommentTreeContext.Provider>
     )

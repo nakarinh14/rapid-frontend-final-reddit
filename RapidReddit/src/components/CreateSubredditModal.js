@@ -8,10 +8,15 @@ import * as SubredditService from '../services/SubredditService'
 import * as Haptics from 'expo-haptics';
 
 function RenderedAddButton(props) {
-    const { AddButton, setter } = props
+    const { AddButton, setter, user, navigation } = props
     const onPress = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        setter(true)
+        if(user){
+            setter(true)
+        } else {
+            navigation.push("Login")
+        }
+
     }
     if(AddButton()) return (
         <TouchableOpacity onPress={() => onPress()}>
@@ -54,7 +59,7 @@ export default function ({ addButton, navigation}) {
 
     return(
         <Block>
-            <RenderedAddButton AddButton={() => addButton} setter={setCreatePostModalVisible}/>
+            <RenderedAddButton AddButton={() => addButton} setter={setCreatePostModalVisible} navigation={navigation} user={user}/>
             <Modal
                 visible={createPostModalVisible}
                 onRequestClose={() => setCreatePostModalVisible(false)}

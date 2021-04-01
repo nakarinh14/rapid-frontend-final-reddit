@@ -56,7 +56,7 @@ export const Explore = ({navigation}) => {
                                 <Ionicons name="create-outline" size={22} color={theme.COLORS.BLOCK}/>
                             </Block>
                             <Text style={{fontWeight: '500'}} size={15} color={theme.COLORS.BLOCK}>
-                                {'Create your own subreddit'}
+                                {'Create your own subreadit'}
                             </Text>
                     </Block>
                 </Pressable>

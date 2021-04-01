@@ -12,7 +12,6 @@ export function updateSubredditUserRole(subredditId, user, role) {
 
             firebase.database().ref('subreddit_roles/' + subredditId).update(roles)
 
-            console.log(snapshot.val());
         } else {
             const obj = {}
             obj[user] = role

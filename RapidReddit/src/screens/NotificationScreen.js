@@ -52,7 +52,6 @@ export const NotificationScreen = ({navigation}) => {
         }, [user])
     );
 
-    console.log(notifications.length)
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
             <NavBar
